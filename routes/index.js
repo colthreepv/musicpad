@@ -1,8 +1,8 @@
+// col3-style routes
+module.exports = function ( app ) {
+  // Node Internals
+  var util = require('util');
 
-/*
- * GET home page.
- */
-
-exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
-};
+// Add Here all the routes like this:
+  require('./api')(app);
+}
