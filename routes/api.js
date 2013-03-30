@@ -5,5 +5,6 @@ module.exports = function ( app ) {
   var api = require('../middlewares/api');
 
   app.get('/api/status', api.get);
-  app.get('/api/getvid', api.getvid);
+  app.post('/api/postvid', api.postvid);
+  app.post('/api/vidinfo', api.vidinfo)
 };
