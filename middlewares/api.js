@@ -1,50 +1,21 @@
 var util = require('util')
   , http = require('http')
+  // External Libraries
+  // , async = require('async')
+  , ytdl = require('ytdl')
   , log = function (args) { console.log(util.inspect(args, { colors: true })); };
 
 exports.get = null;
 exports.getvid = null;
-exports.YTurls = null;
-
-exports.get = function (req, res, next) {
-  // write something here tnx
-  res.send(200);
-};
-
-exports.getvid = function (req, res, next) {
-  http.request({
-    hostname: 'www.youtube.com',
-    path: '/watch?v=Tnm2jirXsT4'
-  },
-  function(response) {
-    var data;
-    // Parses file to string automatially, chunk is not a Buffer!
-    // WARNING: it's bad for binary data.
-    response.setEncoding('utf8');
-    response.on('data', function (chunk) {
-      data += chunk;
-    });
-    response.on('end', function() {
-      var n = new RegExp('"url_encoded_fmt_stream_map": ".+?",');
-      // log(exports.YTurls(data));
-      // for (var i = 0; i < split.length; i++) {
-      //   log(data.match(n));
-      // }
-      // console.log('done!', data.length);
-      // console.log(data.split('\n').match(n));
-      res.send(exports.YTurls(data));
-    });
-  }).end();
-
-};
+var YTurls = null
+  , ChooseBestQuality = null;
 
 /**
  * Youtube catch urls script :D
  * Thanks to Chrome-YouTube-Downloader Chrome Extension
  * http://mandel-design.xf.cz/Chrome-Youtube-Downloader/
  */
-/** i have to http.get the youtube webpage! :) **/
-exports.YTurls = function (html) {
+YTurls = function (html) {
   var n = new RegExp('"url_encoded_fmt_stream_map": ".+?",');
   var o = html.match(n)[0];
   var b = new String(n.exec(o));
@@ -93,3 +64,50 @@ exports.YTurls = function (html) {
   }
   return YTurls;
 };
+
+/**
+ * Returns the URL for the "best" quality available
+ * Some work and brainstorming TO-DO here.
+ * @param {[PlainObject]} YTurls_obj [output from YTurls function]
+ * @returns {[string]} [Best-Effort URL]
+ */
+ChooseBestQuality = function (YTurls_obj) {
+  if (YTurls_obj['v480p']) {
+    return YTurls_obj['v480p'];
+  } else {
+    return YTurls_obj
+  }
+};
+
+exports.get = function (req, res, next) {
+  // write something here tnx
+  res.send(200);
+};
+
+exports.getvid = function (req, res, next) {
+  ytdl.getInfo('http://www.youtube.com/watch?v=Tnm2jirXsT4', function (err, info) {
+    if (err) return console.log(err);
+    res.send(info);
+  });
+  // Dude this stuff is *already* outdated! OLOLZ!111
+  // http.request({
+  //   hostname: 'www.youtube.com',
+  //   path: '/watch?v=Tnm2jirXsT4'
+  // },
+  // function(response) {
+  //   var data;
+  //   // Parses file to string automatially, chunk is not a Buffer!
+  //   // WARNING: it's bad for binary data.
+  //   response.setEncoding('utf8');
+  //   response.on('data', function (chunk) {
+  //     data += chunk;
+  //   });
+  //   response.on('end', function() {
+  //     res.send(YTurls(data));
+  //     // Now we get download info
+  //   });
+  // }).end();
+  
+
+};
+

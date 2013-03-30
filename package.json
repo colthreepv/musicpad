@@ -1,13 +1,18 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
+  "name": "yt-albums",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "start": "node index"
   },
   "dependencies": {
-    "express": "3.0.0rc4",
+    "express": ">=3.0.0rc4",
     "jade": "*",
-    "less-middleware": "*"
+    "less-middleware": "*",
+    "ytdl": "*",
+    "fluent-ffmpeg": "*"
+  },
+  "devDependencies": {
+    "vows": "*"
   }
 }
