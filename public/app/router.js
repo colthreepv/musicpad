@@ -3,28 +3,21 @@ define([
   'app',
 
   // modules
-  'modules/classic/index',
-  'modules/facebook/index'
+  'modules/index'
 ],
-function (app, Classic, Facebook) {
+function (app, Main) {
   // Defining the application router, you can attach sub routers here.
   var Router = Backbone.Router.extend({
     routes: {
       '': 'index',
-      '2ndpage': 'secondpage',
-      'register': 'register',
-      'fb/': 'fbindex',
-      'fb/fbregister': 'fbregister'
+      'login': 'login'
     },
 
     // index: function() {
     //   app.useLayout('layout').render();
     // }
-    index: Classic.Welcome,
-    secondpage: Facebook.SecondPage,
-    register: Classic.Register,
-    fbindex: Facebook.Welcome,
-    fbregister: Facebook.Register
+    index: Main.HomePage,
+    login: Main.LoginPage
   });
 
   return Router;

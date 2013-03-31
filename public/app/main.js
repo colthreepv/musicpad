@@ -2,12 +2,10 @@ require([
   // Application.
   "app",
   // Main Router.
-  "router",
-  // Facebook d00d!11
-  'facebook'
+  "router"
 ],
 
-function(app, Router, FB) {
+function(app, Router) {
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.
@@ -38,14 +36,25 @@ function(app, Router, FB) {
       Backbone.history.navigate(href.attr, true);
     }
   });
-  var FBinit = $.Deferred();
-  app.FBinit = FBinit.promise();
-  app.user = FBinit.then(function (response) {
-    return $.ajax({type: 'POST', url: '/api/fb-status', data: response, dataType: 'json'});
+  /**
+   * CSS Initialization
+   */
+  var CSS = {
+    'bootstrap': '/vendor/bootstrap/css/bootstrap.css',
+    'bootstrap-responsive': '/vendor/bootstrap/css/bootstrap-responsive.css',
+    'yt-albums': '/app/styles/yt-albums.css'
+  },
+  HTMLhead = document.getElementsByTagName("head")[0];
+  /**
+   * Appends each CSS Style to the <HEAD>
+   */
+  _.each(CSS, function (element, index, list) {
+    var link = document.createElement("link");
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.href = element;
+    HTMLhead.appendChild(link);
   });
-  // Query status and disable Grey out
-  FB.init({ appId: '370476999726315', status: true, cookie: true });
-  FB.getLoginStatus(function (response) { 
-    FBinit.resolve(response);
-  });
+  // Insert here status async query, if needed!
+  app.userstatus = $.ajax({ type: 'GET', url: '/api/status', dataType: 'json' });
 });

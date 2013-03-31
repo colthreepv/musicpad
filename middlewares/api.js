@@ -7,7 +7,8 @@ var util = require('util')
   , ffmpeg = require('fluent-ffmpeg')
   , log = function (args) { console.log(util.inspect(args, { colors: true })); };
 
-exports.get = null;
+exports.statusGet = null;
+exports.login = null;
 exports.postvid = null;
 exports.vidinfo = null;
 
@@ -21,13 +22,30 @@ filterQuality = function (ytdl_info) {
   if (ytdl_info) {
     return ytdl_info;
   } else {
-    return ytdl_info
+    return ytdl_info;
   }
 };
 
-exports.get = function (req, res, next) {
-  // write something here tnx
-  res.send(200);
+exports.statusGet = function (req, res, next) {
+  log(req.session);
+  if (req.session.logged) {
+    res.send('You had a session, good boy.');
+  } else {
+    res.send(200);
+  }
+};
+
+exports.login = function (req, res, next) {
+  if (typeof req.body.username === 'string'
+   && typeof req.body.password === 'string'
+   && req.body.username === 'mrgamer'
+   && req.body.password === 'let me in'
+  ) {
+    req.session.logged = true;
+    res.send(200);
+  } else {
+    res.send(403);
+  }
 };
 
 /**

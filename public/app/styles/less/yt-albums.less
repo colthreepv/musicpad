@@ -20,60 +20,26 @@
   @media @smallphones { display: none !important; }
 }
 
-html,
-body {
-  height: 100%;
-  #main {
-    height: 100%;
-    margin: 0px auto;
-  }
-}
-
-
-
 // 
 // Layout.html Rules
 // 
 
-/* Wrapper for page content to push down footer */
-#pusher {
+// The html and body elements cannot have any padding or margin.
+html, body, #main {
   height: 100%;
-  width: 810px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: -60px;
+}
+#main {
+  margin: 0px auto;
 }
 
-.covered {
-  position: relative;
-  &:before {
-    content: '';
-    display: block;
-    position: absolute;
-    z-index: 1001;
-    height: 100%;
-    width: 100%;
-    top: 0px;
-    background-color: rgb(111, 111, 111);
-    background-color: rgba(111, 111, 111, 0.50);
-  }
-  // &:after {
-  //   content: '';
-  //   display: block;
-  //   position: absolute;
-  //   z-index: 1002;
-  //   height: 32px;
-  //   width: 32px;
-  //   top: 50%;
-  //   left: 50%;
-  //   background-image: url(https://raw.github.com/sjhcockrell/spinners/master/gif/spinner_32.gif);
-  // }
-  .greyoutSpinner {
-    position: absolute;
-    z-index: 1003;
-    top: 50%;
-    left: 50%;
-  }
+
+// Wrapper for page content to push down footer 
+#app-container {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  // Negative indent footer by it's height 
+  margin: 0 auto -60px;
 }
 
 #footer {
@@ -87,13 +53,33 @@ body {
   }
 }
 
-// 
-// prizes.html Rules
-// 
-
-.go-back {
-  text-align: right;
-  margin-right: 30px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+/**
+ * login.html Rules
+ */
+#login-container {
+  height: 100%;
+  width: 100%;
+  background-color: #f5f5f5;
+}
+.form-signin {
+  max-width: 300px;
+  padding: 19px 29px 29px;
+  margin: 40px auto 20px auto;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  input[type="text"], input[type="password"] {
+    font-size: 16px;
+    height: auto;
+    margin-bottom: 15px;
+    padding: 7px 9px;      
+  }
+  .form-signin-heading, .checkbox {
+    margin-bottom: 10px;
+  }
 }
