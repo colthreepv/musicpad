@@ -1,18 +1,41 @@
 require([
   // Application.
-  'app'
+  'app',
   // Main Router.
-  // 'router'
+  'router'
 ],
 
-function (app) {
+function(app, Router) {
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.
   app.router = new Router();
 
+  /**
+   * CSS Initialization
+   */
+  var CSS = {
+    'bootstrap': '/vendor/bootstrap/css/bootstrap.css',
+    'bootstrap-responsive': '/vendor/bootstrap/css/bootstrap-responsive.css',
+    'yt-albums': '/app/styles/yt-albums.css'
+  },
+  HTMLhead = document.getElementsByTagName('head')[0];
+  /**
+   * Appends each CSS Style to the <HEAD>
+   */
+  _.each(CSS, function (element, index, list) {
+    var link = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.href = element;
+    HTMLhead.appendChild(link);
+  });
+  // Insert here status async query, if needed!
+  app.userstatus = $.ajax({ type: 'GET', url: '/api/status' });
+
   // Trigger the initial route and enable HTML5 History API support, set the
   // root folder to '/' by default.  Change in app.js.
+  // This has to be called after all router dependencies are satifsfied!
   Backbone.history.start({ pushState: true, root: app.root });
 
   // All navigation that is relative should be passed through the navigate
@@ -36,25 +59,5 @@ function (app) {
       Backbone.history.navigate(href.attr, true);
     }
   });
-  /**
-   * CSS Initialization
-   */
-  var CSS = {
-    'bootstrap': '/vendor/bootstrap/css/bootstrap.css',
-    'bootstrap-responsive': '/vendor/bootstrap/css/bootstrap-responsive.css',
-    'yt-albums': '/app/styles/yt-albums.css'
-  },
-  HTMLhead = document.getElementsByTagName('head')[0];
-  /**
-   * Appends each CSS Style to the <HEAD>
-   */
-  _.each(CSS, function (element, index, list) {
-    var link = document.createElement('link');
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    link.href = element;
-    HTMLhead.appendChild(link);
-  });
-  // Insert here status async query, if needed!
-  app.userstatus = $.ajax({ type: 'GET', url: '/api/status', dataType: 'json' });
+
 });

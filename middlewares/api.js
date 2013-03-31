@@ -29,17 +29,17 @@ filterQuality = function (ytdl_info) {
 exports.statusGet = function (req, res, next) {
   log(req.session);
   if (req.session.logged) {
-    res.send('You had a session, good boy.');
-  } else {
     res.send(200);
+  } else {
+    res.send('unauthorized');
   }
 };
 
 exports.login = function (req, res, next) {
   if (typeof req.body.username === 'string'
    && typeof req.body.password === 'string'
-   && req.body.username === 'mrgamer'
-   && req.body.password === 'let me in'
+   && req.body.username.trim() === 'mrgamer'
+   && req.body.password.trim() === 'let me in'
   ) {
     req.session.logged = true;
     res.send(200);
