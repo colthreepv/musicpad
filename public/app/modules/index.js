@@ -1,22 +1,25 @@
 define([
-  '../app',
-  './common'
+    '../app'
+  , './homepage'
 ],
-function (app, Common) {
+function (app, HomePage) {
   var Main = app.module()
     , AppLayout = null
     , AppLayoutExt = null
-    , LoginLayout = null;
+    , LoginLayout = null
+    , InputForms = null;
   Main.HomePage = null;
   Main.LoginPage = null;
 
   AppLayout = {
-    template: 'layout',
-    beforeRender: function() {
-      app.userstatus.done(function (data, textStatus, jqXHR) {
-        if (data === 'unauthorized') { app.router.navigate('login', { trigger: true }); }
-      });
-    }
+    template: 'layout'
+    // afterRender: function() {
+    //   app.userstatus.done(function (data, textStatus, jqXHR) {
+    //     debugger;
+    //     if (data === 'unauthorized') { app.router.navigate('login', { trigger: true }); }
+    //     else { $('#logged_as a').html('Admin Logged').attr('href',''); }
+    //   });
+    // }
   };
   AppLayoutExt = function (views_obj) {
     return _.extend(AppLayout, views_obj);
@@ -37,22 +40,24 @@ function (app, Common) {
           });
       }
     }
-    , beforeRender: function() {
-      // if /api/status returns OK means the user is already authenticated
-      app.userstatus.done(function (data, textStatus, jqXHR) {
-        if (data === 'OK') { app.router.navigate('', { trigger: true }); }
-      });
-    }
+    // , beforeRender: function() {
+    //   // if /api/status returns OK means the user is already authenticated
+    //   app.userstatus.done(function (data, textStatus, jqXHR) {
+    //     if (data === 'OK') { app.router.navigate('', { trigger: true }); }
+    //   });
+    // }
   };
 
   Main.HomePage = function() {
-    app.useLayout(AppLayoutExt({ views: {'#app-container': new Backbone.Layout({template: 'indexpage'})} }) ).render();
-    app.layout.setView('#app-container', new Backbone.Layout({template: 'indexpage'})).render();
+    // if (!app.layout) { return app.useLayout(AppLayoutExt({ views: {'#app-container': new Backbone.Layout(HomePage.Views.Main)} })).render(); }
+    // app.layout.setView('#app-container', new Backbone.Layout(HomePage.Views.Main)).render();
+    app.useLayout(AppLayoutExt({ views: {'#app-container': new Backbone.Layout(HomePage.Views.Main)} })).render();
   };
 
   Main.LoginPage = function() {
     // if (!app.layout) { return app.useLayout( AppLayoutExt({ views: { '#app-container': new Backbone.Layout({template: 'login'}) }}) ).render(); }
     // app.layout.setView('#app-container', new Backbone.Layout({template: 'login'})).render();
+    app.layout = null;
     app.useLayout(LoginLayout).render();
   };
 

@@ -1,9 +1,8 @@
 define([
   // Application.
-  'app',
-
+    'app'
   // modules
-  'modules/index'
+  , 'modules/index'
 ],
 function (app, Main) {
   // Defining the application router, you can attach sub routers here.
