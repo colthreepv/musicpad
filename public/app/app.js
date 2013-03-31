@@ -5,7 +5,7 @@ define([
   // `vendor/js` directory, here.
 ],
 
-function(LayoutManager) {
+function (LayoutManager) {
 
   // Provide a global location to place configuration settings and module
   // creation.

@@ -1,11 +1,11 @@
 require([
   // Application.
-  "app",
+  'app'
   // Main Router.
-  "router"
+  // 'router'
 ],
 
-function(app, Router) {
+function (app) {
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.
@@ -18,11 +18,11 @@ function(app, Router) {
   // All navigation that is relative should be passed through the navigate
   // method, to be processed by the router. If the link has a `data-bypass`
   // attribute, bypass the delegation completely.
-  $(document).on("click", "a[href]:not([data-bypass])", function(evt) {
+  $(document).on('click', 'a[href]:not([data-bypass])', function(evt) {
     // Get the absolute anchor href.
-    var href = { prop: $(this).prop("href"), attr: $(this).attr("href") };
+    var href = { prop: $(this).prop('href'), attr: $(this).attr('href') };
     // Get the absolute root.
-    var root = location.protocol + "//" + location.host + app.root;
+    var root = location.protocol + '//' + location.host + app.root;
 
     // Ensure the root is part of the anchor href, meaning it's relative.
     if (href.prop.slice(0, root.length) === root) {
@@ -44,14 +44,14 @@ function(app, Router) {
     'bootstrap-responsive': '/vendor/bootstrap/css/bootstrap-responsive.css',
     'yt-albums': '/app/styles/yt-albums.css'
   },
-  HTMLhead = document.getElementsByTagName("head")[0];
+  HTMLhead = document.getElementsByTagName('head')[0];
   /**
    * Appends each CSS Style to the <HEAD>
    */
   _.each(CSS, function (element, index, list) {
-    var link = document.createElement("link");
-    link.type = "text/css";
-    link.rel = "stylesheet";
+    var link = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
     link.href = element;
     HTMLhead.appendChild(link);
   });

@@ -1,9 +1,8 @@
 define([
   '../app',
-  '../router',
   './common'
 ],
-function (app, Router, Common) {
+function (app, Common) {
   var Main = app.module()
     , AppLayout = null
     , LoginLayout = null;
@@ -24,7 +23,7 @@ function (app, Router, Common) {
         event.preventDefault();
         $.ajax({ type: 'POST', url: '/api/login', data: $('form').serialize() })
           .done(function (data, textStatus, jqXHR) {
-            Router.navigate('#');
+            Router.navigate('');
           })
           .fail(function (jqXHR, textStatus, errorThrown) {
             $($('.control-group')[0]).addClass('error');
