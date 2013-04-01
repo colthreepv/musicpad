@@ -82,6 +82,11 @@ exports.postvid = function (req, res, next) {
   });
 };
 
+/**
+ * vidinfo accepts an url as parameter
+ * TEST IT WITH
+ * $.ajax({type: 'POST', url: '/api/vidinfo', dataType: 'json', data: { url: 'XRF-QqFgMug'} }).done(function (data) { console.log(data); });
+ */
 exports.vidinfo = function (req, res, next) {
   var ytBaseurl = "http://www.youtube.come/watch?v="
     , url = req.body.url || "Tnm2jirXsT4" || null;
