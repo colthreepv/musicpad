@@ -1,0 +1,9 @@
+[submodule "public/vendor/backbone.layoutmanager"]
+	path = public/vendor/backbone.layoutmanager
+	url = git@github.com:tbranyen/backbone.layoutmanager.git
+[submodule "public/vendor/backbone"]
+	path = public/vendor/backbone
+	url = git@github.com:documentcloud/backbone.git
+[submodule "public/vendor/lodash"]
+	path = public/vendor/lodash
+	url = git@github.com:bestiejs/lodash.git
