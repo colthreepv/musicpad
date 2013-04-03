@@ -1,14 +1,17 @@
 define([
     '../app'
   , './common'
+  , 'text!../templates/partials/videoinfo.html'
 ],
-function (app, Common) {
+function (app, Common, VideoInfoHTML) {
   var HomePage = app.module()
     , yturlChange = null
     , yturlModel = null
-    , yturlCollection = null;
+    , yturlCollection = null
+    , InfoLayout = null;
   HomePage.Views.Main = null;
 
+  // Move the Model && Collection declarations out of here, maybe?
   yturlModel = Backbone.Model.extend({
     initialize: function() {
       var self = this;
@@ -17,7 +20,7 @@ function (app, Common) {
        * this.attributes gets sent to vidinfo api
        * and then gets overwritten by the response
        */
-      if (self.attributes.url && self.attributes.url.match(/[A-Za-z\d]{11}/)) {
+      if (self.attributes.url && self.attributes.url.match(/[A-Za-z\d-]{11}/)) {
         $.ajax({type: 'POST', url: '/api/vidinfo', dataType: 'json', data: self.attributes })
           .done(function (data) {
             self.attributes = data;
@@ -52,6 +55,7 @@ function (app, Common) {
         self.models[self.length-1].bind('ready', function(){ self.trigger('add', self.models[self.length-1], self, yturl); });
     }
   });
+  HomePage.Collection = new yturlCollection();
 
   /**
    * Order of command to display youtube video info
@@ -62,32 +66,47 @@ function (app, Common) {
    *    - if we bind to the 'add' event, this partial-view will have INCORRECT INFORMATIONS!
    */
 
-
   yturlChange = _.throttle(function (event) {
     // Okey i found this regex online, but it's not a charm, my very short version works decently aswell.
     // var urlRegex = /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|(?:embed|v)\/))?([^\?&"'>]{11})/
-    var urlRegex = /[A-Za-z\d]{11}/
+    var urlRegex = /[A-Za-z\d-]{11}/
       , result = null
-      // , lastURL = window.lastURL
       , textField = event.target.value;
     if (result = textField.match(urlRegex)) {
       if (window.lastURL !== result[0]) {
         window.lastURL = result[0];
         console.log('valid youtube url', window.lastURL);
+        HomePage.Collection.add(window.lastURL);
       }
     }
   }, 250);
 
-  HomePage.Views.Main = {
+  InfoLayout = Backbone.Layout.extend({
+      collection: HomePage.Collection
+    , viewHTML: $(VideoInfoHTML)
+    , initialize: function (Layout) {
+        this.collection.bind('add', function (model, collection, options) {
+          debugger;
+        });
+      }
+    , el: function() {
+        // Careful here, trim() is necessary.
+        return $(this.viewHTML[0]).html().trim();
+      }
+  });
+
+  HomePage.Views.Main = Backbone.Layout.extend({
       template: 'indexpage'
     , el: false
+    , collection: HomePage.Collection
     , events: _.extend({
         'keyup #yturl': yturlChange
       , 'paste #yturl': yturlChange
       , 'cut #yturl': yturlChange
       , 'click #yturl': yturlChange
-    }, Common.InputEvents)
-  };
+      }, Common.InputEvents)
+    , views: { '.hero-unit': new InfoLayout(HomePage.Collection) }
+  });
 
   return HomePage;
 });

@@ -7,3 +7,6 @@
 [submodule "public/vendor/lodash"]
 	path = public/vendor/lodash
 	url = git@github.com:bestiejs/lodash.git
+[submodule "public/vendor/requirejs-text"]
+	path = public/vendor/requirejs-text
+	url = git@github.com:requirejs/text.git

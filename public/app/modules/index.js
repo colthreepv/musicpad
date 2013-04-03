@@ -47,16 +47,13 @@ function (app, HomePage) {
     //   });
     // }
   };
-
+  window.MainLayout = new HomePage.Views.Main();
   Main.HomePage = function() {
-    // if (!app.layout) { return app.useLayout(AppLayoutExt({ views: {'#app-container': new Backbone.Layout(HomePage.Views.Main)} })).render(); }
-    // app.layout.setView('#app-container', new Backbone.Layout(HomePage.Views.Main)).render();
-    app.useLayout(AppLayoutExt({ views: {'#app-container': new Backbone.Layout(HomePage.Views.Main)} })).render();
+    app.layout = null;
+    app.useLayout(AppLayoutExt({ views: {'#app-container': window.MainLayout } })).render();
   };
 
   Main.LoginPage = function() {
-    // if (!app.layout) { return app.useLayout( AppLayoutExt({ views: { '#app-container': new Backbone.Layout({template: 'login'}) }}) ).render(); }
-    // app.layout.setView('#app-container', new Backbone.Layout({template: 'login'})).render();
     app.layout = null;
     app.useLayout(LoginLayout).render();
   };

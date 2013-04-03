@@ -7,7 +7,7 @@ require.config({
 
   paths: {
     // Use the underscore build of Lo-Dash to minimize incompatibilities.
-    'lodash': '../vendor/lodash/lodash.underscore',
+    'lodash': '../vendor/lodash/dist/lodash.underscore',
     'jquery': '../vendor/jquery/jquery-1.9.1',
     'backbone': '../vendor/backbone/backbone',
     'backbone.layoutmanager': '../vendor/backbone.layoutmanager/backbone.layoutmanager',
@@ -19,7 +19,8 @@ require.config({
     'spinjs': '../vendor/libs/spin.min',
     'jquery.Spin': '../vendor/libs/jquery.spin',
     'facebook': '../vendor/libs/facebook',
-    'bootstrap': '../vendor/bootstrap/js/bootstrap'
+    'bootstrap': '../vendor/bootstrap/js/bootstrap',
+    'text': '../vendor/requirejs-text/text'
   },
 
   map: {
