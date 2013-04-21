@@ -1,3 +1,6 @@
+// Function wrapping is useless in node.js
+// http://www.nearinfinity.com/blogs/jeff_kunkle/2012/06/13/secret-sauce-of-nodejs-modules.html
+// NO MORE -> (function () {})();
 var util = require('util')
   , http = require('http')
   // Internal Libraries
@@ -28,18 +31,18 @@ filterQuality = function (ytdl_info) {
 
 exports.statusGet = function (req, res, next) {
   log(req.session);
-  if (req.session.logged) {
+  if (req.session && req.session.logged) {
     res.send(200);
   } else {
-    res.send('unauthorized');
+    res.send(403, 'unauthorized');
   }
 };
 
 exports.login = function (req, res, next) {
-  if (typeof req.body.username === 'string'
-   && typeof req.body.password === 'string'
-   && req.body.username.trim() === 'mrgamer'
-   && req.body.password.trim() === 'let me in'
+  if (typeof req.body.username === 'string' &&
+   typeof req.body.password === 'string' &&
+   req.body.username.trim() === 'mrgamer' &&
+   req.body.password.trim() === 'let me in'
   ) {
     req.session.logged = true;
     res.send(200);
