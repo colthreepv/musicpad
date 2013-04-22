@@ -5,3 +5,4 @@ extendedAT*
 node_modules/
 testvids/
 assets/
+*.mp3
