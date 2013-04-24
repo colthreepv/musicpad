@@ -11,7 +11,19 @@ Update: found algorithm for SoundCloud ^_^
 
 ##Libraries Used & Credits:
 
-[@raymatos](https://github.com/raymatos)/[backbone.marionette.boilerplate](https://github.com/raymatos/backbone.marionette.boilerplate)
+[@ptnplanet](https://github.com/ptnplanet)/[Backbone.Marionette.Boilerplate](https://github.com/ptnplanet/Backbone.Marionette.Boilerplate)
+
+##Utilities
+
+To keep an eye when writing .less files i'm using:  
+[@gdupont](https://github.com/gdupont)/[less-monitor](https://github.com/gdupont/less-monitor)
+```bash
+$ sudo npm install -g less-monitor
+$ pwd
+/somepath/get-music
+$ cd public/assets/css/less
+$ node /usr/local/bin/less-monitor -f -o ../
+```
 
 Deploy
 ------
