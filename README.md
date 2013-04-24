@@ -9,9 +9,23 @@ Should not destroy my little VPS while doing so.
 Support for soundcloud aswell!
 Update: found algorithm for SoundCloud ^_^
 
-##Libraries Used & Credits:
+# Get the project up and running:
 
-[@ptnplanet](https://github.com/ptnplanet)/[Backbone.Marionette.Boilerplate](https://github.com/ptnplanet/Backbone.Marionette.Boilerplate)
+```bash
+$ sudo npm install -g bower
+$ pwd
+/somepath/get-music
+# Install server-side modules
+$ npm install
+# Install client-side modules
+$ cd public
+$ bower install
+# Create .css from .less
+$ cd css/less
+$ node /usr/bin/less-monitor -f -o ../
+^Ctrl-c
+```
+
 
 ##Utilities
 
@@ -21,9 +35,14 @@ To keep an eye when writing .less files i'm using:
 $ sudo npm install -g less-monitor
 $ pwd
 /somepath/get-music
-$ cd public/assets/css/less
-$ node /usr/local/bin/less-monitor -f -o ../
+$ cd public/css/less
+$ node /usr/bin/less-monitor -f -o ../
 ```
+
+- bower
+- nodejs
+- grunt?
+
 
 Deploy
 ------
@@ -83,5 +102,8 @@ And his best friend ```/etc/hosts``` with the following line:
 127.0.0.1	get-music.localhost
 ```
 At this point, start a nodejs instance using ```npm start``` inside the [@get-music][this] folder
+
+##Libraries Used & Credits:
+[@ptnplanet](https://github.com/ptnplanet)/[Backbone.Marionette.Boilerplate](https://github.com/ptnplanet/Backbone.Marionette.Boilerplate)
 
 [this]: https://github.com/mrgamer/get-music
