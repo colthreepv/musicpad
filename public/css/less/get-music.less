@@ -20,6 +20,11 @@
   @media @smallphones { display: none !important; }
 }
 
+// Always useful
+.hidden {
+  display: none;
+}
+
 // 
 // Layout.html Rules
 // 
@@ -75,5 +80,13 @@ html, body, #main {
   }
   .form-signin-heading, .checkbox {
     margin-bottom: 10px;
+  }
+  &.centered {
+    text-align: center;
+    .well {
+      width: 30px;
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 }

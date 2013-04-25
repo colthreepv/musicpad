@@ -14,9 +14,9 @@ require.config({
     , marionette: 'components/backbone.marionette/lib/backbone.marionette'
     , bootstrap: 'components/bootstrap/docs/assets/js/bootstrap.js'
     , jquery: 'components/jquery/jquery'
+    , jqueryui: 'components/jquery-ui/ui/jquery-ui.custom'
     , lodash: 'components/lodash/lodash'
     , tpl: 'components/requirejs-tpl/tpl'
-    , spinjs: 'components/spin.js/spin.js'
   },
 
   /*

@@ -17,7 +17,7 @@ function($, _, Backbone, Marionette) {
    * file. This will also use JST instead of the Marionette.TemplateCache.
    */
   Backbone.Marionette.Renderer.render = function(templateId, data) {
-    var path = 'app/templates/' + templateId + '.html';
+    var path = 'tpl/' + templateId + '.html';
 
     // Localize or create a new JavaScript Template object.
     var JST = window.JST = window.JST || {};
