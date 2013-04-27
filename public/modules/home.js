@@ -18,18 +18,34 @@ function (App) {
   };
 
   Login.Submit = function (args) {
-    // we get data
-    // start ajax
-    // user feedback
-    // etcetc
-    debugger;
+    var self = this;
+    // prepare data to be submitted
     var submitdata = {
       username: this.$('input[name="username"]').val(),
       password: this.$('input[name="password"]').val()
     };
+    // this.status => to App.status!!
     this.status = $.ajax({ method: 'POST', url: '/api/login', data: submitdata, dataType: 'JSON' });
     // User feedback
-    
+    this.$('button[type="submit"]').addClass('spinner');
+    this.status.always(function (jqHXR, textStatus, errorThrown) { this.$('button[type="submit"]').removeClass('spinner'); });
+    // on form error just provide user feedback
+    this.status.fail(function (jqHXR, textStatus, errorThrown) {
+      self.$('form control-group').addClass('error');
+      self.$('form input').val('');
+    });
+    // on form correct, redirect to main view!
+    this.status.done(function (data, textStatus, jqXHR) {
+      var mainpage = require('mainpage');
+      // at this point mainpage shold be a Deferred or some kind of require.js structure
+      // able to hook an even onmoduleloaded! 
+      self.$('.form/signin:last').hide('drop', { direction: 'down', easing: 'easeInQuart' },
+        function() {
+          //mainpage.onready().show!
+          //var main = new Main.View();
+          //App,regionMain.show(mainpage)
+        });
+    });
   };
 
   Login.View = Backbone.Marionette.ItemView.extend({
