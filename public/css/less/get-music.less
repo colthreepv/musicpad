@@ -24,6 +24,19 @@
 .hidden {
   display: none;
 }
+// Spinner
+.spin:after {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url(/img/spin-16x16.gif);
+}
+.spin.large:after {
+  width: 32px;
+  height: 32px;
+  background-image: url(/img/spin-32x32.gif);
+}
 
 // 
 // Layout.html Rules
@@ -83,10 +96,5 @@ html, body, #main {
   }
   &.centered {
     text-align: center;
-    .well {
-      width: 30px;
-      margin-left: auto;
-      margin-right: auto;
-    }
   }
 }
