@@ -8,11 +8,16 @@ function (App) {
 
   Login.Render = function() {
     var self = this;
-    self.status.fail(function (jqXHR, textStatus, errorThrown) {
+    App.status.fail(function (jqXHR, textStatus, errorThrown) {
       // At the current state it can only be 200 - success, OR 403 - unauthorized
       if (jqXHR.status !== 403) return;
       self.$('.form-signin:first').hide('drop', { direction: 'down', easing: 'easeInQuart' }, function(){
         self.$('.form-signin:last').show('drop', { direction: 'up', easing: 'easeOutQuart' });
+      });
+    });
+    App.status.done(function (data, textStatus, jqXHR) {
+      require(['modules/start'], function (Home) {
+        Home.Start();
       });
     });
   };
@@ -21,36 +26,40 @@ function (App) {
     var self = this;
     // prepare data to be submitted
     var submitdata = {
-      username: this.$('input[name="username"]').val(),
-      password: this.$('input[name="password"]').val()
+      username: self.$('input[name="username"]').val(),
+      password: self.$('input[name="password"]').val()
     };
-    // this.status => to App.status!!
-    this.status = $.ajax({ method: 'POST', url: '/api/login', data: submitdata, dataType: 'JSON' });
+    // Attaching this to App.status cause it's the user-status that gets updated, could be useful somewhere else!
+    App.status = $.ajax({ method: 'POST', url: '/api/login', data: submitdata });
     // User feedback
-    this.$('button[type="submit"]').addClass('spinner');
-    this.status.always(function (jqHXR, textStatus, errorThrown) { this.$('button[type="submit"]').removeClass('spinner'); });
+    self.$('button[type="submit"]').addClass('spinner');
+    App.status.always(function (jqHXR, textStatus, errorThrown) { self.$('button[type="submit"]').removeClass('spinner'); });
     // on form error just provide user feedback
-    this.status.fail(function (jqHXR, textStatus, errorThrown) {
-      self.$('form control-group').addClass('error');
+    App.status.fail(function (jqHXR, textStatus, errorThrown) {
+      self.$('form .control-group').addClass('error');
       self.$('form input').val('');
     });
     // on form correct, redirect to main view!
-    this.status.done(function (data, textStatus, jqXHR) {
-      var mainpage = require('mainpage');
-      // at this point mainpage shold be a Deferred or some kind of require.js structure
-      // able to hook an even onmoduleloaded! 
-      self.$('.form/signin:last').hide('drop', { direction: 'down', easing: 'easeInQuart' },
-        function() {
-          //mainpage.onready().show!
-          //var main = new Main.View();
-          //App,regionMain.show(mainpage)
-        });
+    App.status.done(function (data, textStatus, jqXHR) {
+      // CallbackAggregator makes sure it gets called after:
+      // a) starting module gets fetched async
+      // b) animation from login is done!
+      var CallbackAggregator = _.after(2, function(){
+        var Home = require('modules/start');
+        Home.Start();
+      });
+      // Clever requireJS hack - 
+      // we call a require, without assigning it
+      // when CallbackAggregator will be run, i can refer to this module by using
+      // the synchronous version of require() since i *SURELY* already loaded it!
+      require(['modules/start'], CallbackAggregator);
+      self.$('.form-signin:last').hide('drop', { direction: 'down', easing: 'easeInQuart' }, CallbackAggregator );
     });
   };
 
   Login.View = Backbone.Marionette.ItemView.extend({
     initialize: function () {
-      this.status = $.ajax({ method: 'GET', url: '/api/status' });
+      App.status = $.ajax({ method: 'GET', url: '/api/status' });
     },
     template: 'login-loading',
     triggers: {
