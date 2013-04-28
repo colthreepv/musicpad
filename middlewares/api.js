@@ -32,13 +32,13 @@ filterQuality = function (ytdl_info) {
 exports.statusGet = function (req, res, next) {
   log(req.session);
   // Artificial delay to show the spinner on loadpage.
-  setTimeout(function(){
+  // setTimeout(function(){
     if (req.session && req.session.logged) {
       res.send(200);
     } else {
       res.send(403, 'unauthorized');
     }
-  }, 1000);
+  // }, 1000);
 };
 
 exports.login = function (req, res, next) {

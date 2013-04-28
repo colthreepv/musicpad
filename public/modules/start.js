@@ -28,7 +28,7 @@ function (App) {
     var start = new Start.View();
     var navbar = new Navbar.View();
     // Event Hooks
-    navbar.on('render', Navbar.Render);
+    // navbar.on('render', Navbar.Render);
 
     App.content.show(start);
     App.navbar.show(navbar);
