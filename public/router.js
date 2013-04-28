@@ -9,7 +9,7 @@ define([
     routes: {
       '' : 'home'
     }
-    , home: function (params) { require(['modules/home'], function (Home) { Home.Login(params); }); }
+    , home: function (params) { require(['modules/login'], function (Home) { Home.Login(params); }); }
   });
 
   return new Router();

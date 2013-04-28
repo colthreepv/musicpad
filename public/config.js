@@ -12,7 +12,7 @@ require.config({
   paths: {
       backbone: 'components/backbone/backbone'
     , marionette: 'components/backbone.marionette/lib/backbone.marionette'
-    , bootstrap: 'components/bootstrap/docs/assets/js/bootstrap.js'
+    , bootstrap: 'components/bootstrap/docs/assets/js/bootstrap'
     , jquery: 'components/jquery/jquery'
     , jqueryui: 'components/jquery-ui/ui/jquery-ui.custom'
     , lodash: 'components/lodash/lodash'

@@ -53,7 +53,11 @@ function($, _, Backbone, Marionette) {
 
   // Add the main region, that will hold the page layout.
   App.addRegions({
-    regionMain: '#main'
+    navbar: '#navbar',
+    content: '#content',
+    footer: '#footer',
+    // Not to be used #main region.
+    main: '#main'
   });
 
   // Adds any methods to be run after the app was initialized.

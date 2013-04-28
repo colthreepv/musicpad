@@ -6,6 +6,14 @@ function (App) {
   'use strict';
   var exports = {}, Login = {};
 
+  // CallbackAggregator makes sure it gets called after:
+  // a) starting module gets fetched async
+  // b) animation from login is done!
+  Login.StartApp = _.after(2, function() {
+    var Home = require('modules/start');
+    Home.Start();
+  });
+
   Login.Render = function() {
     var self = this;
     App.status.fail(function (jqXHR, textStatus, errorThrown) {
@@ -16,9 +24,9 @@ function (App) {
       });
     });
     App.status.done(function (data, textStatus, jqXHR) {
-      require(['modules/start'], function (Home) {
-        Home.Start();
-      });
+      // RequireJS hack to load Startpage
+      require(['modules/start'], Login.StartApp);
+      self.$('.form-signin:first').hide('drop', { direction: 'down', easing: 'easeInQuart' }, Login.StartApp );
     });
   };
 
@@ -41,19 +49,12 @@ function (App) {
     });
     // on form correct, redirect to main view!
     App.status.done(function (data, textStatus, jqXHR) {
-      // CallbackAggregator makes sure it gets called after:
-      // a) starting module gets fetched async
-      // b) animation from login is done!
-      var CallbackAggregator = _.after(2, function(){
-        var Home = require('modules/start');
-        Home.Start();
-      });
-      // Clever requireJS hack - 
+      // Clever RequireJS hack - 
       // we call a require, without assigning it
-      // when CallbackAggregator will be run, i can refer to this module by using
+      // when Login.StartApp will be run, i can refer to this module by using
       // the synchronous version of require() since i *SURELY* already loaded it!
-      require(['modules/start'], CallbackAggregator);
-      self.$('.form-signin:last').hide('drop', { direction: 'down', easing: 'easeInQuart' }, CallbackAggregator );
+      require(['modules/start'], Login.StartApp);
+      self.$('.form-signin:last').hide('drop', { direction: 'down', easing: 'easeInQuart' }, Login.StartApp );
     });
   };
 
@@ -73,8 +74,7 @@ function (App) {
     login.on('render', Login.Render);
     login.on('submit', Login.Submit);
 
-    App.regionMain.show(login);
-    // debugger;
+    App.content.show(login);
   };
 
   return exports;
