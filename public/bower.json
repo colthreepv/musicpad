@@ -16,5 +16,6 @@
     , "backbone": ">=1.0.0"
     , "backbone.marionette": ">0.0.0"
     , "bootstrap": ">=2.3.1"
+    , "sockjs-client": "latest"
   }
 }

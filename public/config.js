@@ -14,9 +14,10 @@ require.config({
     , marionette: 'components/backbone.marionette/lib/backbone.marionette'
     , bootstrap: 'components/bootstrap/docs/assets/js/bootstrap'
     , jquery: 'components/jquery/jquery'
-    , jqueryui: 'components/jquery-ui/ui/jquery-ui.custom'
+    , jqueryui: 'components/jquery-ui/ui/jquery-ui'
     , lodash: 'components/lodash/lodash'
     , tpl: 'components/requirejs-tpl/tpl'
+    , sockjs: 'components/sockjs-client/sockjs'
   },
 
   /*

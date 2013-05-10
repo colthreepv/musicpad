@@ -8,3 +8,4 @@ assets/
 public/components
 public/css/*.css
 *.mp3
+npm-debug.log
