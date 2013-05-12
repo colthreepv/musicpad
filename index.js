@@ -12,7 +12,7 @@ var httpServer = http.createServer(app).listen(app.get('port'), function(){ cons
 sockServer.installHandlers(httpServer, {prefix:'/socket'});
 
 // Calling SockJS manager with the instance as parameter
-require('./middlewares/socket')(sockServer);
+require('./middlewares/socket/')(sockServer);
 
 // Setting those variables to be used elsewhere.
 app.set('sockjs', sockServer);

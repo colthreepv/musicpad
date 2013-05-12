@@ -2,7 +2,7 @@ var util = require('util')
   , http = require('http')
   , fs = require('fs')
   // Internal Libs
-  , common = require('./common')
+  , common = require('../common')
   // Variables
   , client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28'
   // Utilities
@@ -10,34 +10,29 @@ var util = require('util')
 
 exports.getsound = null;
 
-
 /**
- * Function Re-Work
- * IF song is not present inside REDIS cache, send a reply like res.send(200, 'downloadstarted');
- * Otherwise send something like res.send(200, 'cachehit');
- * So the backend can start polling for infos / use websocket in creative way to get infos about the download taking part.
- *
- * DEBUG
- * curl -v get-music/api/soundcloud?url=URL_HERE
+ * First socket function, this gonna be A*W*E*S*O*M*E !!!
  */
-exports.getsound = function (req, res, next) {
-  // If no param is passed, nothing to get! - TODO: change 403
-  if (!req.param('url')) res.send(403);
-
+exports.getsound = function (url, socket) {
   var scReq = http.request({
     hostname: 'api.soundcloud.com',
-    path: '/resolve?client_id='+client_id+'&url='+encodeURIComponent(req.param('url'))
+    path: '/resolve?client_id='+client_id+'&url='+encodeURIComponent(url)
   }, function (scResponse) {
     var songID
       , bytesGot = 0
-      , throttledConsole = common.throttle( 1000, function (bytes) {
+      , throttledConsole = common.throttle( 1000, function (bytes, totalBytes) {
           log(['bytes passed:', bytes]);
+          socket.write(JSON.stringify({
+            id: songID,
+            size: totalBytes,
+            progress: bytes
+          }));
           bytesGot = 0;
         });
 
     // if the response is a redirect, that's what we want
     if (scResponse.statusCode === 302) {
-      songID = scResponse.headers.location.match(/tracks\/(\d+)/)[1];
+      songID = parseInt(scResponse.headers.location.match(/tracks\/(\d+)/)[1], 10);
       // TODO - Check on REDIS if the file it has been already downloaded.
       // IF NOT, go on.
       // ELSE, send back to res the cached file!
@@ -61,14 +56,22 @@ exports.getsound = function (req, res, next) {
             hostname: dataToParse.http_mp3_128_url.match(/:\/\/(.*soundcloud.com)(.*)/)[1],
             path: dataToParse.http_mp3_128_url.match(/:\/\/(.*soundcloud.com)(.*)/)[2]
           }, function (songDWResponse) {
-            var SongWriter = fs.createWriteStream(songID+'.mp3');
+            // This is the correct moment to fetch the headers, to read the file size!
+            var totalBytes = songDWResponse.headers['content-length'];
+            // Create SongWriter and BUUURN ON DISK!
+            var SongWriter = fs.createWriteStream('assets/soundcloud/'+songID+'.mp3');
             songDWResponse.pipe(SongWriter);
             songDWResponse.on('data', function (buffer) {
               bytesGot += buffer.length;
-              throttledConsole(bytesGot);
+              throttledConsole(bytesGot, totalBytes);
             });
+            // Send the complete response
             songDWResponse.on('end', function() {
-              res.send(200, 'download complete!');
+              socket.write(JSON.stringify({
+                id: songID,
+                size: totalBytes,
+                status: 'complete'
+              }));
             });
           });
           // Close request, don't ever forget.
@@ -80,7 +83,12 @@ exports.getsound = function (req, res, next) {
     } else {
       // Send an error according to RFC if the response is not a redirect
       // something like: 'unexpected response'
-      res.send(403);
+      // res.send(403);
+      // ** Converted reply to Websocket! :-)
+      socket.write(JSON.stringify({
+        url: url,
+        error: 'unexpected response'
+      }));
     }
   });
 

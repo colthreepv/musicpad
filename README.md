@@ -5,9 +5,9 @@ get-music
 Create an useful youtube playlist parser and downloader, able to pack a playlist in a .zip file  
 Should not destroy my little VPS while doing so.  
 
-### Planned && **DONE**
-Support for soundcloud aswell!
-Update: found algorithm for SoundCloud ^_^
+### mockup
+![mockup first release](https://dl.dropboxusercontent.com/s/1ammo7mpqgd5g2g/get-music_get-music.png?token_hash=AAESBY0eWjZRJgXjbWvqVmBWmt3pKRGTG5BwAL9BbMSZOg&dl=1)
+Updated [HTML version here](http://app.mockflow.com/view/a38da72f4b21a524a6ae658990409981)
 
 # Get the project up and running:
 
