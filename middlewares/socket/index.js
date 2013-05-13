@@ -5,7 +5,6 @@ var util = require('util')
   // Utilities
   , log = function (args) { console.log(util.inspect(args, { colors: true })); };
 
-
 module.exports = function (sockServer) {
   sockServer.on('connection', function(conn) {
     // Instantiate ONE connection per each socket.

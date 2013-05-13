@@ -5,6 +5,9 @@ var http = require('http')
   , util = require('util')
   , log = function (args) { console.log(util.inspect(args, { colors: true })); };
 
+// Pollute global with app :)
+global.app = app;
+
 var httpServer = http.createServer(app).listen(app.get('port'), function(){ console.log("Express server listening on port " + app.get('port')); })
   , sockServer = sockjs.createServer({sockjs_url: '//cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js'});
 
