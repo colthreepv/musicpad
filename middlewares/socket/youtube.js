@@ -21,14 +21,19 @@ exports.getvideo = function (url, socket) {
         log(['bytes passed:', bytes]);
         socket.write(JSON.stringify({
           id: videoID,
-          size: null,
+          size: videoSize,
           progress: bytes
         }));
         bytesGot = 0;
       });
 
-  // TODO: Get an idea to fetch the video SIZE
   ytStream = ytdl(url);
+
+  // We can read a lot of infos from here, but we only get the size of the file ;
+  ytStream.on('info', function (info, format) {
+    videoSize = format.size;
+  });
+  // Pipe the ytStream to ffmpeg source
   var ffmpegProc = ffmpeg({ source: ytStream, timeout: 600 })
     .withNoVideo(true)
     .withAudioCodec('copy')
@@ -45,7 +50,7 @@ exports.getvideo = function (url, socket) {
   ytStream.on('end', function() {
     socket.write(JSON.stringify({
       id: videoID,
-      size: null,
+      size: videoSize,
       status: 'complete'
     }));
   });
