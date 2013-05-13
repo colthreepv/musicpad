@@ -1,7 +1,8 @@
+var util = require('util')
   // Internal Libs
-var soundcloud = require('./soundcloud')
-  // debugging
-  , util = require('util')
+  , soundcloud = require('./soundcloud')
+  , youtube = require('./youtube')
+  // Utilities
   , log = function (args) { console.log(util.inspect(args, { colors: true })); };
 
 
@@ -16,6 +17,8 @@ module.exports = function (sockServer) {
       // So we call the uber functionzz
       if (message.soundcloud)
         return soundcloud.getsound(message.soundcloud, conn);
+      if (message.youtube)
+        return youtube.getvideo(message.youtube, conn);
 
       log(['message received ', message]);
     });

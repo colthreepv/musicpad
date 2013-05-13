@@ -44,7 +44,7 @@ function (App, SockJS) {
 
   Websock.SendData = function (args) {
     // I'll try to package a JSON and send it over the socket.
-    var jsonobj = { soundcloud: this.ui.inputfield.val() };
+    var jsonobj = { youtube: this.ui.inputfield.val() };
 
     // Stringify && Send! Then clear the inputField!
     this.socket.send(JSON.stringify(jsonobj));
