@@ -13,13 +13,13 @@ exports.getvideo = null;
  * ytdl library wants an URL formatted like:
  * http://www.youtube.come/watch?v=091jnasdb - KEEP THAT IN MIND!
  */
-exports.getvideo = function (url, socket) {
+exports.getvideo = function (url, pubRedis, socketID) {
   var ytStream = null
     , bytesGot = 0
     , videoID = url.match(/v=(.*)/)[1] // WARNING: this is *very* RAW
     , throttledConsole = common.throttle( 1000, function (bytes) {
         log(['bytes passed:', bytes]);
-        socket.write(JSON.stringify({
+        pubRedis.publish(socketID, JSON.stringify({
           id: videoID,
           size: videoSize,
           progress: bytes
@@ -48,7 +48,7 @@ exports.getvideo = function (url, socket) {
     throttledConsole(bytesGot);
   });
   ytStream.on('end', function() {
-    socket.write(JSON.stringify({
+    pubRedis.publish(socketID, JSON.stringify({
       id: videoID,
       size: videoSize,
       status: 'complete'

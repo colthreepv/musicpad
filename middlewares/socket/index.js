@@ -47,9 +47,9 @@ module.exports = function (sockServer) {
         // If the message has a property called 'soundcloud', this is a soundcloud song!
         // So we call the uber functionzz
         if (message.soundcloud)
-          return soundcloud.getsound(message.soundcloud, conn);
+          return soundcloud.getsound(message.soundcloud, pubRedis, socketID);
         if (message.youtube)
-          return youtube.getvideo(message.youtube, conn);
+          return youtube.getvideo(message.youtube, pubRedis, socketID);
 
         log(['message received ', message, socketID]);
         // Publishes the message to the socket channel

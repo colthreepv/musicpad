@@ -13,7 +13,7 @@ exports.getsound = null;
 /**
  * First socket function, this gonna be A*W*E*S*O*M*E !!!
  */
-exports.getsound = function (url, socket) {
+exports.getsound = function (url, pubRedis, socketID) {
   var scReq = http.request({
     hostname: 'api.soundcloud.com',
     path: '/resolve?client_id='+client_id+'&url='+encodeURIComponent(url)
@@ -22,7 +22,7 @@ exports.getsound = function (url, socket) {
       , bytesGot = 0
       , throttledConsole = common.throttle( 1000, function (bytes, totalBytes) {
           log(['bytes passed:', bytes]);
-          socket.write(JSON.stringify({
+          pubRedis.publish(socketID, JSON.stringify({
             id: songID,
             size: totalBytes,
             progress: bytes
@@ -67,7 +67,7 @@ exports.getsound = function (url, socket) {
             });
             // Send the complete response
             songDWResponse.on('end', function() {
-              socket.write(JSON.stringify({
+              pubRedis.publish(socketID, JSON.stringify({
                 id: songID,
                 size: totalBytes,
                 status: 'complete'
@@ -85,7 +85,7 @@ exports.getsound = function (url, socket) {
       // something like: 'unexpected response'
       // res.send(403);
       // ** Converted reply to Websocket! :-)
-      socket.write(JSON.stringify({
+      pubRedis.publish(socketID, JSON.stringify({
         url: url,
         error: 'unexpected response'
       }));
