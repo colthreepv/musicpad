@@ -12,7 +12,8 @@ function (App, SockJS) {
     },
     template: 'websock',
     triggers: {
-      'blur input[name="socketData"]': 'sendData',
+      'blur input[name="socketData"]': 'socketSend',
+      'keyup input[name="socketData"]': 'socketDataChange',
       'blur input[name="socketID"]': 'changeSocket'
     },
     ui: {
@@ -55,13 +56,27 @@ function (App, SockJS) {
     };
   };
 
-  Websock.SendData = function (args) {
-    // I'll try to package a JSON and send it over the socket.
-    var jsonobj = { text: this.ui.transmitField.val() };
+  Websock.DataChange = function (args) {
+    var requestToSocket;
+    // Clear statuses if the field is empty
+    if (this.ui.transmitField.val() === '') return this.ui.transmitField.parents('.control-group').removeClass('info').removeClass('error');
 
-    // Stringify && Send! Then clear the transmitField!
-    this.socket.send(JSON.stringify(jsonobj));
-    this.ui.transmitField.val('');
+    // Check for valid data entered
+    if ( requestToSocket = Websock.RequestPrepare(this.ui.transmitField.val()) ) {
+      this.ui.transmitField.parents('.control-group').removeClass('error').addClass('info');
+      this.nextRequest = requestToSocket;
+    } else {
+      this.ui.transmitField.parents('.control-group').removeClass('info').addClass('error');
+    }
+
+  };
+
+  Websock.sendData = function (args) {
+    if (this.nextRequest) {
+      this.socket.send(JSON.stringify(this.nextRequest));
+      this.nextRequest = null;
+      this.ui.transmitField.val('');
+    }
   };
 
   Websock.ChangeSocket = function (args) {
@@ -74,10 +89,30 @@ function (App, SockJS) {
     this.ui.sockethook.html('');
   };
 
+  Websock.RequestPrepare = function (url) {
+    // Soundcloud having 2 capture groups - any useful?
+    // Youtube regex supporting classic yt video and youtu.be format
+    //   must be careful with that, sometimes i recall youtube videos getting called with a LOT of arguments
+    //   and i don't think that regex is robust enough to filter em all.
+    var scRegex = /https?\:\/\/.*?soundcloud.com\/(.*?)\/(.*)/
+      , ytRegex = /https?\:\/\/.*?(?:(?:youtube.com\/watch.*?v\=(?:.*?)(?:\s|$))|(?:youtu.be\/(?:.*)))/
+      , regexResult;
+
+    // returns the purified version when it matches
+    if ( regexResult = url.match(scRegex))
+      return { soundcloud: regexResult[0] };
+
+    if ( regexResult = url.match(ytRegex))
+      return { youtube: regexResult[0] };
+
+    return null;
+  };
+
   exports.Main = function (params) {
     var websock = new Websock.View();
     websock.on('render', Websock.BindEvents);
-    websock.on('sendData', Websock.SendData);
+    websock.on('socketSend', Websock.sendData);
+    websock.on('socketDataChange', Websock.DataChange);
     websock.on('changeSocket', Websock.ChangeSocket);
 
     App.content.show(websock);
