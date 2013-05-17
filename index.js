@@ -1,22 +1,15 @@
 var http = require('http')
   , app = require('./app')
-  , sockjs = require('sockjs')
   // debugging
   , util = require('util')
   , log = function (args) { console.log(util.inspect(args, { colors: true })); };
 
-// Pollute global with app :)
-global.app = app;
-
 var httpServer = http.createServer(app).listen(app.get('port'), function(){ console.log("Express server listening on port " + app.get('port')); })
-  , sockServer = sockjs.createServer({sockjs_url: '//cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js'});
-
-// Bind SockJS to Express HTTP server
-sockServer.installHandlers(httpServer, {prefix:'/socket'});
-
-// Calling SockJS manager with the instance as parameter
-require('./middlewares/socket/')(sockServer);
+  , io = require('socket.io').listen(httpServer);
 
 // Setting those variables to be used elsewhere.
-app.set('sockjs', sockServer);
+app.set('io', io);
 app.set('http', httpServer);
+
+// Calling SockJS manager with the instance as parameter
+require('./middlewares/socket/')(io);

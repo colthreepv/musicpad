@@ -11,7 +11,8 @@
     "connect-redis": "*",
     "ytdl": "*",
     "fluent-ffmpeg": "*",
-    "sockjs": "latest"
+    "socket.io": "latest",
+    "async": "latest"
   },
   "devDependencies": {
     "vows": "*"
