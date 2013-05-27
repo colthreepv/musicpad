@@ -1,6 +1,6 @@
 {
-  "name": "get-music",
-  "version": "0.0.3",
+  "name": "musicpad",
+  "version": "0.0.4",
   "main": "main.js",
   "ignore": [
       "**/.*"

@@ -1,4 +1,4 @@
-get-music
+musicpad
 ===================
 
 # Project aims
@@ -14,7 +14,7 @@ Updated [HTML version here](http://app.mockflow.com/view/a38da72f4b21a524a6ae658
 ```bash
 $ sudo npm install -g bower
 $ pwd
-/somepath/get-music
+/somepath/musicpad
 # Install server-side modules
 $ npm install
 # Install client-side modules
@@ -34,7 +34,7 @@ To keep an eye when writing .less files i'm using:
 ```bash
 $ sudo npm install -g less-monitor
 $ pwd
-/somepath/get-music
+/somepath/musicpad
 $ cd public/css/less
 $ node /usr/bin/less-monitor -f -o ../
 ```
@@ -50,8 +50,8 @@ I'm using an NGINX script like:
 ```nginx
 server {
   listen 80;
-    server_name get-music;
-    root /your/folder/project/get-music/public/;
+    server_name musicpad;
+    root /your/folder/project/musicpad/public/;
     index index.html index.htm;
 
     location ~(/api/|/socket/).* {
@@ -71,8 +71,8 @@ server {
         expires epoch;
     }
 
-    access_log      /var/log/nginx/get-music_access.log combined;
-    error_log       /var/log/nginx/get-music_error.log error;
+    access_log      /var/log/nginx/musicpad_access.log combined;
+    error_log       /var/log/nginx/musicpad_error.log error;
 
     ## no error pages, for now.
     # error_page 404          /404.html;
@@ -83,11 +83,11 @@ server {
 And his best friend ```/etc/hosts``` with the following line:
 ```bash
 #Awesum get-magic project
-127.0.0.1	get-music.localhost
+127.0.0.1	musicpad.localhost
 ```
-At this point, start a nodejs instance using ```npm start``` inside the [@get-music][this] folder
+At this point, start a nodejs instance using ```npm start``` inside the [@musicpad][this] folder
 
 ##Libraries Used & Credits:
 [@ptnplanet](https://github.com/ptnplanet)/[Backbone.Marionette.Boilerplate](https://github.com/ptnplanet/Backbone.Marionette.Boilerplate)
 
-[this]: https://github.com/mrgamer/get-music
+[this]: https://github.com/mrgamer/musicpad
