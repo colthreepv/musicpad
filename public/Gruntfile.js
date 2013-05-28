@@ -46,7 +46,8 @@ module.exports = function ( grunt ) {
       banner: 
         '/**\n' +
         ' * <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        ' * <%= pkg.homepage %>\n'
+        ' * <%= pkg.homepage %>\n' +
+        ' **/'
     },
 
     /**

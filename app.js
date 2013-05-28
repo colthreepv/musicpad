@@ -25,7 +25,7 @@ app.configure(function() {
   app.use(express.session({ store: new RedisStore() }));
   app.use(app.router);
   // app.use(require('less-middleware')({ src: __dirname + '/public' }));
-  // app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname, 'public/dist/')));
   app.set('redis', redis);
 });
 

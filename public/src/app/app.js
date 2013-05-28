@@ -1,21 +1,20 @@
-angular.module( 'ngBoilerplate', [
+angular.module( 'musicpad', [
   'app-templates',
   'component-templates',
-  'ngBoilerplate.home',
-  'ngBoilerplate.about',
+  'musicpad.home',
+  'musicpad.about',
   'ui.route'
 ])
 
 .config( function myAppConfig ( $routeProvider ) {
-  $routeProvider.otherwise({ redirectTo: '/home' });
+  // $routeProvider
+  //   .when({ path: '/', redirectTo: '/about' })
+  //   .otherwise({ redirectTo: '/home' });
 })
 
 .run( function run ( titleService ) {
-  titleService.setSuffix( ' | ngBoilerplate' );
+  titleService.setSuffix( ' | musicpad' );
 })
 
 .controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
-})
-
-;
-
+});

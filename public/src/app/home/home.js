@@ -12,9 +12,8 @@
  * The dependencies block here is also where component dependencies should be
  * specified, as shown below.
  */
-angular.module( 'ngBoilerplate.home', [
-  'titleService',
-  'plusOne'
+angular.module( 'musicpad.home', [
+  'titleService'
 ])
 
 /**
