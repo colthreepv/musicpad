@@ -7,7 +7,7 @@ LPURPLE="\033[1;35m"
 LGREY="\033[0;37m"
 NC="\033[0;0m"
 
-all: checknpm gruntjs checkdeps bower placeholders
+all: checknpm gruntjs checkdeps bower placeholders fixless
 	grunt build
 
 checknpm:
@@ -54,6 +54,12 @@ placeholders:
 	@echo $(LGREEN)----------------------------------------------------$(NC)
 
 	cd vendor/angular-placeholders; rm -rf node_modules
+
+fixless:
+	@echo $(YELLOW)[Fixing]$(NC) - Less version ~1.3.3
+	mv node_modules/grunt-recess/node_modules/recess/package.json node_modules/grunt-recess/node_modules/recess/package.json.bad
+	sed 's/"less": ">= 1.3.0"/"less": "~ 1.3.0"/g' node_modules/grunt-recess/node_modules/recess/package.json.bad > node_modules/grunt-recess/node_modules/recess/package.json
+	cd node_modules/grunt-recess/node_modules/recess/; npm install
 
 clean:
 	grunt clean
