@@ -1,9 +1,0 @@
-{
-  "name": "musicpad",
-  "version": "0.0.4",
-  "devDependencies": {
-    "bootstrap": "latest",
-    "angular-bootstrap": "latest",
-    "angular-ui-utils": "latest"
-  }
-}

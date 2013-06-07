@@ -1,0 +1,70 @@
+// 
+// Media queries 2.0 ^_^
+// 
+@largedisplay: ~"only screen and (min-width: 1200px)";
+@default: ~"only screen and (min-width: 980px) and (max-width: 1199px)";
+@tablets: ~"only screen and (min-width: 768px) and (max-width: 979px)";
+@phones: ~"only screen and (min-width: 480px) and (max-width: 767px)";
+@smallphones: ~"only screen and (max-width: 479px)";
+
+// 
+// Homepage & Common Elements
+// 
+// 
+
+.visible-smallphones {
+  display: none !important;
+  @media @smallphones { display: inline-block !important; }
+}
+
+.hidden-smallphones {
+  @media @smallphones { display: none !important; }
+}
+
+// 
+// Awesome Justify Workaround!!!
+// http://stackoverflow.com/questions/11589590/text-align-justify-inline-block-elements-properly
+// 
+// Another
+// http://code.jelmerdemaat.nl/2012/perfectly-justified-css-grid-technique-using-inline-block/
+// 
+// http://jsfiddle.net/skip405/NfeVh/4/
+// This is a solution to justify DIVs! :D
+
+.body-sizes() {
+  margin: 0px auto;
+  @media @smallphones { width: 320px; }
+  @media @phones { width: 480px; }
+  @media @tablets { width: 768px; }
+  @media @default { width: 980px; }
+  @media @largedisplay { width: 980px; }
+}
+
+body {
+  .body-sizes();
+  font-weight: 400;
+  font-size: 13px;
+  line-height: normal;
+  color: #5b5b5b;
+  text-align: center;
+  background-color: #f3f3f3;
+
+  // Not useful anymore, bootstrap is MODULAR NOW!
+  // @media @phones, @smallphones { padding-left: 0px; padding-right: 0px; }
+}
+
+// 
+// REFERENCE OF @MEDIA SIZES!
+// Copy/Paste this!
+// 
+
+// // Small Phones
+// @media (max-width: 479px) {}
+// // Phones
+// @media (min-width: 480px) and (max-width: 767px) {}
+// // Portrait tablets
+// @media (min-width: 768px) and (max-width: 979px) {}
+// // Default
+// @media (min-width: 980px) {}
+// // Large Display
+// @media (min-width: 1200px) {}
