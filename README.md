@@ -49,11 +49,14 @@ Deploy
 I'm using an NGINX script like:
 ```nginx
 server {
-  listen 80;
+    listen 80;
     server_name musicpad;
-    root /your/folder/project/musicpad/public/;
-    index index.html index.htm;
+    root /PROJECTROOT/client/dist;
+    gzip on;
+    gzip_types text/plain application/xml application/x-javascript text/css;
+    gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
+    # Reverse Proxy to node instance
     location ~(/api/|/socket/).* {
         proxy_pass http://localhost:3000;
         proxy_http_version 1.1;
@@ -61,33 +64,39 @@ server {
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
     }
-    location ~ ^/(websock|testurl)$ {
+
+    location ~ ^/(websock|testurl)\/?$ {
         rewrite .* /index.html last;
     }
     location ~* ^\/vendor\/.* {
+        root /PROJECTROOT/client/vendor;
         expires 60d;
     }
     location ~* \.(js|css|html)$ {
         expires epoch;
     }
 
-    access_log      /var/log/nginx/musicpad_access.log combined;
-    error_log       /var/log/nginx/musicpad_error.log error;
-
-    ## no error pages, for now.
-    # error_page 404          /404.html;
-    # error_page 502          /502.html;
+    access_log /var/log/nginx/musicpad_access.log combined;
+    error_log  /var/log/nginx/musicpad_error.log error;
 }
-
 ```
+
+Remember to fix ```/etc/nginx/mime.types``` to correctly handle ```.woff``` ([FontAwesome][fontawesome]) files.
+```
+application/font-woff woff;
+```
+
 And his best friend ```/etc/hosts``` with the following line:
 ```bash
-#Awesum get-magic project
+#Awesum musicpad project
 127.0.0.1	musicpad.localhost
 ```
+**DONE!**
+
 At this point, start a nodejs instance using ```npm start``` inside the [@musicpad][this] folder
 
 ##Libraries Used & Credits:
 [@ptnplanet](https://github.com/ptnplanet)/[Backbone.Marionette.Boilerplate](https://github.com/ptnplanet/Backbone.Marionette.Boilerplate)
 
-[this]: https://github.com/mrgamer/musicpad
+  [this]: https://github.com/mrgamer/musicpad
+  [fontawesome]: http://fortawesome.github.io/Font-Awesome/

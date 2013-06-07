@@ -1,11 +1,4 @@
-dist/
-phreeze/
-sociogram-master/
-extendedAT*
 node_modules/
 testvids/
-assets/
-public/components
-public/css/*.css
 *.mp3
 npm-debug.log
