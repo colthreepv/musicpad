@@ -1,19 +1,23 @@
 angular.module( 'musicpad', [
+  // Templates compiled Statically!
   'app-templates',
   'component-templates',
+  // Some pages are separated modules
   'musicpad.home',
   'musicpad.about',
+  // Main router inclusion
   'ui.route',
+  // Very useful HTTP Mock for development ;)
   'musicpad.mock'
 ])
 
 .config( function myAppConfig ( $routeProvider ) {
-  $routeProvider.otherwise({ redirectTo: '/home' });
+  $routeProvider.otherwise({ redirectTo: '/' });
 })
 
-.run( function run ( titleService ) {
+.run( ['titleService', 'socketService', '$location', function ( titleService, socketService, $location ) {
   titleService.setSuffix( ' | MusicPad' );
-})
+}])
 
 .controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
   // TODO: Main Controller here.

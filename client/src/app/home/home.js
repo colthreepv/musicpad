@@ -22,7 +22,7 @@ angular.module( 'musicpad.home', [
  * this way makes each module more "self-contained".
  */
 .config(function config( $routeProvider ) {
-  $routeProvider.when( '/home', {
+  $routeProvider.when( '/', {
     controller: 'HomeCtrl',
     templateUrl: 'home/home.tpl.html'
   });

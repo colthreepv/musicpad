@@ -84,13 +84,15 @@ module.exports = function ( grunt ) {
         'vendor/angular-mocks/angular-mocks.js',
         'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
         'vendor/angular-placeholders/dist/placeholders-0.0.1-SNAPSHOT.js',
-        'vendor/angular-ui-utils/modules/route/route.js'
+        'vendor/angular-ui-utils/modules/route/route.js',
+        'vendor/socket.io-client/dist/socket.io.js'
       ],
       minjs: [
         'vendor/angular-unstable/angular.min.js',
         'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'vendor/angular-placeholders/dist/placeholders-0.0.1-SNAPSHOT.min.js',
-        'vendor/angular-ui-utils/modules/route/route.js'
+        'vendor/angular-ui-utils/modules/route/route.js',
+        'vendor/socket.io-client/dist/socket.io.min.js'
       ]
     },
 
