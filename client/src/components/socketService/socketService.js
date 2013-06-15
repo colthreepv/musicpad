@@ -4,6 +4,8 @@ angular.module('musicpad')
 
   return {
     getUniqueID: function () {},
-    openSocket: function (id) {}
+    openSocket: function (id) {
+      debugger;
+    }
   };
 }]);
