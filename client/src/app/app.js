@@ -7,9 +7,9 @@ angular.module( 'musicpad', [
   'musicpad.about',
   'musicpad.pad',
   // Main router inclusion
-  'ui.route',
+  'ui.route'
   // Very useful HTTP Mock for development ;)
-  'musicpad.mock'
+  // 'musicpad.mock'
 ])
 
 .config( [ '$routeProvider', function myAppConfig ( $routeProvider ) {
