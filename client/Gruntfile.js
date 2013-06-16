@@ -194,7 +194,7 @@ module.exports = function ( grunt ) {
         dest: '<%= distdir %>/assets/<%= pkg.name %>.css',
         options: {
           compile: true,
-          compress: true,
+          compress: false,
           noUnderscores: false,
           noIDs: false,
           zeroUnits: false
