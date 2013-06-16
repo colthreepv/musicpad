@@ -16,10 +16,20 @@ angular.module( 'musicpad', [
   $routeProvider.otherwise({ redirectTo: '/' });
 }])
 
-.run( ['titleService', 'socketService', '$location', function ( titleService, socketService, $location ) {
+.run( ['titleService', 'socketService', '$rootScope', '$location', function ( titleService, socketService, $rootScope, $location ) {
   titleService.setSuffix( ' | MusicPad' );
+
+  // Manages all the route Erorrs, it could have been much more detailed
+  $rootScope.$on('$routeChangeError', function (event, current, previous, rejection) {
+    /**
+     * This is a very clever way to implement failure redirection.
+     * You can use the value of redirectMap, based on the value of the rejection
+     * So you can setup DIFFERENT redirections based on different promise errors.
+     */
+    $location.path(current.$$route.redirectMap[rejection]).replace();
+  });
 }])
 
-.controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
+.controller( 'AppCtrl', ['$scope', function AppCtrl ( $scope ) {
   // TODO: Main Controller here.
-});
+}]);

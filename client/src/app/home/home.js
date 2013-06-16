@@ -34,4 +34,3 @@ angular.module( 'musicpad.home', [
 .controller( 'HomeCtrl', function HomeController( $scope, titleService ) {
   titleService.setTitle( 'Home' );
 });
-

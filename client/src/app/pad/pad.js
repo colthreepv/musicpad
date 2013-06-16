@@ -11,7 +11,29 @@ angular.module( 'musicpad.pad', [
 .config([ '$routeProvider', function config( $routeProvider ) {
   $routeProvider.when( '/:uniqueid', {
     controller: 'PadController',
-    templateUrl: 'pad/pad.tpl.html'
+    templateUrl: 'pad/pad.tpl.html',
+    resolve: { 'checkID': ['$q', '$route', '$timeout', function ($q, $route, $timeout) {
+      var paramCheck = $q.defer();
+      /**
+       * Regex or complex validation on uniqueID parameter, it could even be async!
+       */
+      $timeout(function(){
+        if ( $route.current.params.uniqueid.length < 10 ) {
+          paramCheck.reject('uniqueID');
+        } else {
+          paramCheck.resolve();
+        }
+      },0);
+
+      return paramCheck.promise;
+    }] },
+    // Not useful now, but this is good stuff!
+    // redirectTo: function (params, current, search) {
+    //   if ( params.uniqueid.length < 10 ) {
+    //     return '/';
+    //   }
+    // },
+    redirectMap: { 'uniqueID': '/' }
   });
 }])
 
@@ -22,7 +44,8 @@ angular.module( 'musicpad.pad', [
   '$scope',
   '$routeParams',
   'titleService',
-  function PadController( $scope, $routeParams, $location, titleService ) {
-    //TODO: redirect if parameter:uniqueid don't respect a regex.
+  'checkID',
+  function PadController( $scope, $routeParams, titleService, checkID ) {
     titleService.setTitle( 'Pad' );
+    console.log(checkID);
 }]);
