@@ -9,27 +9,27 @@ angular.module( 'musicpad.pad', [
  * Setup route for this module
  */
 .config([ '$routeProvider', function config( $routeProvider ) {
-  $routeProvider.when( '/:uniqueid', {
+  $routeProvider.when( '/:uniqueID', {
     controller: 'PadController',
     templateUrl: 'pad/pad.tpl.html',
-    resolve: { 'checkID': ['$q', '$route', '$timeout', function ($q, $route, $timeout) {
+    resolve: { 'checkID': ['$q', '$route', function ($q, $route) {
       var paramCheck = $q.defer();
       /**
        * Regex or complex validation on uniqueID parameter, it could even be async!
        */
-      $timeout(function(){
-        if ( $route.current.params.uniqueid.length < 10 ) {
-          paramCheck.reject('uniqueID');
-        } else {
-          paramCheck.resolve();
-        }
-      },0);
+      // $timeout(function(){ Not needed for now!
+      if ( $route.current.params.uniqueID.length < 10 ) {
+        paramCheck.reject('uniqueID');
+      } else {
+        paramCheck.resolve();
+      }
+      // },0);
 
       return paramCheck.promise;
     }] },
     // Not useful now, but this is good stuff!
     // redirectTo: function (params, current, search) {
-    //   if ( params.uniqueid.length < 10 ) {
+    //   if ( params.uniqueID.length < 10 ) {
     //     return '/';
     //   }
     // },
@@ -42,10 +42,13 @@ angular.module( 'musicpad.pad', [
  */
 .controller( 'PadController', [
   '$scope',
+  '$rootScope',
   '$routeParams',
   'titleService',
-  'checkID',
-  function PadController( $scope, $routeParams, titleService, checkID ) {
-    titleService.setTitle( 'Pad' );
-    console.log(checkID);
+  'socketService',
+  function PadController( $scope, $rootScope, $routeParams, titleService, socketService ) {
+    titleService.setTitle('Pad');
+    $scope.socket = socketService.openSocket($routeParams.uniqueID);
+
+    $scope.uniqueID = $routeParams.uniqueID;
 }]);

@@ -31,6 +31,12 @@ angular.module( 'musicpad.home', [
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'HomeCtrl', function HomeController( $scope, titleService ) {
+.controller( 'HomeCtrl', ['titleService', 'socketService', '$scope', '$location', function HomeController( titleService, socketService, $scope, $location ) {
   titleService.setTitle( 'Home' );
-});
+  $scope.getID = function () {
+    var getUnique = socketService.getUniqueID();
+    getUnique.success(function (id) {
+      $location.path('/'+id);
+    });
+  };
+}]);
