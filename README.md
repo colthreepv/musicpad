@@ -57,7 +57,7 @@ server {
     gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
     # Reverse Proxy to node instance
-    location ~(/api/|/socket/).* {
+    location ~(/api/|/socket.io/).* {
         proxy_pass http://localhost:3000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
