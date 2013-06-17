@@ -10,11 +10,18 @@ angular.module('musicpad')
      * Returns the socket interface to the requested MusicPad ID
      */
     openSocket: function (uniqueID) {
-      var appSocket = io.connect('http://musicpad.vubuntu/'+uniqueID);
-      appSocket.on('connect', function () {
+      var appSocket;
+      appSocket = $rootScope.pad = io.connect('/'+uniqueID);
+      // var appSocket = io.connect('/'+uniqueID);
+      appSocket.socket.on('connect', function () {
         console.log('i did connect.');
+        $rootScope.$digest();
       });
-      return appSocket;
+      appSocket.socket.on('disconnect', function() {
+        console.log('ouch, something happnd!');
+        $rootScope.$digest();
+      });
+      // return appSocket;
     }
   };
 }]);
