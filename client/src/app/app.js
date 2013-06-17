@@ -1,7 +1,7 @@
 angular.module( 'musicpad', [
   // Templates compiled Statically!
-  'app-templates',
-  'component-templates',
+  'templates-app',
+  'templates-component',
   // Some pages are separated modules
   'musicpad.home',
   'musicpad.about',

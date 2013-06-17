@@ -13,13 +13,7 @@ module.exports = function ( grunt ) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ngmin');
-
-  /**
-   * The `build` directory contains our custom Grunt tasks for using karma
-   * and compiling our templates into the cache. If we just tell Grunt about the
-   * directory, it will load all the requisite JavaSript files for us.
-   */
-  grunt.loadTasks('grunt-tasks');
+  grunt.loadNpmTasks('grunt-html2js');
 
   /**
    * This is the configuration object Grunt uses to give each plugin its 
@@ -247,18 +241,22 @@ module.exports = function ( grunt ) {
        * These are the templates from `src/app`.
        */
       app: {
+        options: {
+          base: 'src/app'
+        },
         src: [ '<%= src.atpl %>' ],
-        base: 'src/app',
-        dest: 'dist/tmp'
+        dest: '<%= distdir %>/tmp/templates-app.js'
       },
 
       /**
        * These are the templates from `src/components`.
        */
       component: {
+        options: {
+          base: 'src/components'
+        },
         src: [ '<%= src.ctpl %>' ],
-        base: 'src/components',
-        dest: 'dist/tmp'
+        dest: '<%= distdir %>/tmp/templates-components.js'
       }
     },
 
@@ -270,6 +268,7 @@ module.exports = function ( grunt ) {
         configFile: 'karma/karma-unit.js'
       },
       unit: {
+        runnerPort: 9101,
         background: true
       },
       continuous: {
@@ -403,7 +402,7 @@ module.exports = function ( grunt ) {
    * based on dynamic names calculated in this Gruntfile. This task compiles it.
    */
   grunt.registerTask( 'index', 'Process index.html template', function () {
-    grunt.file.copy('src/index.html', 'dist/index.html', { process: grunt.template.process });
+    grunt.file.copy('src/index.html', grunt.config('distdir') + '/index.html', { process: grunt.template.process });
   });
 
 };

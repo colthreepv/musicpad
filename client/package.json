@@ -19,6 +19,7 @@
     "grunt-contrib-watch": "latest",
     "grunt-contrib-uglify": "latest",
     "grunt-karma": "latest",
-    "grunt-ngmin": "latest"
+    "grunt-ngmin": "latest",
+    "grunt-html2js": "latest"
   }
 }
