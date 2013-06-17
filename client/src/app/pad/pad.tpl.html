@@ -3,7 +3,8 @@
     <a class="brand" href="#">MusicPad:</a>
     <ul class="nav">
       <li class="active"><a href="">{{uniqueID}}</a></li>
-      <li>{{status}}</li>
+      <li ng-show="status()"><a>Connected <i class="icon-ok-sign"></i></a></li>
+      <li ng-hide="status()"><a>Disconnected <i class="icon-exclamation"></i></a></li>
     </ul>
   </div>
 </div>
