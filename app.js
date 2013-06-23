@@ -4,14 +4,16 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
+  , util = require('util')
   // External Libraries
   , RedisStore = require('connect-redis')(express)
   , redis = require('redis').createClient();
 
 var app = express();
 
-// Pollute global with app :)
+// Pollute global to let me survive! :)
 global.app = app;
+global.log = function (args) { console.log(util.inspect(args, { colors: true })); };
 
 app.configure(function() {
   app.set('port', process.env.PORT || 3000);
