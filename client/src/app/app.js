@@ -4,7 +4,6 @@ angular.module( 'musicpad', [
   'templates-component',
   // Some pages are separated modules
   'musicpad.home',
-  'musicpad.about',
   'musicpad.pad',
   // Main router inclusion
   'ui.route'
