@@ -1,9 +1,7 @@
 /**
  * Module that actually manages the musicpad
  */
-angular.module( 'musicpad.pad', [
-  'titleService'
-])
+angular.module( 'musicpad.pad', [])
 
 /**
  * Setup route for this module
@@ -37,6 +35,41 @@ angular.module( 'musicpad.pad', [
   });
 }])
 
+.directive('searchValidation', function() {
+  return {
+    require: 'ngModel',
+    link: function (scope, elm, attrs, ctrl) {
+      var scRegex = /(?:https?\:\/\/)?.*?soundcloud.com\/(.{3,}?)\/(.{3,})/
+        , ytRegex = /(?:https?\:\/\/).*?(?:(?:youtube.com\/watch.*?v\=(?:.*?)(?:\s|$))|(?:youtu.be\/(?:.*)))/
+        , elmButton = angular.element(elm[0].parentNode.querySelector('button'));
+
+      ctrl.$parsers.unshift(function (value) {
+        // Checks if the url provided is a sane youtube/soundcloud url
+        if (scRegex.test(value)) {
+          ctrl.$setValidity(attrs.name, true); // useless ? :(
+          scope.searchBoxType = 'sc';
+          elmButton.addClass('btn-success');
+          return value;
+        } else if (ytRegex.test(value)) {
+          ctrl.$setValidity(attrs.name, true); // useless ? :(
+          scope.searchBoxType = 'yt';
+          elmButton.addClass('btn-success');
+          return value;
+        } else {
+          ctrl.$setValidity(attrs.name, false); // useless ? :(
+          scope.searchBoxType = null;
+          elmButton.removeClass('btn-success');
+        }
+      });
+
+      // Bind click on button, to clear btn-success class
+      elmButton.bind('click', function (){
+        elmButton.removeClass('btn-success');
+      });
+    }
+  };
+})
+
 /**
  * And of course we define a controller for our route.
  */
@@ -53,6 +86,14 @@ angular.module( 'musicpad.pad', [
     $scope.pad = $rootScope.pad;
     $scope.status = function() { return $scope.pad.socket.connected; };
 
+    $scope.addSong = function() {
+      console.log($scope.searchBox);
+      socketService.request($scope.searchBox, $scope.searchBoxType);
+
+      // request sent! GOOOO MUSICPAD!! we can clear the values for our next request :-)
+      $scope.searchBox = null;
+      $scope.searchBoxType = null;
+    };
 
 
     $scope.uniqueID = $routeParams.uniqueID;

@@ -10,6 +10,18 @@
 </div>
 <div class="musicpad-container">
   <div class="song-column">
+    <div class="search-box">
+      <form name="searchForm" ng-submit="addSong()">
+        <div class="input-append">
+          <input type="text" name="addsong" ng-model="searchBox" placeholder="Add a youtube / soundcloud URL" search-validation autofocus>
+          <button class="btn" type="submit" ng-disable="searchForm.$invalid">
+            <i class="icon-question-sign" ng-show="!searchBoxType"></i>
+            <i class="icon-plus" ng-show="searchBoxType == 'sc'"></i>
+            <i class="icon-plus" ng-show="searchBoxType == 'yt'"></i>
+          </button>
+        </div>
+      </form>
+    </div>
     <div class="song-container">
       <span class="done"></span>
       <div class="song-element">

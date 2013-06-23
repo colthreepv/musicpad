@@ -20,6 +20,30 @@
     display: inline-block;
     width: 340px;
 
+    .search-box {
+      width: 320px;
+      .box-shadow(0 1px 2px #ccc);
+
+      form {
+        margin: 0; // i dislike Boostrap margins
+        .input-append {
+          margin: 0; // i dislike Boostrap margins
+        }
+        input {
+          width: 269px;
+        }
+        // Add transition to da button.
+        button {
+          .transition(1s linear all);
+
+          i {
+            font-size: 18px;
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+
     .song-container {
       width: 320px;
       height: 48px;
@@ -29,8 +53,8 @@
       position: relative; // Need to use this to position .song-element on top of this.
 
       .box-shadow(1px 1px 2px #ccc);
-      // Status colors
 
+      // Status colors
       &>span {
         &.done { background-color: cyan; }
         &.error { background-color: red; }
