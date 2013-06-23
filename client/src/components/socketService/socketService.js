@@ -22,6 +22,10 @@ angular.module('musicpad')
         $rootScope.$digest();
       });
       // return appSocket;
+    },
+    request: function (url, type) {
+      var appSocket = $rootScope.pad;
+      appSocket.emit('request', { url: url, type: type });
     }
   };
 }]);
