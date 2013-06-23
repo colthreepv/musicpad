@@ -9,3 +9,88 @@
     }
   }
 }
+
+.musicpad-container {
+  // direct children of musicpad-container should be attached to Top of his container!
+  & > div {
+    vertical-align: top;
+  }
+  // Column of songs, it should stay on the left side of the page
+  .song-column {
+    display: inline-block;
+    width: 340px;
+
+    .song-container {
+      width: 320px;
+      height: 48px;
+      margin-top: 4px;
+      border: 1px solid #CCCCCC;
+
+      position: relative; // Need to use this to position .song-element on top of this.
+
+      .box-shadow(1px 1px 2px #ccc);
+      // Status colors
+
+      &>span {
+        &.done { background-color: cyan; }
+        &.error { background-color: red; }
+        height: 100%;
+        display: block;
+      }
+
+      // The element with details
+      .song-element {
+        position: absolute; // this element is overlapped to .song-container > span
+        bottom: 0;
+        right: 0;
+        width: 314px;
+        height: 42px;
+
+        background-color: white;
+        border-width: 1px 0 0 1px;
+        border-style: solid;
+        border-color: #CCCCCC;
+
+        p {
+          margin: 4px 0 4px 4px;
+          width: 285px;
+          height: 34px; // required to make it overflow correctly
+          font-size: 14px;
+          line-height: 16px; // line-height being bigger than font-size gives spacing between text lines
+
+          display: inline-block;
+          overflow: hidden;
+        }
+
+        // Youtube icon
+        &>i {
+          position: absolute;
+          top: 20px;
+          right: 1px;
+
+          &.icon-youtube-play {
+            color: #DD0000;
+            font-size: 23px;
+          }
+        }
+
+        // Soundcloud icon
+        .icon-stack {
+          position: absolute;
+          top: 16px;
+          right: -1px;
+
+          // Soundcloud vector :-)
+          .icon-sign-blank { color: #ff5000; }
+          .icon-cloud { color: white; }
+        }
+      }
+    }
+  }
+
+  // For now this fills the rest of the document, it's called welcome.. for now! TODO
+  .welcome-column {
+    display: inline-block;
+    width: 500px;
+  }
+}
