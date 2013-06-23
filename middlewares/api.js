@@ -1,14 +1,12 @@
 // Function wrapping is useless in node.js
 // http://www.nearinfinity.com/blogs/jeff_kunkle/2012/06/13/secret-sauce-of-nodejs-modules.html
 // NO MORE -> (function () {})();
-var util = require('util')
-  , http = require('http')
+var http = require('http')
   // Internal Libraries
   , common = require('./common')
   // External Libraries
   , ytdl = require('ytdl')
-  , ffmpeg = require('fluent-ffmpeg')
-  , log = function (args) { console.log(util.inspect(args, { colors: true })); };
+  , ffmpeg = require('fluent-ffmpeg');
 
 exports.statusGet = null;
 exports.login = null;

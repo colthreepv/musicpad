@@ -1,12 +1,9 @@
-var util = require('util')
-  , http = require('http')
+var http = require('http')
   , fs = require('fs')
   // Internal Libs
   , common = require('../common')
   // Variables
-  , client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28'
-  // Utilities
-  , log = function (args) { console.log(util.inspect(args, { colors: true })); };
+  , client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28';
 
 exports.getsound = null;
 

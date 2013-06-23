@@ -1,11 +1,8 @@
-var util = require('util')
-  // Internal Libs
-  , crypto = require('crypto')
+var crypto = require('crypto')
   // External Libs
   , async = require('async')
   // Useful things
-  , redis = global.app.get('redis')
-  , log = function (args) { console.log(util.inspect(args, { colors: true, depth: 1 })); };
+  , redis = global.app.get('redis');
 
 exports.get = function (req, res, next) {
   /**
