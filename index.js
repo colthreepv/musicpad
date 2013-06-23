@@ -1,8 +1,5 @@
 var http = require('http')
-  , app = require('./app')
-  // debugging
-  , util = require('util')
-  , log = function (args) { console.log(util.inspect(args, { colors: true })); };
+  , app = require('./app');
 
 var httpServer = http.createServer(app).listen(app.get('port'), function(){ console.log("Express server listening on port " + app.get('port')); })
   , io = require('socket.io').listen(httpServer);
