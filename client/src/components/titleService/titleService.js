@@ -1,5 +1,4 @@
-angular.module( 'titleService', [])
-
+angular.module('titleService', [])
 .factory( 'titleService', function ( $document ) {
   var suffix, title;
 
@@ -25,7 +24,4 @@ angular.module( 'titleService', [])
   };
 
   return titleService;
-})
-
-;
-
+});
