@@ -27,7 +27,21 @@ module.exports = function (io) {
     });
 
     socket.on('request', function (requestObj) {
-      io.sockets.in(roomID).emit('PING!');
+      // EXAMPLE>> requestObj = { type: 'sc', id: 'some-artist/some-song' }
+      if (requestObj.type === 'sc') {
+        soundcloud(
+          requestObj.id,
+          function (jsonStatus) {
+            io.sockets.in(roomID).emit(jsonStatus);
+          },
+          function (error, doneStatus) {
+            if (error) { return io.sockets.in(roomID).emit({ id: requestObj.id, error: error }); }
+            io.sockets.in(roomID).emit(doneStatus);
+          }
+        );
+      } else {
+        io.sockets.in(roomID).emit('PING!');
+      }
     });
   });
   // io.of('/chat').on('connection', function (socket) {
