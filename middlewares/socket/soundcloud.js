@@ -5,6 +5,11 @@ var http = require('http')
   // Variables
   , client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28';
 
+
+module.exports = function (scID, callback) {
+  
+};
+
 exports.getsound = null;
 
 /**
