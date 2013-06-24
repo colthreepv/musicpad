@@ -5,8 +5,9 @@ var musicpad = require('../musicpad')
 
 module.exports = function (io) {
   io.sockets.on('connection', function (socket) {
-    socket.on('uniqueID', function (uniqueID) {
+    var roomID; // reference to the roomID
 
+    socket.on('uniqueID', function (uniqueID) {
       // this socket is a get/setter, if the client sends an uniqueID we join him to that room
       // otherwise, we generate a uniqueID an *THEN* join him to that room
       // 
@@ -19,12 +20,15 @@ module.exports = function (io) {
         });
       } else {
         socket.join(uniqueID);
+        roomID = uniqueID;
         socket.emit('ready');
       }
 
-      log(uniqueID);
     });
-    // socket.emit('welcome', { text: 'World!' });
+
+    socket.on('request', function (requestObj) {
+      io.sockets.in(roomID).emit('PING!');
+    });
   });
   // io.of('/chat').on('connection', function (socket) {
     // log('somebody connected to /chat');
