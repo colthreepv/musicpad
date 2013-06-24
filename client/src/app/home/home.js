@@ -33,7 +33,8 @@ angular.module( 'musicpad.home', ['titleService'])
   titleService.setTitle( 'Home' );
   $scope.getID = function () {
     var getUnique = socketService.getUniqueID();
-    getUnique.success(function (id) {
+    getUnique.then(function (id) {
+      console.log('change location');
       $location.path('/'+id);
     });
   };

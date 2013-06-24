@@ -17,6 +17,7 @@ angular.module( 'musicpad', [
 
 .run( ['titleService', 'socketService', '$rootScope', '$location', function ( titleService, socketService, $rootScope, $location ) {
   titleService.setSuffix( ' | MusicPad' );
+  socketService.startup();
 
   // Manages all the route Erorrs, it could have been much more detailed
   $rootScope.$on('$routeChangeError', function (event, current, previous, rejection) {

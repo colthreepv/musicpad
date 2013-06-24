@@ -4,7 +4,8 @@ var crypto = require('crypto')
   // Useful things
   , redis = global.app.get('redis');
 
-exports.get = function (req, res, next) {
+// Callback: function (err, token)
+exports.genToken = function (tokenCallback) {
   /**
    * 1) Create unique id
    * 2) Check if that unique id is actually unique on redis
@@ -30,8 +31,16 @@ exports.get = function (req, res, next) {
       });
     },
     function (err) {
-      if (err) return res.send(500, err);
-      res.send(uniqueID);
+      if (err) return tokenCallback(err);
+      tokenCallback(err, uniqueID);
     }
   );
+};
+
+exports.get = function (req, res, next) {
+  // Calls the above function using res.send to an URL
+  exports.genToken(function (err, token) {
+    if (err) return next(err);
+    res.send(token);
+  });
 };

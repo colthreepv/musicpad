@@ -14,6 +14,7 @@ files = [
   'vendor/angular-placeholders/dist/*.js',
   'vendor/angular-bootstrap/*.js',
   'vendor/angular-ui-utils/modules/route/*.js',
+  'vendor/socket.io-client/dist/socket.io.js',
   'src/**/*.js',
   'dist/tmp/**/*.js'
 ];

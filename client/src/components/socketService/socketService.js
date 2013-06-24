@@ -1,11 +1,32 @@
 angular.module('musicpad')
-.service('socketService', ['$rootScope', '$http', function ($rootScope, $http) {
+.service('socketService', ['$rootScope', '$q', function ($rootScope, $q) {
   console.log('Socket service started.');
 
   return {
     getUniqueID: function () {
-      return $http.get('/api/musicpad');
+      var appSocket = $rootScope.pad
+        , idPromise = $q.defer();
+      appSocket.emit('uniqueID');
+      appSocket.on('uniqueID', function (uniqueID) {
+        console.log('return');
+        idPromise.resolve(uniqueID);
+      });
+      appSocket.on('error', idPromise.reject);
+      return idPromise.promise;
     },
+    // used at the startup of the app
+    startup: function() {
+      var appSocket = $rootScope.pad = io.connect();
+      appSocket.on('connect', function () {
+        console.log('i did connect.');
+        $rootScope.$digest();
+      });
+      appSocket.on('disconnect', function() {
+        console.log('ouch, something happnd!');
+        $rootScope.$digest();
+      });
+    },
+
     /**
      * Returns the socket interface to the requested MusicPad ID
      */

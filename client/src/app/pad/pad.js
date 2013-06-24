@@ -83,8 +83,8 @@ angular.module( 'musicpad.pad', [])
     titleService.setTitle('Pad');
     // $scope.socket = socketService.openSocket($routeParams.uniqueID);
     socketService.openSocket($routeParams.uniqueID);
-    $scope.pad = $rootScope.pad;
-    $scope.status = function() { return $scope.pad.socket.connected; };
+
+    $scope.status = function() { console.log('called funct'); return $rootScope.pad.socket.connected; };
 
     $scope.addSong = function() {
       console.log($scope.searchBox);
