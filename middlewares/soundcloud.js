@@ -2,6 +2,7 @@ var http = require('http')
   , fs = require('fs')
   // Internal Libs
   , common = require('./common')
+  , trueSoundcloud = require('./socket/soundcloud')
   // Variables
   , client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28';
 
@@ -15,7 +16,7 @@ exports.getsound = null;
  * So the backend can start polling for infos / use websocket in creative way to get infos about the download taking part.
  *
  * DEBUG
- * curl -v get-music/api/soundcloud?url=URL_HERE
+ * curl -v localhost:3000/api/soundcloud?url=artist-name/song-name
  */
 exports.getsound = function (req, res, next) {
   // If no param is passed, nothing to get! - TODO: change 403
@@ -83,4 +84,11 @@ exports.getsound = function (req, res, next) {
 
   // Close request, don't ever forget.
   scReq.end();
+};
+
+exports.getsound = function (req, res, next) {
+  trueSoundcloud(req.param('url'), log, function (error, jsonReturn) {
+    if (error) return next(err);
+    res.send(200, jsonReturn);
+  });
 };
