@@ -49,7 +49,7 @@ angular.module( 'musicpad.pad', [])
           ctrl.$setValidity(attrs.name, true); // useless ? :(
           scope.searchBoxType = 'sc';
           elmButton.addClass('btn-success');
-          return value;
+          return value.match(/soundcloud.com\/(.*)/).pop();
         } else if (ytRegex.test(value)) {
           ctrl.$setValidity(attrs.name, true); // useless ? :(
           scope.searchBoxType = 'yt';
