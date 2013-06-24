@@ -12,7 +12,8 @@
     "ytdl": "*",
     "fluent-ffmpeg": "*",
     "socket.io": "latest",
-    "async": "latest"
+    "async": "latest",
+    "request": "latest"
   },
   "devDependencies": {
     "vows": "*"
