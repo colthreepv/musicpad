@@ -57,10 +57,10 @@ angular.module('musicpad')
         $rootScope.$digest();
       });
     },
-    request: function (url, type) {
+    request: function (ID, type) {
       var appSocket = $rootScope.io;
       if (!joinedRoom) { throw new Error('you are not connected and trying to make requests!'); }
-      appSocket.emit('request', { url: url, type: type });
+      appSocket.emit('request', { id: ID, type: type });
     }
   };
 }]);
