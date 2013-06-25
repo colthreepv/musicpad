@@ -25,8 +25,17 @@ module.exports = function (scID, scCallback) {
       httprequest.end();
     },
     function (firstClient, callback) {
+      // if statusCode is 302 means we have *HIT*
       if (firstClient.statusCode === 302) {
-
+        var songID = parseInt(scResponse.headers.location.match(/tracks\/(\d+)/)[1], 10),
+        httprequest = http.request({
+            hostname: 'api.soundcloud.com',
+            path: '/i1/tracks/'+songID+'/streams?client_id='+client_id
+        }, function (secondClient) {
+          callback(null, secondClient);
+        });
+        httprequest.on('error', callback(err));
+        httprequest.end();
       } else {
         // file not found
         scCallback(null, false);
