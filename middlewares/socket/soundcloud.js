@@ -6,8 +6,38 @@ var http = require('http')
   , client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28';
 
 
-module.exports = function (scID, callback) {
-  
+/**
+ * Possible results
+ * callback(null, true);
+ * callback(null, false); NOT FOUND!
+ * callback(error);
+ */
+module.exports = function (scID, scCallback) {
+  async.waterfall([
+    function (callback) {
+      var httprequest = http.request({ // watch out! not managing http errors!
+        hostname: 'api.soundcloud.com',
+        path: '/resolve?client_id='+client_id+'&url='+encodeURIComponent('https://soundcloud.com/'+url)
+      }, function (firstClient) {
+        callback(null, firstClient);
+      });
+      httprequest.on('error', callback(err));
+      httprequest.end();
+    },
+    function (firstClient, callback) {
+      if (firstClient.statusCode === 302) {
+
+      } else {
+        // file not found
+        scCallback(null, false);
+      }
+    },
+    function (anotherResp, callback) {
+
+    }
+  ], function (err, results) {
+    if (err) return scCallback(err);
+  });
 };
 
 exports.getsound = null;
