@@ -5,6 +5,7 @@ var fs = require('fs')
   , async = require('async')
   , request = require('request')
   // Variables
+  , maxRequests = app.get('maxRequests')
   , client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28';
 
 
@@ -27,13 +28,18 @@ module.exports = function (scID, statusCallback, doneCallback) {
   // Beautiful work, we redefine statusCallback as a throttled function
   statusCallback = common.throttle(1000, true, statusCallback);
 
-  var trueID;
+  var trueID
+    , declaredFileLength // i'm gonna read the headers, this might be different from the real length! (YEAH, SERVERS DO LIE!)
+    , partialBytes = 0
+    , title
+    , hq;
 
   async.waterfall([
     function (callback) {
       // From such a request we get a giant object from soundcloud API, they are damn good.
       // I'll dump an example in the proj root
       request({ url: 'https://api.soundcloud.com/resolve',
+        pool: maxRequests,
         json: true,
         qs: { client_id: client_id, url: 'https://soundcloud.com/'+scID } }, callback );
     },
@@ -41,23 +47,30 @@ module.exports = function (scID, statusCallback, doneCallback) {
       // the following is just a soundcloud 404 (most probably)
       if (response.statusCode !== 200) return callback(null, false);
 
-      statusCallback({ status: 'starting', title: body.title, hq: body.downloadable });
+      // set globals to be returned in the _VERY_ end
+      title = body.title;
       trueID = body.id;
+      hq = body.downloadable;
+      statusCallback({ id: scID, status: 'starting', title: title, hq: hq });
 
       if (body.downloadable) {
-        callback(null, request({ url: body.download_url,
-          qs: { client_id: client_id } }));
+        callback(null, request({
+          url: body.download_url,
+          pool: maxRequests,
+          qs: { client_id: client_id }
+        }));
       } else {
-        callback(null, request({ url: body.stream_url,
-          qs: { client_id: client_id } }));
+        callback(null, request({
+          url: body.stream_url,
+          pool: maxRequests,
+          qs: { client_id: client_id }
+        }));
       }
     },
     function (httpClientRequest, callback) {
-      var declaredFileLength // i'm gonna read the headers, this might be different from the real length! (YEAH, SERVERS DO LIE!)
-        , songStream
-        , partialBytes = 0;
+      var songStream;
       httpClientRequest.on('response', function (httpIncomingMessage) {
-        declaredFileLength = httpIncomingMessage.headers['content-length'];
+        declaredFileLength = parseInt(httpIncomingMessage.headers['content-length'], 10);
         songStream = fs.createWriteStream(trueID+'.mp3');
 
         // piping into the file
@@ -66,6 +79,7 @@ module.exports = function (scID, statusCallback, doneCallback) {
           partialBytes += chunk.length;
           statusCallback({
             id: scID,
+            status: 'downloading',
             totalBytes: declaredFileLength,
             partialBytes: partialBytes,
             progress: Math.round((partialBytes / declaredFileLength)*100)
@@ -76,7 +90,7 @@ module.exports = function (scID, statusCallback, doneCallback) {
     }
   ], function (err, results) {
     if (err) return doneCallback(err);
-    doneCallback(null, { status: 'complete' });
+    doneCallback(null, { id: scID, status: 'complete', title: title, hq: hq });
   });
 };
 
