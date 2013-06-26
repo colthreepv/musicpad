@@ -2,13 +2,13 @@
  * Contains all the wrappers for classic REST APIs
  */
 
-var soundcloud = require('./soundcloud')
+var cache = require('./cache')
   , gentoken = require('./gentoken');
 
 // EXAMPLE>> /api/soundcloud?url=some-artist/some-song
 exports.soundcloud = function (req, res, next) {
-  soundcloud(req.param('url'), log, function (error, jsonReturn) {
-    if (error) return next(err);
+  cache.songs('sc', req.param('url'), log, function (err, jsonReturn) {
+    if (err) return next(err);
     res.send(200, jsonReturn);
   });
 };

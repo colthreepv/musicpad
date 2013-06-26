@@ -22,10 +22,13 @@ module.exports = function (tokenCallback) {
       crypto.pseudoRandomBytes(8, function (err, buf) {
         if (err) return callback(err); // manage crypto errors
         uniqueID = buf.toString('hex');
-        redis.get(uniqueID, function (err, reply) {
+        redis.get('pad:'+uniqueID, function (err, reply) {
           if (err) return callback(err); // manage redis errors
           // If the redis.get returns NULL, means there's not that key in redis, so it's unique!
-          if (reply === null) isIDunique = true;
+          if (reply) {
+            isIDunique = true;
+            redis.set('pad:'+uniqueID, true);
+          }
           return callback();
         });
       });
