@@ -29,6 +29,7 @@ app.configure(function() {
   // app.use(require('less-middleware')({ src: __dirname + '/public' }));
   // app.use(express.static(path.join(__dirname, 'public/dist/')));
   app.set('redis', redis);
+  app.set('maxSockets', { maxSockets: 3 });
 });
 
 app.configure('development', function(){
