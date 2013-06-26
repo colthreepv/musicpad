@@ -1,5 +1,5 @@
 // Internal Libs
-var common = require('../common')
+var common = require('./common')
   // External Libraries
   , ytdl = require('ytdl')
   , ffmpeg = require('fluent-ffmpeg');

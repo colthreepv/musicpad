@@ -1,41 +1,110 @@
-var http = require('http')
-  , fs = require('fs')
+var fs = require('fs')
   // Internal Libs
   , common = require('./common')
-  , trueSoundcloud = require('./socket/soundcloud')
+  // External libs
+  , async = require('async')
+  , request = require('request')
   // Variables
   , client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28';
 
-exports.getsound = null;
-
 
 /**
- * Function Re-Work
- * IF song is not present inside REDIS cache, send a reply like res.send(200, 'downloadstarted');
- * Otherwise send something like res.send(200, 'cachehit');
- * So the backend can start polling for infos / use websocket in creative way to get infos about the download taking part.
- *
- * DEBUG
- * curl -v localhost:3000/api/soundcloud?url=artist-name/song-name
+ * Possible results
+ * callback(null, true);
+ * callback(null, false); NOT FOUND!
+ * callback(error);
  */
-exports.getsound = function (req, res, next) {
-  // If no param is passed, nothing to get! - TODO: change 403
-  if (!req.param('url')) res.send(403);
 
+/**
+ * scID is a partial-url like: ascoltadi/dirk-maassen-with-science
+ * statusCallback is a function that gets called *MULTIPLE* times with a JSON object as only argument
+ *                it takes care of updating the user about the download process, it may be null (in future!)
+ * doneCallback is a function that gets called *ONE* time only with (error, JSON) a JSON object similar to the previous
+ *              function, just reporting what has been done.
+ */
+
+module.exports = function (scID, statusCallback, doneCallback) {
+  // Beautiful work, we redefine statusCallback as a throttled function
+  statusCallback = common.throttle(1000, true, statusCallback);
+
+  var trueID;
+
+  async.waterfall([
+    function (callback) {
+      // From such a request we get a giant object from soundcloud API, they are damn good.
+      // I'll dump an example in the proj root
+      request({ url: 'https://api.soundcloud.com/resolve',
+        json: true,
+        qs: { client_id: client_id, url: 'https://soundcloud.com/'+scID } }, callback );
+    },
+    function (response, body, callback) {
+      // the following is just a soundcloud 404 (most probably)
+      if (response.statusCode !== 200) return callback(null, false);
+
+      statusCallback({ status: 'starting', title: body.title, hq: body.downloadable });
+      trueID = body.id;
+
+      if (body.downloadable) {
+        callback(null, request({ url: body.download_url,
+          qs: { client_id: client_id } }));
+      } else {
+        callback(null, request({ url: body.stream_url,
+          qs: { client_id: client_id } }));
+      }
+    },
+    function (httpClientRequest, callback) {
+      var declaredFileLength // i'm gonna read the headers, this might be different from the real length! (YEAH, SERVERS DO LIE!)
+        , songStream
+        , partialBytes = 0;
+      httpClientRequest.on('response', function (httpIncomingMessage) {
+        declaredFileLength = httpIncomingMessage.headers['content-length'];
+        songStream = fs.createWriteStream(trueID+'.mp3');
+
+        // piping into the file
+        httpIncomingMessage.pipe(songStream);
+        httpIncomingMessage.on('data', function (chunk) {
+          partialBytes += chunk.length;
+          statusCallback({
+            id: scID,
+            totalBytes: declaredFileLength,
+            partialBytes: partialBytes,
+            progress: Math.round((partialBytes / declaredFileLength)*100)
+          });
+        });
+      });
+      httpClientRequest.on('end', function(){ callback(null, declaredFileLength); });
+    }
+  ], function (err, results) {
+    if (err) return doneCallback(err);
+    doneCallback(null, { status: 'complete' });
+  });
+};
+
+exports.getsound = null;
+
+/**
+ * First socket function, this gonna be A*W*E*S*O*M*E !!!
+ *
+exports.getsound = function (url, pubRedis, socketID) {
   var scReq = http.request({
     hostname: 'api.soundcloud.com',
-    path: '/resolve?client_id='+client_id+'&url='+encodeURIComponent(req.param('url'))
+    path: '/resolve?client_id='+client_id+'&url='+encodeURIComponent(url)
   }, function (scResponse) {
     var songID
       , bytesGot = 0
-      , throttledConsole = common.throttle( 1000, function (bytes) {
+      , throttledConsole = common.throttle( 1000, function (bytes, totalBytes) {
           log(['bytes passed:', bytes]);
+          pubRedis.publish(socketID, JSON.stringify({
+            id: songID,
+            size: totalBytes,
+            progress: bytes
+          }));
           bytesGot = 0;
         });
 
     // if the response is a redirect, that's what we want
     if (scResponse.statusCode === 302) {
-      songID = scResponse.headers.location.match(/tracks\/(\d+)/)[1];
+      songID = parseInt(scResponse.headers.location.match(/tracks\/(\d+)/)[1], 10);
       // TODO - Check on REDIS if the file it has been already downloaded.
       // IF NOT, go on.
       // ELSE, send back to res the cached file!
@@ -59,14 +128,22 @@ exports.getsound = function (req, res, next) {
             hostname: dataToParse.http_mp3_128_url.match(/:\/\/(.*soundcloud.com)(.*)/)[1],
             path: dataToParse.http_mp3_128_url.match(/:\/\/(.*soundcloud.com)(.*)/)[2]
           }, function (songDWResponse) {
-            var SongWriter = fs.createWriteStream(songID+'.mp3');
+            // This is the correct moment to fetch the headers, to read the file size!
+            var totalBytes = songDWResponse.headers['content-length'];
+            // Create SongWriter and BUUURN ON DISK!
+            var SongWriter = fs.createWriteStream('assets/soundcloud/'+songID+'.mp3');
             songDWResponse.pipe(SongWriter);
             songDWResponse.on('data', function (buffer) {
               bytesGot += buffer.length;
-              throttledConsole(bytesGot);
+              throttledConsole(bytesGot, totalBytes);
             });
+            // Send the complete response
             songDWResponse.on('end', function() {
-              res.send(200, 'download complete!');
+              pubRedis.publish(socketID, JSON.stringify({
+                id: songID,
+                size: totalBytes,
+                status: 'complete'
+              }));
             });
           });
           // Close request, don't ever forget.
@@ -78,17 +155,16 @@ exports.getsound = function (req, res, next) {
     } else {
       // Send an error according to RFC if the response is not a redirect
       // something like: 'unexpected response'
-      res.send(403);
+      // res.send(403);
+      // ** Converted reply to Websocket! :-)
+      pubRedis.publish(socketID, JSON.stringify({
+        url: url,
+        error: 'unexpected response'
+      }));
     }
   });
 
   // Close request, don't ever forget.
   scReq.end();
 };
-
-exports.getsound = function (req, res, next) {
-  trueSoundcloud(req.param('url'), log, function (error, jsonReturn) {
-    if (error) return next(err);
-    res.send(200, jsonReturn);
-  });
-};
+ **/

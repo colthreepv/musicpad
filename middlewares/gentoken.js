@@ -2,10 +2,10 @@ var crypto = require('crypto')
   // External Libs
   , async = require('async')
   // Useful things
-  , redis = global.app.get('redis');
+  , redis = app.get('redis');
 
 // Callback: function (err, token)
-exports.genToken = function (tokenCallback) {
+module.exports = function (tokenCallback) {
   /**
    * 1) Create unique id
    * 2) Check if that unique id is actually unique on redis
@@ -35,12 +35,4 @@ exports.genToken = function (tokenCallback) {
       tokenCallback(err, uniqueID);
     }
   );
-};
-
-exports.get = function (req, res, next) {
-  // Calls the above function using res.send to an URL
-  exports.genToken(function (err, token) {
-    if (err) return next(err);
-    res.send(token);
-  });
 };

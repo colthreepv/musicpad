@@ -1,5 +1,5 @@
 // Internal Libs
-var musicpad = require('../musicpad')
+var gentoken = require('./gentoken')
   , soundcloud = require('./soundcloud')
   , youtube = require('./youtube');
 
@@ -14,7 +14,7 @@ module.exports = function (io) {
       // HE MUST F*****KIN JOIN DA ROOM!
       if (!uniqueID) {
         // generate uniqueID and send it back to the user, then join it to the room
-        musicpad.genToken(function (err, token) {
+        gentoken(function (err, token) {
           if (err) return socket.emit('error', err);
           socket.emit('uniqueID', token);
         });
