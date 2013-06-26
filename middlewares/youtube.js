@@ -2,53 +2,51 @@
 var common = require('./common')
   // External Libraries
   , ytdl = require('ytdl')
-  , ffmpeg = require('fluent-ffmpeg');
+  , ffmpeg = require('fluent-ffmpeg')
+  // Variables
+  , maxRequests = app.get('maxRequests');
 
-exports.getvideo = null;
+module.exports = function (ytID, statusCallback, doneCallback) {
+  statusCallback = common.throttle(1000, true, statusCallback);
 
-/**
- * ytdl library wants an URL formatted like:
- * http://www.youtube.come/watch?v=091jnasdb - KEEP THAT IN MIND!
- */
-exports.getvideo = function (url, pubRedis, socketID) {
-  var ytStream = null
-    , bytesGot = 0
-    , videoID = url.match(/v=(.*)/)[1] // WARNING: this is *very* RAW
-    , throttledConsole = common.throttle( 1000, function (bytes) {
-        log(['bytes passed:', bytes]);
-        pubRedis.publish(socketID, JSON.stringify({
-          id: videoID,
-          size: videoSize,
-          progress: bytes
-        }));
-        bytesGot = 0;
-      });
+  var ytStream
+    , declaredFileLength
+    , partialBytes = 0
+    , title
+    , hq
+    , ffmpegProc;
 
-  ytStream = ytdl(url);
-
-  // We can read a lot of infos from here, but we only get the size of the file ;
-  ytStream.on('info', function (info, format) {
-    videoSize = format.size;
+  ytStream = ytdl('http://www.youtube.com/watch?v='+ytID, {
+    // filter: function (format) { log(format); return format.container === 'mp4'; },
+    pool: maxRequests
   });
-  // Pipe the ytStream to ffmpeg source
-  var ffmpegProc = ffmpeg({ source: ytStream, timeout: 600 })
+  ytStream.on('info', function (info, format) {
+    title = info.title;
+    declaredFileLength = parseInt(format.size, 10);
+    hq = (format.audioBitrate > 128) ? true : false;
+    statusCallback({ id: ytID, status: 'starting', title: title, hq: hq });
+  });
+  ytStream.on('error', doneCallback);
+
+  ffmpegProc = ffmpeg({ source: ytStream, timeout: 600 })
     .withNoVideo(true)
     .withAudioCodec('copy')
     .toFormat('ogg')
-    .saveToFile('assets/youtube/'+videoID+'.ogg', function(stdout, stderr) {
-    console.log('ffmpeg stdout:', stdout);
-    console.log('ffmpeg stderr:', stderr);
-  });
+    .saveToFile('assets/yt/'+ytID+'.ogg');
+  // var videoDump = require('fs').createWriteStream('assets/yt/'+ytID+'.mp4');
+  // ytStream.pipe(videoDump);
 
-  ytStream.on('data', function (buffer) {
-    bytesGot += buffer.length;
-    throttledConsole(bytesGot);
+  ytStream.on('data', function (chunk) {
+    partialBytes += chunk.length;
+    statusCallback({
+      id: ytID,
+      status: 'downloading',
+      totalBytes: declaredFileLength,
+      partialBytes: partialBytes,
+      progress: Math.round((partialBytes / declaredFileLength)*100)
+    });
   });
   ytStream.on('end', function() {
-    pubRedis.publish(socketID, JSON.stringify({
-      id: videoID,
-      size: videoSize,
-      status: 'complete'
-    }));
+    doneCallback(null, { id: ytID, status: 'complete', title: title, hq: hq });
   });
 };

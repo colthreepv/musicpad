@@ -71,7 +71,7 @@ module.exports = function (scID, statusCallback, doneCallback) {
       var songStream;
       httpClientRequest.on('response', function (httpIncomingMessage) {
         declaredFileLength = parseInt(httpIncomingMessage.headers['content-length'], 10);
-        songStream = fs.createWriteStream(trueID+'.mp3');
+        songStream = fs.createWriteStream('assets/sc/'+trueID+'.mp3');
 
         // piping into the file
         httpIncomingMessage.pipe(songStream);

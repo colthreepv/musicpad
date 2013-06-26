@@ -9,6 +9,18 @@ var cache = require('./cache')
 exports.soundcloud = function (req, res, next) {
   cache.songs('sc', req.param('url'), log, function (err, jsonReturn) {
     if (err) return next(err);
+    if (jsonReturn) {
+      res.send(200, jsonReturn);
+    } else {
+      res.send(404);
+    }
+  });
+};
+
+// EXAMPLE>> /api/youtube?url=jNQXAC9IVRw
+exports.youtube = function (req, res, next) {
+  cache.songs('yt', req.param('url'), log, function (err, jsonReturn) {
+    if (err) return next(err);
     res.send(200, jsonReturn);
   });
 };

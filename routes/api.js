@@ -7,5 +7,6 @@ module.exports = function ( app ) {
   // app.post('/api/postvid', api.postvid);
   // app.post('/api/vidinfo', api.vidinfo);
   app.get('/api/soundcloud', rest.soundcloud);
+  app.get('/api/youtube', rest.youtube);
   app.get('/api/gentoken', rest.gentoken);
 };

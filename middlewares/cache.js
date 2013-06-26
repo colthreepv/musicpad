@@ -22,10 +22,10 @@ var soundcloud = require('./soundcloud')
 exports.songs = function (type, id, statusCallback, doneCallback) {
   var setterCallback = function (err, doneStatus) {
     if (err) return doneCallback(err);
-    redis.set(type+'+'+id, JSON.stringify(doneStatus)); // fire and forget
+    redis.set(type+':'+id, JSON.stringify(doneStatus)); // fire and forget
     doneCallback(null, doneStatus);
   };
-  redis.get(type+'+'+id, function (err, reply) {
+  redis.get(type+':'+id, function (err, reply) {
     // not manage redis error here.
 
     if (reply) { // in cache!
