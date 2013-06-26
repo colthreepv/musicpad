@@ -8,7 +8,6 @@
   "dependencies": {
     "express": "latest",
     "redis": "latest",
-    "connect-redis": "*",
     "ytdl": "*",
     "fluent-ffmpeg": "*",
     "socket.io": "latest",
