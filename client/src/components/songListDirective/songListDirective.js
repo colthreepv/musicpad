@@ -10,6 +10,13 @@ angular.module('musicpad')
   };
 }])
 
-.controller('songListController', ['$scope', function ($scope) {
+.controller('songListController',
+  ['$scope', '$rootScope', 'socketService',
+  function ($scope, $rootScope, socketService) {
+    $scope.$watch(function () { return socketService.joinedRoom; },
+      function (joinedRoom) {
+        if (!joinedRoom) { return; }
+
+      });
 
 }]);

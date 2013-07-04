@@ -25,7 +25,7 @@ module.exports = function (tokenCallback) {
         redis.get('pad:'+uniqueID, function (err, reply) {
           if (err) return callback(err); // manage redis errors
           // If the redis.get returns NULL, means there's not that key in redis, so it's unique!
-          if (reply) {
+          if (!reply) {
             isIDunique = true;
             redis.set('pad:'+uniqueID, true);
           }

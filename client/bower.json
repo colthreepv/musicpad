@@ -9,6 +9,7 @@
     "angular-ui-utils": "latest",
     "angular-unstable": "latest",
     "font-awesome": "latest",
-    "socket.io-client": "0.9.16"
+    "socket.io-client": "0.9.16",
+    "kurosaki-audio-player": "git@github.com:GithubProfile/kurosaki-html5-audio-player.git"
   }
 }

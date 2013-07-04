@@ -48,14 +48,11 @@ angular.module('musicpad')
         appSocket.emit('uniqueID', uniqueID);
       });
 
-      // Room management
+      // Room management || IS THAT NECESSARY?!?
       appSocket.on('ready', function () { joinedRoom = true; });
       appSocket.removeListener('error').on('error', function (error) { joinedRoom = false; });
       // replace old listener with the same listener, that keeps track of socket.io rooms
-      appSocket.removeListener('disconnect').on('disconnect', function () {
-        joinedRoom = false;
-        $rootScope.$digest();
-      });
+      appSocket.removeListener('disconnect').on('disconnect', function () { joinedRoom = false; });
     },
     request: function (ID, type) {
       var appSocket = $rootScope.io;

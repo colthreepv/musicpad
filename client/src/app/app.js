@@ -6,7 +6,7 @@ angular.module( 'musicpad', [
   'musicpad.home',
   'musicpad.pad',
   // Main router inclusion
-  'ui.route'
+  // 'ui.route' That is not router....
   // Very useful HTTP Mock for development ;)
   // 'musicpad.mock'
 ])
