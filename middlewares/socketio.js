@@ -32,11 +32,11 @@ module.exports = function (io) {
         soundcloud(
           requestObj.id,
           function (jsonStatus) {
-            io.sockets.in(roomID).emit(jsonStatus);
+            io.sockets.in(roomID).emit('response', jsonStatus);
           },
           function (error, doneStatus) {
             if (error) { return io.sockets.in(roomID).emit({ id: requestObj.id, error: error }); }
-            io.sockets.in(roomID).emit(doneStatus);
+            io.sockets.in(roomID).emit('response',doneStatus);
           }
         );
       } else {
