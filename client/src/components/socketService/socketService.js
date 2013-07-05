@@ -49,15 +49,33 @@ angular.module('musicpad')
       });
 
       // Room management || IS THAT NECESSARY?!?
-      appSocket.on('ready', function () { joinedRoom = true; });
-      appSocket.removeListener('error').on('error', function (error) { joinedRoom = false; });
+      appSocket.on('ready', function () { joinedRoom = true; $rootScope.$digest(); });
+      appSocket.removeListener('error').on('error', function (error) { joinedRoom = false; $rootScope.$digest(); });
       // replace old listener with the same listener, that keeps track of socket.io rooms
-      appSocket.removeListener('disconnect').on('disconnect', function () { joinedRoom = false; });
+      appSocket.removeListener('disconnect').on('disconnect', function () { joinedRoom = false; $rootScope.$digest(); });
     },
     request: function (ID, type) {
       var appSocket = $rootScope.io;
       if (!joinedRoom) { throw new Error('you are not connected and trying to make requests!'); }
       appSocket.emit('request', { id: ID, type: type });
+    },
+    joinedRoom: function () { return joinedRoom; },
+    getInstance: function () { return $rootScope.io.socket; },
+    listenSocket: function (startingCallback, progressCallback, doneCallback) {
+      var appSocket = $rootScope.io; // this is always defined
+
+      appSocket.on('response', function (responseObj) {
+        console.log(responseObj);
+        if (status === 'starting') {
+          startingCallback(responseObj);
+        }
+        if (status === 'downloading') {
+          progressCallback(responseObj);
+        }
+        if (status === 'done') {
+          doneCallback(responseObj);
+        }
+      });
     }
   };
 }]);
