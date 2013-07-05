@@ -22,35 +22,13 @@
         </div>
       </form>
     </div>
-    <div class="song-container">
-      <span class="done"></span>
-      <div class="song-element">
-        <p>Some cool artist - Some cool name with very long name!!!</p>
-        <span class="icon-stack"><i class="icon-sign-blank icon-stack-base"></i><i class="icon-cloud"></i></span>
-      </div>
-    </div>
-    <div class="song-container done">
-      <span class="error"></span>
-      <div class="song-element">
-        <p>Some cool artist - Some cool name with very long name!!!</p>
-        <span class="icon-stack">
-          <i class="icon-sign-blank icon-stack-base"></i>
-          <i class="icon-cloud"></i>
-        </span>
-      </div>
-    </div>
-    <div class="song-container error">
-      <span class="error"></span>
-      <div class="song-element">
-        <p>Some cool artist - Some cool name with very long name!!!</p>
-        <i class="icon-youtube-play"></i>
-      </div>
-    </div>
-    <div class="song-container done">
-      <span class="error"></span>
-      <div class="song-element">
-        <p>Some cool artist - Some track...</p>
-        <i class="icon-youtube-play"></i>
+    <div ng-repeat="song in mainPlaylist">
+      <div class="song-container">
+        <span ng-class="status" ng-style="{ width: progress }"></span>
+        <div class="song-element">
+          <p>{{ song.title }}</p>
+          <span class="icon-stack"><i class="icon-sign-blank icon-stack-base"></i><i class="icon-cloud"></i></span>
+        </div>
       </div>
     </div>
   </div>

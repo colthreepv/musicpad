@@ -73,20 +73,20 @@ angular.module( 'musicpad.pad', [])
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'PadController', [
+.controller('PadController', [
   '$scope',
   '$rootScope',
   '$routeParams',
   'titleService',
   'socketService',
-  function PadController( $scope, $rootScope, $routeParams, titleService, socketService ) {
+  function PadController($scope, $rootScope, $routeParams, titleService, socketService) {
     titleService.setTitle('Pad');
     // $scope.socket = socketService.openSocket($routeParams.uniqueID);
     socketService.joinPad($routeParams.uniqueID);
 
     $scope.socket = $rootScope.io.socket;
 
-    $scope.addSong = function() {
+    $scope.addSong = function () {
       console.log($scope.searchBox);
       socketService.request($scope.searchBox, $scope.searchBoxType);
 
@@ -97,4 +97,38 @@ angular.module( 'musicpad.pad', [])
 
 
     $scope.uniqueID = $routeParams.uniqueID;
-}]);
+
+    // Setup watch on socketService
+    $rootScope.$watch(socketService.joinedRoom,
+      function (joinedRoom) {
+        if (!joinedRoom) { return; }
+        $scope.mainPlaylist = $scope.mainPlaylist || [];
+        socketService.listenSocket(
+          function starting (responseObj) {
+            $scope.mainPlaylist[responseObj.id] = responseObj;
+            $scope.$digest();
+            console.log($scope);
+          },
+          function progress (responseObj) {
+            angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
+            $scope.$digest();
+            console.log($scope);
+          },
+          function done (responseObj) {
+            angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
+            $scope.$digest();
+            console.log($scope);
+          }
+        );
+
+        // socket = socketService.getInstance();
+        // socket.on('response', function (songObj) {
+        //   $rootScope.mainPlaylist = $rootScope.mainPlaylist || [];
+        //   console.log('got reply!');
+
+        //   $rootScope.mainPlaylist.push(songObj);
+        // });
+      },
+    true);
+  }
+]);
