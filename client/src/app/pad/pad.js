@@ -83,6 +83,7 @@ angular.module('musicpad.pad', [])
   'titleService',
   'socket',
   function PadController($scope, $routeParams, titleService, socket) {
+    kurosakiHTML5AudioPlayer();
     titleService.setTitle($routeParams.uniqueID);
 
     // NOTE: in case socket goes down, it makes it join the correct musicPad again.
@@ -130,14 +131,10 @@ angular.module('musicpad.pad', [])
         $scope.orderedPlaylist.push($scope.mainPlaylist[responseObj.id]); // enqueue in order!
         console.log($scope.mainPlaylist[responseObj.id]);
       }
-      if (responseObj.status === 'progress') {
-        angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
-        console.log($scope.mainPlaylist[responseObj.id]);
-      }
-      if (responseObj.status === 'complete') {
+      if (responseObj.status === 'progress' || responseObj.status === 'complete') {
+        responseObj.progress = (responseObj.status === 'complete') ? 100 : responseObj.progress;
         // In case the song is cached, you ONLY receive 'complete' event.
         // So let's handle it!
-        responseObj.progress = 100;
         if (!$scope.mainPlaylist[responseObj.id]) {
           $scope.mainPlaylist[responseObj.id] = responseObj;
           $scope.orderedPlaylist.push($scope.mainPlaylist[responseObj.id]);
