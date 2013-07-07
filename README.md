@@ -69,7 +69,11 @@ server {
         rewrite .* /index.html last;
     }
     location ~* ^\/vendor\/.* {
-        root /PROJECTROOT/client/vendor;
+        root /PROJECTROOT/client;
+        expires 60d;
+    }
+    location ~* ^\/assets\/(yt|sc)/.* {
+        root /PROJECTROOT;
         expires 60d;
     }
     location ~* \.(js|css|html)$ {
