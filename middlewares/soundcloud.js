@@ -51,7 +51,7 @@ module.exports = function (scID, statusCallback, doneCallback) {
       title = body.title;
       trueID = body.id;
       hq = body.downloadable;
-      statusCallback({ id: scID, status: 'starting', title: title, hq: hq });
+      statusCallback({ id: scID, status: 'starting', title: title, hq: hq, type: 'sc' });
 
       if (body.downloadable) {
         callback(null, request({
@@ -79,7 +79,7 @@ module.exports = function (scID, statusCallback, doneCallback) {
           partialBytes += chunk.length;
           statusCallback({
             id: scID,
-            status: 'downloading',
+            status: 'progress',
             totalBytes: declaredFileLength,
             partialBytes: partialBytes,
             progress: Math.round((partialBytes / declaredFileLength)*100)
@@ -90,7 +90,7 @@ module.exports = function (scID, statusCallback, doneCallback) {
     }
   ], function (err, results) {
     if (err) return doneCallback(err);
-    doneCallback(null, { id: scID, status: 'complete', title: title, hq: hq });
+    doneCallback(null, { id: scID, status: 'complete', title: title, hq: hq, type: 'sc' });
   });
 };
 
