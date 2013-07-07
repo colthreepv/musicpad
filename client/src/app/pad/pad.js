@@ -1,13 +1,13 @@
 /**
  * Module that actually manages the musicpad
  */
-angular.module( 'musicpad.pad', [])
+angular.module('musicpad.pad', [])
 
 /**
  * Setup route for this module
  */
-.config([ '$routeProvider', function config( $routeProvider ) {
-  $routeProvider.when( '/:uniqueID', {
+.config(['$routeProvider', function config($routeProvider) {
+  $routeProvider.when('/:uniqueID', {
     controller: 'PadController',
     templateUrl: 'pad/pad.tpl.html',
     resolve: { 'checkID': ['$q', '$route', function ($q, $route) {
@@ -16,7 +16,7 @@ angular.module( 'musicpad.pad', [])
        * Regex or complex validation on uniqueID parameter, it could even be async!
        */
       // $timeout(function(){ Not needed for now!
-      if ( $route.current.params.uniqueID.length < 10 ) {
+      if ($route.current.params.uniqueID.length < 10) {
         paramCheck.reject('uniqueID');
       } else {
         paramCheck.resolve();
@@ -35,7 +35,7 @@ angular.module( 'musicpad.pad', [])
   });
 }])
 
-.directive('searchValidation', function() {
+.directive('searchValidation', function () {
   return {
     require: 'ngModel',
     link: function (scope, elm, attrs, ctrl) {
@@ -54,7 +54,7 @@ angular.module( 'musicpad.pad', [])
           ctrl.$setValidity(attrs.name, true); // useless ? :(
           scope.searchBoxType = 'yt';
           elmButton.addClass('btn-success');
-          return value;
+          return value.match(/watch(?:.*?)v\=(.*?)(?:&|$)/).pop();
         } else {
           ctrl.$setValidity(attrs.name, false); // useless ? :(
           scope.searchBoxType = null;
@@ -63,7 +63,7 @@ angular.module( 'musicpad.pad', [])
       });
 
       // Bind click on button, to clear btn-success class
-      elmButton.bind('click', function (){
+      elmButton.bind('click', function () {
         elmButton.removeClass('btn-success');
       });
     }
@@ -75,60 +75,67 @@ angular.module( 'musicpad.pad', [])
  */
 .controller('PadController', [
   '$scope',
-  '$rootScope',
   '$routeParams',
   'titleService',
-  'socketService',
-  function PadController($scope, $rootScope, $routeParams, titleService, socketService) {
-    titleService.setTitle('Pad');
-    // $scope.socket = socketService.openSocket($routeParams.uniqueID);
-    socketService.joinPad($routeParams.uniqueID);
+  'socket',
+  function PadController($scope, $routeParams, titleService, socket) {
+    titleService.setTitle($routeParams.uniqueID);
 
-    $scope.socket = $rootScope.io.socket;
+    // NOTE: in case socket goes down, it makes it join the correct musicPad again.
+    // pretty robust implementation :o
+    socket.on('connect', function () { socket.emit('joinPad', $routeParams.uniqueID); });
+
+    socket.on('ready', function () {
+      $scope.padConnected = true;
+      socket.forward('response', $scope); // setup socket news redirection to $scope
+    });
+    socket.on('disconnect', function () {
+      $scope.padConnected = false;
+      socket.removeListener('response');
+    });
 
     $scope.addSong = function () {
       console.log($scope.searchBox);
-      socketService.request($scope.searchBox, $scope.searchBoxType);
+      // OLD socketService.request($scope.searchBox, $scope.searchBoxType);
+      socket.emit('request', { id: $scope.searchBox, type: $scope.searchBoxType });
 
       // request sent! GOOOO MUSICPAD!! we can clear the values for our next request :-)
       $scope.searchBox = null;
       $scope.searchBoxType = null;
     };
 
-
     $scope.uniqueID = $routeParams.uniqueID;
 
-    // Setup watch on socketService
-    $rootScope.$watch(socketService.joinedRoom,
-      function (joinedRoom) {
-        if (!joinedRoom) { return; }
-        $scope.mainPlaylist = $scope.mainPlaylist || [];
-        socketService.listenSocket(
-          function starting (responseObj) {
-            $scope.mainPlaylist[responseObj.id] = responseObj;
-            $scope.$digest();
-            console.log($scope);
-          },
-          function progress (responseObj) {
-            angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
-            $scope.$digest();
-            console.log($scope);
-          },
-          function done (responseObj) {
-            angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
-            $scope.$digest();
-            console.log($scope);
-          }
-        );
+    /* Dummy infos.
+    $scope.mainPlaylist = {};
+    $scope.mainPlaylist['some-artist/some-track'] = {
+      status: 'starting',
+      title: 'Some Artist - Some Track!',
+      hq: true,
+      progress: 80
+    };*/
 
-        // socket = socketService.getInstance();
-        // socket.on('response', function (songObj) {
-        //   $rootScope.mainPlaylist = $rootScope.mainPlaylist || [];
-        //   console.log('got reply!');
+    $scope.orderedPlaylist = [];
 
-        //   $rootScope.mainPlaylist.push(songObj);
-        // });
-      },
-    true);
+    $scope.$on('socket:response', function (event, responseObj) {
+      $scope.mainPlaylist = $scope.mainPlaylist || {};
+
+      if (responseObj.status === 'starting') {
+        responseObj.progress = 0;
+        $scope.mainPlaylist[responseObj.id] = responseObj;
+        $scope.orderedPlaylist.push($scope.mainPlaylist[responseObj.id]); // enqueue in order!
+        console.log($scope.mainPlaylist[responseObj.id]);
+      }
+      if (responseObj.status === 'progress') {
+        angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
+        console.log($scope.mainPlaylist[responseObj.id]);
+      }
+      if (responseObj.status === 'complete') {
+        responseObj.progress = 100;
+        angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
+        console.log($scope.mainPlaylist[responseObj.id]);
+      }
+    });
+    
   }
 ]);

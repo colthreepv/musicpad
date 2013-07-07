@@ -3,8 +3,8 @@
     <a class="brand" href="#">MusicPad:</a>
     <ul class="nav">
       <li class="active"><a href="">{{uniqueID}}</a></li>
-      <li ng-show="socket.connected"><a>Connected <i class="icon-ok-sign"></i></a></li>
-      <li ng-hide="socket.connected"><a>Disconnected <i class="icon-exclamation"></i></a></li>
+      <li ng-show="padConnected"><a>Connected <i class="icon-ok-sign"></i></a></li>
+      <li ng-show="!padConnected"><a>Disconnected <i class="icon-exclamation"></i></a></li>
     </ul>
   </div>
 </div>
@@ -13,7 +13,7 @@
     <div class="search-box">
       <form name="searchForm" ng-submit="addSong()">
         <div class="input-append">
-          <input type="text" name="addsong" ng-model="searchBox" placeholder="Add a youtube / soundcloud URL" search-validation ng-disabled="!socket.connected" autofocus>
+          <input type="text" name="addsong" ng-model="searchBox" placeholder="Add a youtube / soundcloud URL" search-validation ng-disabled="!padConnected" autofocus>
           <button class="btn" type="submit" ng-disable="searchForm.$invalid">
             <i class="icon-question-sign" ng-show="!searchBoxType"></i>
             <i class="icon-plus" ng-show="searchBoxType == 'sc'"></i>
@@ -22,12 +22,13 @@
         </div>
       </form>
     </div>
-    <div ng-repeat="song in mainPlaylist">
+    <div ng-repeat="song in orderedPlaylist" ng-animate="{ enter: 'show' }">
       <div class="song-container">
-        <span ng-class="status" ng-style="{ width: progress }"></span>
+        <span ng-class="song.status" ng-style="{ width: song.progress + '%' }"></span>
         <div class="song-element">
           <p>{{ song.title }}</p>
-          <span class="icon-stack"><i class="icon-sign-blank icon-stack-base"></i><i class="icon-cloud"></i></span>
+          <span class="icon-stack" ng-show="song.type == 'sc'"><i class="icon-sign-blank icon-stack-base"></i><i class="icon-cloud"></i></span>
+          <i class="icon-youtube-play" ng-show="song.type == 'yt'"></i>
         </div>
       </div>
     </div>
