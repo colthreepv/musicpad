@@ -44,27 +44,31 @@ angular.module('musicpad.pad', [])
         , elmButton = angular.element(elm[0].parentNode.querySelector('button'));
 
       ctrl.$parsers.unshift(function (value) {
+        var shortURL;
         // Checks if the url provided is a sane youtube/soundcloud url
         if (scRegex.test(value)) {
           ctrl.$setValidity(attrs.name, true); // useless ? :(
           scope.searchBoxType = 'sc';
-          elmButton.addClass('btn-success');
-          return value.match(/soundcloud.com\/(.*)/).pop();
+          elmButton.addClass('btn-success'); elm.addClass('success');
+          shortURL = value.match(/soundcloud.com\/(.*)/).pop();
+          elm.val(shortURL);
+          return shortURL;
         } else if (ytRegex.test(value)) {
           ctrl.$setValidity(attrs.name, true); // useless ? :(
           scope.searchBoxType = 'yt';
-          elmButton.addClass('btn-success');
+          elmButton.addClass('btn-success'); elm.addClass('success');
           return value.match(/watch(?:.*?)v\=(.*?)(?:&|$)/).pop();
         } else {
           ctrl.$setValidity(attrs.name, false); // useless ? :(
           scope.searchBoxType = null;
-          elmButton.removeClass('btn-success');
+          elmButton.removeClass('btn-success'); elm.removeClass('success');
         }
       });
 
       // Bind click on button, to clear btn-success class
       elmButton.bind('click', function () {
         elmButton.removeClass('btn-success');
+        elm.removeClass('success');
       });
     }
   };
@@ -131,7 +135,14 @@ angular.module('musicpad.pad', [])
         console.log($scope.mainPlaylist[responseObj.id]);
       }
       if (responseObj.status === 'complete') {
+        // In case the song is cached, you ONLY receive 'complete' event.
+        // So let's handle it!
         responseObj.progress = 100;
+        if (!$scope.mainPlaylist[responseObj.id]) {
+          $scope.mainPlaylist[responseObj.id] = responseObj;
+          $scope.orderedPlaylist.push($scope.mainPlaylist[responseObj.id]);
+          return;
+        }
         angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
         console.log($scope.mainPlaylist[responseObj.id]);
       }

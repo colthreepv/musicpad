@@ -31,6 +31,13 @@
         }
         input {
           width: 269px;
+          .transition(background-color 1s linear);
+
+          &.success {
+            background-color: rgba(110, 221, 10, 0.6);
+            color: rgb(50, 100, 50);
+            font-weight: 800;
+          }
         }
         // Add transition to da button.
         button {
@@ -53,10 +60,11 @@
       position: relative; // Need to use this to position .song-element on top of this.
 
       .box-shadow(1px 1px 2px #ccc);
+      &.complete { .box-shadow(1px 1px 6px 1px rgba(50,100,50,0.70)); }
 
       // Status colors
       &>span {
-        &.complete { background-color: cyan; }
+        &.complete { background-color: rgb(190, 255, 0); }
         &.starting { background-color: yellow; }
         &.progress { background-color: orange; }
         &.error { background-color: red; }
