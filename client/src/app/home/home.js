@@ -12,15 +12,15 @@
  * The dependencies block here is also where component dependencies should be
  * specified, as shown below.
  */
-angular.module( 'musicpad.home', ['titleService'])
+angular.module('musicpad.home', ['titleService'])
 
 /**
  * Each section or module of the site can also have its own routes. AngularJS
  * will handle ensuring they are all available at run-time, but splitting it
  * this way makes each module more "self-contained".
  */
-.config(function config( $routeProvider ) {
-  $routeProvider.when( '/', {
+.config(function config($routeProvider) {
+  $routeProvider.when('/', {
     controller: 'HomeCtrl',
     templateUrl: 'home/home.tpl.html'
   });
@@ -29,13 +29,13 @@ angular.module( 'musicpad.home', ['titleService'])
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'HomeCtrl', ['titleService', 'socketService', '$scope', '$location', function HomeController( titleService, socketService, $scope, $location ) {
-  titleService.setTitle( 'Home' );
+.controller('HomeCtrl', ['titleService', '$http', '$scope', '$location', function HomeController(titleService, $http, $scope, $location) {
+  titleService.setTitle('Home');
+  // Dirty way to get new token.
   $scope.getID = function () {
-    var getUnique = socketService.getUniqueID();
-    getUnique.then(function (id) {
-      console.log('change location');
-      $location.path('/'+id);
-    });
+    $http.get('/api/gentoken')
+      .success(function (data, status, headers, config) {
+        $location.path('/' + data);
+      });
   };
 }]);
