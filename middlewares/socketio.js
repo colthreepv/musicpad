@@ -1,5 +1,6 @@
 // Internal Libs
 var gentoken = require('./gentoken')
+  , cache = require('./cache')
   , soundcloud = require('./soundcloud')
   , youtube = require('./youtube');
 
@@ -7,41 +8,26 @@ module.exports = function (io) {
   io.sockets.on('connection', function (socket) {
     var roomID; // reference to the roomID
 
-    socket.on('uniqueID', function (uniqueID) {
-      // this socket is a get/setter, if the client sends an uniqueID we join him to that room
-      // otherwise, we generate a uniqueID an *THEN* join him to that room
-      // 
-      // HE MUST F*****KIN JOIN DA ROOM!
-      if (!uniqueID) {
-        // generate uniqueID and send it back to the user, then join it to the room
-        gentoken(function (err, token) {
-          if (err) return socket.emit('error', err);
-          socket.emit('uniqueID', token);
-        });
-      } else {
-        socket.join(uniqueID);
-        roomID = uniqueID;
-        socket.emit('ready');
-      }
-
+    socket.on('joinPad', function (uniqueID) {
+      socket.join(uniqueID);
+      roomID = uniqueID;
+      socket.emit('ready');
     });
 
     socket.on('request', function (requestObj) {
       // EXAMPLE>> requestObj = { type: 'sc', id: 'some-artist/some-song' }
-      if (requestObj.type === 'sc') {
-        soundcloud(
-          requestObj.id,
-          function (jsonStatus) {
-            io.sockets.in(roomID).emit('response', jsonStatus);
-          },
-          function (error, doneStatus) {
-            if (error) { return io.sockets.in(roomID).emit({ id: requestObj.id, error: error }); }
-            io.sockets.in(roomID).emit('response',doneStatus);
-          }
-        );
-      } else {
-        io.sockets.in(roomID).emit('PING!');
-      }
+      // Arguments: (type, id, progressCallback, doneCallback);
+      cache.songs(
+        requestObj.type,
+        requestObj.id,
+        function (jsonStatus) {
+          io.sockets.in(roomID).emit('response', jsonStatus);
+        },
+        function (error, doneStatus) {
+          if (error) { return io.sockets.in(roomID).emit('error', { id: requestObj.id, error: error }); }
+          io.sockets.in(roomID).emit('response', doneStatus);
+        }
+      );
     });
   });
   // io.of('/chat').on('connection', function (socket) {
