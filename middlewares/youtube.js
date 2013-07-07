@@ -16,7 +16,7 @@ module.exports = function (ytID, statusCallback, doneCallback) {
     , hq
     , ffmpegProc;
 
-  ytStream = ytdl('http://www.youtube.com/watch?v='+ytID, {
+  ytStream = ytdl('http://www.youtube.com/watch?v=' + ytID, {
     // filter: function (format) { log(format); return format.container === 'mp4'; },
     pool: maxRequests
   });
