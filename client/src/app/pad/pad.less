@@ -34,7 +34,7 @@
         }
         // Add transition to da button.
         button {
-          .transition(1s linear all);
+          .transition(color 1s linear);
 
           i {
             font-size: 18px;
@@ -56,10 +56,13 @@
 
       // Status colors
       &>span {
-        &.done { background-color: cyan; }
+        &.complete { background-color: cyan; }
+        &.starting { background-color: yellow; }
+        &.progress { background-color: orange; }
         &.error { background-color: red; }
         height: 100%;
         display: block;
+        .transition(all 1s ease);
       }
 
       // The element with details

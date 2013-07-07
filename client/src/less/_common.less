@@ -7,6 +7,22 @@
 @phones: ~"only screen and (min-width: 480px) and (max-width: 767px)";
 @smallphones: ~"only screen and (max-width: 479px)";
 
+// Utilities
+
+.hidden { display: none !important; }
+
+.show, .hide {
+  .transition(all 1s linear);
+}
+
+.show, .hide.hide-active {
+  opacity: 0;
+}
+
+.show.show-active, .hide {
+  opacity: 1;
+}
+
 // 
 // Homepage & Common Elements
 // 
