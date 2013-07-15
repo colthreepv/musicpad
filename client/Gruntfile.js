@@ -80,8 +80,7 @@ module.exports = function ( grunt ) {
         'vendor/angular-placeholders/dist/placeholders-0.0.1-SNAPSHOT.js',
         'vendor/angular-ui-utils/modules/route/route.js',
         'vendor/socket.io-client/dist/socket.io.js',
-        'vendor/angular-socket-io/socket.js',
-        'vendor/kurosaki-audio-player/kurosakiHTML5AudioPlayer/kurosakiHTML5AudioPlayer.js'
+        'vendor/angular-socket-io/socket.js'
       ],
       minjs: [
         'vendor/angular-unstable/angular.min.js',

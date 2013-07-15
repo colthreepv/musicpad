@@ -83,7 +83,6 @@ angular.module('musicpad.pad', [])
   'titleService',
   'socket',
   function PadController($scope, $routeParams, titleService, socket) {
-    kurosakiHTML5AudioPlayer();
     titleService.setTitle($routeParams.uniqueID);
 
     // NOTE: in case socket goes down, it makes it join the correct musicPad again.

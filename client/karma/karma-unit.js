@@ -16,7 +16,6 @@ files = [
   'vendor/angular-ui-utils/modules/route/*.js',
   'vendor/socket.io-client/dist/socket.io.js',
   'vendor/angular-socket-io/socket.js',
-  'vendor/kurosaki-audio-player/kurosakiHTML5AudioPlayer/kurosakiHTML5AudioPlayer.js',
   'src/**/*.js',
   'dist/tmp/**/*.js'
 ];
