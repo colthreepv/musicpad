@@ -32,7 +32,7 @@ module.exports = function (ytID, statusCallback, doneCallback) {
     .withNoVideo(true)
     // .withAudioCodec('copy')
     .toFormat('ogg')
-    .saveToFile('assets/yt/' + ytID + '.ogg');
+    .saveToFile('assets/yt/ytsux' + ytID + '.ogg');
   // var videoDump = require('fs').createWriteStream('assets/yt/' + ytID + '.mp4');
   // ytStream.pipe(videoDump);
 
