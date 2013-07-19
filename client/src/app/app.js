@@ -1,36 +1,22 @@
-angular.module('musicpad', [
-  // Templates compiled Statically!
+angular.module( 'ngBoilerplate', [
   'templates-app',
-  'templates-component',
-  // Some pages are separated modules
-  'musicpad.home',
-  'musicpad.pad',
-  // Main router inclusion
-  // 'ui.route' That is not router....
-  // Very useful HTTP Mock for development ;)
-  // 'musicpad.mock'
-  // btford/angular-socket-io
-  'btford.socket-io'
+  'templates-common',
+  'ngBoilerplate.home',
+  'ngBoilerplate.about',
+  'ui.state',
+  'ui.route'
 ])
 
-.config([ '$routeProvider', function myAppConfig($routeProvider) {
-  $routeProvider.otherwise({ redirectTo: '/' });
-}])
+.config( function myAppConfig ( $stateProvider, $urlRouterProvider ) {
+  $urlRouterProvider.otherwise( '/home' );
+})
 
-.run(['titleService', '$rootScope', '$location', function (titleService, $rootScope, $location) {
-  titleService.setSuffix(' | MusicPad');
+.run( function run ( titleService ) {
+  titleService.setSuffix( ' | ngBoilerplate' );
+})
 
-  // Manages all the route Erorrs, it could have been much more detailed
-  $rootScope.$on('$routeChangeError', function (event, current, previous, rejection) {
-    /**
-     * This is a very clever way to implement failure redirection.
-     * You can use the value of redirectMap, based on the value of the rejection
-     * So you can setup DIFFERENT redirections based on different promise errors.
-     */
-    $location.path(current.$$route.redirectMap[rejection]).replace();
-  });
-}])
+.controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
+})
 
-.controller('AppCtrl', ['$scope', function AppCtrl($scope) {
-  // TODO: Main Controller here.
-}]);
+;
+

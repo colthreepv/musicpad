@@ -1,16 +1,13 @@
 {
-  "name": "musicpad",
-  "version": "0.0.1",
+  "name": "ng-boilerplate",
+  "version": "0.3.0",
   "devDependencies": {
-    "bootstrap": "latest",
-    "angular-bootstrap": "latest",
-    "angular-mocks": "latest",
-    "angular-placeholders": "latest",
-    "angular-ui-utils": "latest",
-    "angular-unstable": "latest",
-    "font-awesome": "latest",
-    "socket.io-client": "0.9.16",
-    "angular-socket-io": "latest",
-    "kurosaki-audio-player": "git@github.com:GithubProfile/kurosaki-html5-audio-player.git"
-  }
+    "angular": "~1.0.7",
+    "angular-mocks": "~1.0.7",
+    "bootstrap": "~2.3.2",
+    "angular-bootstrap": "~0.3.0",
+    "angular-ui-router": "~0.0.1",
+    "angular-ui-utils": "~0.0.3"
+  },
+  "dependencies": {}
 }
