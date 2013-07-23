@@ -1,0 +1,16 @@
+{
+  "name": "musicpad",
+  "version": "0.0.1",
+  "devDependencies": {
+    "bootstrap": "latest",
+    "angular-bootstrap": "latest",
+    "angular-mocks": "latest",
+    "angular-placeholders": "latest",
+    "angular-ui-utils": "latest",
+    "angular-unstable": "latest",
+    "font-awesome": "latest",
+    "socket.io-client": "0.9.16",
+    "angular-socket-io": "latest",
+    "kurosaki-audio-player": "git@github.com:GithubProfile/kurosaki-html5-audio-player.git"
+  }
+}
