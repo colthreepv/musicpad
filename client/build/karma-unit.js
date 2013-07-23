@@ -9,8 +9,13 @@ module.exports = function ( karma ) {
      * This is the list of file patterns to load into the browser during testing.
      */
     files: [
-      <% scripts.forEach( function ( file ) { %>'<%= file %>',
-      <% }); %>
+      'vendor/angular-unstable/angular.js',
+      'vendor/socket.io-client/dist/socket.io.js',
+      'vendor/angular-socket-io/socket.js',
+      'build/templates-app.js',
+      'build/templates-common.js',
+      'vendor/angular-mocks/angular-mocks.js',
+      
       'src/**/*.js',
       'src/**/*.coffee',
     ],

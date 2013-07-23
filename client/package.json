@@ -1,16 +1,12 @@
 {
-  "author": "Josh David Miller",
-  "name": "ng-boilerplate",
-  "version": "0.3.0",
-  "homepage": "http://bit.ly/ng-boilerplate",
-  "licenses": {
-    "type": "MIT",
-    "url": "https://raw.github.com/joshdmiller/ng-boilerplate/master/LICENSE"
-  },
-  "bugs": "https://github.com/joshdmiller/ng-boilerplate/issues",
+  "author": "mrgamer",
+  "name": "musicpad",
+  "version": "0.0.1",
+  "homepage": "https://github.com/mrgamer/musicpad",
+  "bugs": "https://github.com/mrgamer/musicpad/issues",
   "repository": {
     "type": "git",
-    "url": "git@github.com:joshdmiller/ng-boilerplate.git"
+    "url": "git@github.com:mrgamer/musicpad.git"
   },
   "dependencies": {},
   "devDependencies": {
