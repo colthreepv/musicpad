@@ -1,7 +1,7 @@
 /**
  * Module that actually manages the musicpad
  */
-angular.module('musicpad.pad', ['angular-audio-player', 'ui.bootstrap.dropdownToggle', 'monospaced.qrcode'])
+angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.bootstrap.dropdownToggle', 'monospaced.qrcode'])
 
 /**
  * Setup route for this module
@@ -154,7 +154,7 @@ angular.module('musicpad.pad', ['angular-audio-player', 'ui.bootstrap.dropdownTo
       $scope.playingNow = null;
     });
     $scope.$on('audioplayer:play', function (event, playlistIndex) {
-      $scope.playingNow = $scope.orderedPlaylist[playlistIndex];
+      $scope.playingNow = $scope.orderedPlaylist[playlistIndex + 1];
     });
 
   }

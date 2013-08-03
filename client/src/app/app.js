@@ -4,13 +4,12 @@ angular.module('musicpad', [
   'templates-common',
   // Some pages are separated modules
   'musicpad.home',
-  'musicpad.pad',
+  'musicpad.pad'
   // Main router inclusion
   // 'ui.route' That is not router....
   // Very useful HTTP Mock for development ;)
   // 'musicpad.mock'
   // btford/angular-socket-io
-  'btford.socket-io'
 ])
 
 .config([ '$routeProvider', function myAppConfig($routeProvider) {
