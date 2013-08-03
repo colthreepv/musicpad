@@ -10,8 +10,7 @@ angular.module('musicpad', [
   // Very useful HTTP Mock for development ;)
   // 'musicpad.mock'
   // btford/angular-socket-io
-  'btford.socket-io',
-  'angular-audio-player'
+  'btford.socket-io'
 ])
 
 .config([ '$routeProvider', function myAppConfig($routeProvider) {
@@ -34,4 +33,5 @@ angular.module('musicpad', [
 
 .controller('AppCtrl', ['$scope', function AppCtrl($scope) {
   // TODO: Main Controller here.
+  $scope.baseUrl = 'musicpad.localhost';
 }]);

@@ -50,13 +50,12 @@ module.exports = {
   vendor_files: {
     js: [
       'vendor/angular-unstable/angular.js',
-      // 'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
-      // 'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
-      // 'vendor/angular-ui-router/release/angular-ui-router.js',
-      // 'vendor/angular-ui-utils/modules/route/route.js'
       'vendor/socket.io-client/dist/socket.io.js',
       'vendor/angular-socket-io/socket.js',
-      'vendor/angular-audio-player/src/angular-audio-player.js'
+      'vendor/angular-audio-player/src/angular-audio-player.js',
+      'vendor/angular-bootstrap/src/dropdownToggle/dropdownToggle.js',
+      'vendor/angular-qrcode/qrcode.js',
+      'vendor/qrcode-generator/js/qrcode.js'
     ],
     css: [
     ]

@@ -1,7 +1,14 @@
 <div class="navbar navbar-inverse">
   <a class="navbar-brand" href="#">MusicPad:</a>
   <ul class="nav navbar-nav">
-    <li class="active"><a href="">{{uniqueID}}</a></li>
+    <li class="dropdown">
+      <a href="" class="dropdown-toggle">{{ uniqueID }} <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li>
+          <a><qrcode size="200">http://{{ baseUrl }}/#/{{ uniqueID }}</qrcode></a>
+        </li>
+      </ul>
+    </li>
     <li ng-show="padConnected"><a>Connected <i class="icon-ok-sign"></i></a></li>
     <li ng-show="!padConnected"><a>Disconnected <i class="icon-exclamation"></i></a></li>
     <li class="disabled">
@@ -47,7 +54,7 @@
       </form>
     </div>
     <div ng-repeat="song in orderedPlaylist" ng-animate="{ enter: 'show' }">
-      <div class="song-container" ng-click="playSong(song, $index)">
+      <div class="song-container" ng-click="audio.playPause($index)" ng-class="{ 'complete': song.status === 'complete' }">
         <span ng-class="song.status" ng-style="{ width: song.progress + '%' }"></span>
         <div class="song-element">
           <p>{{ song.title }}</p>

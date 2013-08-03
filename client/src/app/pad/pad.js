@@ -1,7 +1,7 @@
 /**
  * Module that actually manages the musicpad
  */
-angular.module('musicpad.pad', ['angular-audio-player'])
+angular.module('musicpad.pad', ['angular-audio-player', 'ui.bootstrap.dropdownToggle', 'monospaced.qrcode'])
 
 /**
  * Setup route for this module
