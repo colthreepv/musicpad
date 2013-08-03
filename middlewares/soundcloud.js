@@ -41,17 +41,17 @@ module.exports = function (scID, statusCallback, doneCallback) {
       request({ url: 'https://api.soundcloud.com/resolve',
         pool: maxRequests,
         json: true,
-        qs: { client_id: client_id, url: 'https://soundcloud.com/'+scID } }, callback );
+        qs: { client_id: client_id, url: 'https://soundcloud.com/' + scID } }, callback);
     },
     function (response, body, callback) {
       // the following is just a soundcloud 404 (most probably)
-      if (response.statusCode !== 200) return callback(null, false);
+      if (response.statusCode !== 200) { return callback(null, false); }
 
       // set globals to be returned in the _VERY_ end
       title = body.title;
       trueID = body.id;
       hq = body.downloadable;
-      statusCallback({ id: scID, status: 'starting', title: title, hq: hq, type: 'sc' });
+      statusCallback({ id: trueID, status: 'starting', title: title, hq: hq, type: 'sc' });
 
       if (body.downloadable) {
         callback(null, request({
@@ -71,26 +71,26 @@ module.exports = function (scID, statusCallback, doneCallback) {
       var songStream;
       httpClientRequest.on('response', function (httpIncomingMessage) {
         declaredFileLength = parseInt(httpIncomingMessage.headers['content-length'], 10);
-        songStream = fs.createWriteStream('assets/sc/'+trueID+'.mp3');
+        songStream = fs.createWriteStream('assets/sc/' + trueID + '.mp3');
 
         // piping into the file
         httpIncomingMessage.pipe(songStream);
         httpIncomingMessage.on('data', function (chunk) {
           partialBytes += chunk.length;
           statusCallback({
-            id: scID,
+            id: trueID,
             status: 'progress',
             totalBytes: declaredFileLength,
             partialBytes: partialBytes,
-            progress: Math.round((partialBytes / declaredFileLength)*100)
+            progress: Math.round((partialBytes / declaredFileLength) * 100)
           });
         });
       });
-      httpClientRequest.on('end', function(){ callback(null, declaredFileLength); });
+      httpClientRequest.on('end', function () { callback(null, declaredFileLength); });
     }
   ], function (err, results) {
-    if (err) return doneCallback(err);
-    doneCallback(null, { id: scID, status: 'complete', title: title, hq: hq, type: 'sc' });
+    if (err) { return doneCallback(err); }
+    doneCallback(null, { id: trueID, status: 'complete', title: title, hq: hq, type: 'sc' });
   });
 };
 
