@@ -16,7 +16,7 @@ module.exports = function ( karma ) {
     ],
 
     frameworks: [ 'jasmine' ],
-    plugins: [ 'karma-jasmine', 'karma-firefox-launcher', 'karma-chrome-launcher', 'karma-coffee-preprocessor' ],
+    plugins: [ 'karma-jasmine', 'karma-phantomjs-launcher' ],
     preprocessors: {
       '**/*.coffee': 'coffee',
     },
@@ -52,7 +52,7 @@ module.exports = function ( karma ) {
      * open and the tests will automatically occur there during the build. This has
      * the aesthetic advantage of not launching a browser every time you save.
      */
-    browsers: []
+    browsers: ['PhantomJS']
   });
 };
 
