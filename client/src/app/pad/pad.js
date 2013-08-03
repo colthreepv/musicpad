@@ -149,10 +149,6 @@ angular.module('musicpad.pad', ['angular-audio-player', 'ui.bootstrap.dropdownTo
       }
     });
 
-    $scope.playSong = function (song, index) {
-      $scope.audio.playPause(index);
-    };
-
     // On pause we don't play anything ;)
     $scope.$on('audioplayer:pause', function (event) {
       $scope.playingNow = null;

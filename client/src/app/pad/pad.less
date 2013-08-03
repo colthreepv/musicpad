@@ -77,12 +77,14 @@
       margin-top: 4px;
       border: 1px solid #CCCCCC;
 
-      cursor: pointer;
 
       position: relative; // Need to use this to position .song-element on top of this.
 
       .box-shadow(1px 1px 2px #ccc);
-      &.complete { .box-shadow(1px 1px 6px 1px rgba(50,100,50,0.70)); }
+      &.complete {
+        .box-shadow(1px 1px 6px 1px rgba(50,100,50,0.70));
+        cursor: pointer;
+      }
 
       // Status colors
       &>span {
