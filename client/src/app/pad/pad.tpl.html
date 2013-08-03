@@ -1,31 +1,41 @@
 <div class="navbar navbar-inverse">
-  <div class="navbar-inner">
-    <a class="brand" href="#">MusicPad:</a>
-    <ul class="nav">
-      <li class="active"><a href="">{{uniqueID}}</a></li>
-      <li ng-show="padConnected"><a>Connected <i class="icon-ok-sign"></i></a></li>
-      <li ng-show="!padConnected"><a>Disconnected <i class="icon-exclamation"></i></a></li>
-      <!--li>
-        <a>
-          <audio>
-            <source src="/assets/sc/100042225.mp3" type="audio/mp3">
-          </audio>
-        </a>
-      </li-->
-    </ul>
-  </div>
+  <a class="navbar-brand" href="#">MusicPad:</a>
+  <ul class="nav navbar-nav">
+    <li class="active"><a href="">{{uniqueID}}</a></li>
+    <li ng-show="padConnected"><a>Connected <i class="icon-ok-sign"></i></a></li>
+    <li ng-show="!padConnected"><a>Disconnected <i class="icon-exclamation"></i></a></li>
+    <li class="disabled">
+      <a>
+        <div class="well well-small well-player">
+          <i class="icon-fast-backward"></i>
+          <i ng-class="{ 'icon-pause': audio.playing, 'icon-play': !audio.playing }"></i>
+          <i class="icon-fast-forward"></i>
+          <span>audio track name here very long and plase shorten it</span>
+        </div>
+      </a>
+    </li>
+    <!--li>
+      <a>
+        <audio>
+          <source src="/assets/sc/100042225.mp3" type="audio/mp3">
+        </audio>
+      </a>
+    </li-->
+  </ul>
 </div>
 <div class="musicpad-container">
   <div class="song-column">
     <div class="search-box">
       <form name="searchForm" ng-submit="addSong()">
-        <div class="input-append">
-          <input type="text" name="addsong" ng-model="searchBox" placeholder="Add a youtube / soundcloud URL" search-validation ng-disabled="!padConnected" autofocus>
-          <button class="btn" type="submit" ng-disable="searchForm.$invalid">
-            <i class="icon-question-sign" ng-show="!searchBoxType"></i>
-            <i class="icon-plus" ng-show="searchBoxType == 'sc'"></i>
-            <i class="icon-plus" ng-show="searchBoxType == 'yt'"></i>
-          </button>
+        <div class="input-group">
+          <input type="text" class="form-control" name="addsong" ng-model="searchBox" placeholder="Add a youtube / soundcloud URL" search-validation ng-disabled="!padConnected" autofocus>
+          <span class="input-group-btn">
+            <button class="btn" type="submit" ng-disable="searchForm.$invalid">
+              <i class="icon-question-sign" ng-show="!searchBoxType"></i>
+              <i class="icon-plus" ng-show="searchBoxType == 'sc'"></i>
+              <i class="icon-plus" ng-show="searchBoxType == 'yt'"></i>
+            </button>
+          </span>
         </div>
       </form>
     </div>
@@ -40,8 +50,9 @@
       </div>
     </div>
   </div>
-  <div class="welcome-column hero-unit">
-    <h1>Insightful infos.</h1>
+  <div class="welcome-column jumbotron">
+    <h1 class="pull-right"><i class="icon-thumbs-up"></i></h1>
+    <h3>Add an url to the left</h3>
       <audio>
         <source src="/assets/yt/gklWhYITmjI.ogg">
       </audio>

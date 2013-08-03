@@ -1,11 +1,17 @@
 // Navbar overrides
 .navbar {
-  .nav {
+  .navbar-nav {
     .icon-ok-sign {
       color: green;
     }
     .icon-exclamation {
       color: red;
+    }
+    .well-player {
+      display: inline;
+      i {
+        margin: 0 3px;
+      }
     }
   }
 }
@@ -21,7 +27,7 @@
     width: 340px;
 
     .search-box {
-      width: 320px;
+      // width: 320px;
       .box-shadow(0 1px 2px #ccc);
 
       form {
@@ -30,7 +36,7 @@
           margin: 0; // i dislike Boostrap margins
         }
         input {
-          width: 269px;
+          // width: 269px;
           .transition(background-color 1s linear);
 
           &.success {
