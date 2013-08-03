@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "angular-unstable": "latest",
+    "angular-mocks": "latest",
     "bootstrap": "latest",
     "angular-bootstrap": "https://github.com/angular-ui/bootstrap.git#0.4.0",
     "socket.io-client": "0.9.16",
