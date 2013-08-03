@@ -3,6 +3,10 @@
   "name": "musicpad",
   "version": "0.1.0",
   "homepage": "https://github.com/mrgamer/musicpad",
+  "licenses": {
+    "type": "MIT",
+    "url": "https://raw.github.com/mrgamer/musicpad/master/LICENSE"
+  },
   "bugs": "https://github.com/mrgamer/musicpad/issues",
   "repository": {
     "type": "git",
