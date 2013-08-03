@@ -11,6 +11,20 @@
       display: inline;
       i {
         margin: 0 3px;
+        cursor: pointer;
+      }
+      span {
+        .transition(.5s all linear);
+        display: inline-block;
+        width: 0;
+
+        &.expand-title {
+          width: 330px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          // max-width: 330px;
+          white-space: nowrap;
+        }
       }
     }
   }
@@ -27,7 +41,7 @@
     width: 340px;
 
     .search-box {
-      // width: 320px;
+      width: 320px;
       .box-shadow(0 1px 2px #ccc);
 
       form {
@@ -62,6 +76,8 @@
       height: 48px;
       margin-top: 4px;
       border: 1px solid #CCCCCC;
+
+      cursor: pointer;
 
       position: relative; // Need to use this to position .song-element on top of this.
 
@@ -132,6 +148,6 @@
   // For now this fills the rest of the document, it's called welcome.. for now! TODO
   .welcome-column {
     display: inline-block;
-    width: 500px;
+    width: 636px;
   }
 }

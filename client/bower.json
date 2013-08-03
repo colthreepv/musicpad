@@ -6,6 +6,7 @@
     "angular-mocks": "latest",
     "bootstrap": "latest",
     "socket.io-client": "0.9.16",
-    "angular-socket-io": "latest"
+    "angular-socket-io": "latest",
+    "angular-audio-player": "https://github.com/mrgamer/angular-audio-player.git#master"
   }
 }

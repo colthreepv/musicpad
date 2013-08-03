@@ -1,7 +1,7 @@
 /**
  * Module that actually manages the musicpad
  */
-angular.module('musicpad.pad', [])
+angular.module('musicpad.pad', ['angular-audio-player'])
 
 /**
  * Setup route for this module
@@ -39,9 +39,9 @@ angular.module('musicpad.pad', [])
   return {
     require: 'ngModel',
     link: function (scope, elm, attrs, ctrl) {
-      var scRegex = /(?:https?\:\/\/)?.*?soundcloud.com\/(.{3,}?)\/(.{3,})/
-        , ytRegex = /(?:https?\:\/\/).*?(?:(?:youtube.com\/watch.*?v\=(?:.*?)(?:\s|$))|(?:youtu.be\/(?:.*)))/
-        , elmButton = angular.element(elm[0].parentNode.querySelector('button'));
+      var scRegex = /(?:https?\:\/\/)?.*?soundcloud.com\/(.{3,}?)\/(.{3,})/,
+          ytRegex = /(?:https?\:\/\/).*?(?:(?:youtube.com\/watch.*?v\=(?:.*?)(?:\s|$))|(?:youtu.be\/(?:.*)))/,
+          elmButton = angular.element(elm[0].parentNode.querySelector('button'));
 
       ctrl.$parsers.unshift(function (value) {
         var shortURL;
@@ -80,9 +80,10 @@ angular.module('musicpad.pad', [])
 .controller('PadController', [
   '$scope',
   '$routeParams',
+  '$log',
   'titleService',
   'socket',
-  function PadController($scope, $routeParams, titleService, socket) {
+  function PadController($scope, $routeParams, $log, titleService, socket) {
     titleService.setTitle($routeParams.uniqueID);
 
     // NOTE: in case socket goes down, it makes it join the correct musicPad again.
@@ -100,7 +101,6 @@ angular.module('musicpad.pad', [])
 
     $scope.addSong = function () {
       console.log($scope.searchBox);
-      // OLD socketService.request($scope.searchBox, $scope.searchBoxType);
       socket.emit('request', { id: $scope.searchBox, type: $scope.searchBoxType });
 
       // request sent! GOOOO MUSICPAD!! we can clear the values for our next request :-)
@@ -120,6 +120,8 @@ angular.module('musicpad.pad', [])
     };*/
 
     $scope.orderedPlaylist = [];
+    $scope.audioPlaylist = [];
+    $scope.playingNow = null;
 
     $scope.$on('socket:response', function (event, responseObj) {
       $scope.mainPlaylist = $scope.mainPlaylist || {};
@@ -129,9 +131,12 @@ angular.module('musicpad.pad', [])
         $scope.mainPlaylist[responseObj.id] = responseObj;
         $scope.orderedPlaylist.push($scope.mainPlaylist[responseObj.id]); // enqueue in order!
         console.log($scope.mainPlaylist[responseObj.id]);
-      }
-      if (responseObj.status === 'progress' || responseObj.status === 'complete') {
-        responseObj.progress = (responseObj.status === 'complete') ? 100 : responseObj.progress;
+      } else if (responseObj.status === 'progress' || responseObj.status === 'complete') {
+        if (responseObj.status === 'complete') {
+          responseObj.progress = 100;
+          $scope.audioPlaylist.push({ src: '/assets/' + responseObj.type + '/' + responseObj.id + '.mp3' });
+        }
+
         // In case the song is cached, you ONLY receive 'complete' event.
         // So let's handle it!
         if (!$scope.mainPlaylist[responseObj.id]) {
@@ -140,9 +145,21 @@ angular.module('musicpad.pad', [])
           return;
         }
         angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
-        console.log($scope.mainPlaylist[responseObj.id]);
+        $log.info($scope.mainPlaylist[responseObj.id]);
       }
     });
-    
+
+    $scope.playSong = function (song, index) {
+      $scope.audio.playPause(index);
+    };
+
+    // On pause we don't play anything ;)
+    $scope.$on('audioplayer:pause', function (event) {
+      $scope.playingNow = null;
+    });
+    $scope.$on('audioplayer:play', function (event, playlistIndex) {
+      $scope.playingNow = $scope.orderedPlaylist[playlistIndex];
+    });
+
   }
 ]);

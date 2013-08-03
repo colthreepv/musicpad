@@ -10,7 +10,8 @@ angular.module('musicpad', [
   // Very useful HTTP Mock for development ;)
   // 'musicpad.mock'
   // btford/angular-socket-io
-  'btford.socket-io'
+  'btford.socket-io',
+  'angular-audio-player'
 ])
 
 .config([ '$routeProvider', function myAppConfig($routeProvider) {

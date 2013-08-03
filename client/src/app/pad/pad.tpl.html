@@ -7,11 +7,18 @@
     <li class="disabled">
       <a>
         <div class="well well-small well-player">
-          <i class="icon-fast-backward"></i>
-          <i ng-class="{ 'icon-pause': audio.playing, 'icon-play': !audio.playing }"></i>
-          <i class="icon-fast-forward"></i>
-          <span>audio track name here very long and plase shorten it</span>
+          <i class="icon-fast-backward" ng-click="audio.prev()"></i>
+          <i ng-class="{ 'icon-pause': audio.playing, 'icon-play': !audio.playing }" ng-click="audio.playPause()"></i>
+          <i class="icon-fast-forward" ng-click="audio.next()"></i>
+          <span ng-class="{ 'expand-title': audio.playing }">{{ playingNow.title }}</span>
         </div>
+      </a>
+    </li>
+    <li ng-show="audio.playing">
+      <a>
+        <span>{{ audio.formatTime }}</span>
+        <span> / </span>
+        <span>{{ audio.formatDuration }}</span>
       </a>
     </li>
     <!--li>
@@ -40,7 +47,7 @@
       </form>
     </div>
     <div ng-repeat="song in orderedPlaylist" ng-animate="{ enter: 'show' }">
-      <div class="song-container">
+      <div class="song-container" ng-click="playSong(song, $index)">
         <span ng-class="song.status" ng-style="{ width: song.progress + '%' }"></span>
         <div class="song-element">
           <p>{{ song.title }}</p>
@@ -53,9 +60,7 @@
   <div class="welcome-column jumbotron">
     <h1 class="pull-right"><i class="icon-thumbs-up"></i></h1>
     <h3>Add an url to the left</h3>
-      <audio>
-        <source src="/assets/yt/gklWhYITmjI.ogg">
-      </audio>
+      <audio data-player-control="audio" data-playlist="audioPlaylist" audio-player></audio>
   </div>
 </div>
 

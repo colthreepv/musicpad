@@ -55,7 +55,8 @@ module.exports = {
       // 'vendor/angular-ui-router/release/angular-ui-router.js',
       // 'vendor/angular-ui-utils/modules/route/route.js'
       'vendor/socket.io-client/dist/socket.io.js',
-      'vendor/angular-socket-io/socket.js'
+      'vendor/angular-socket-io/socket.js',
+      'vendor/angular-audio-player/src/angular-audio-player.js'
     ],
     css: [
     ]
