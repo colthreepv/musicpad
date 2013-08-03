@@ -16,7 +16,7 @@ angular.module('musicpad.pad', ['angular-audio-player'])
        * Regex or complex validation on uniqueID parameter, it could even be async!
        */
       // $timeout(function(){ Not needed for now!
-      if ($route.current.params.uniqueID.length < 10) {
+      if ($route.current.params.uniqueID.length < 8) {
         paramCheck.reject('uniqueID');
       } else {
         paramCheck.resolve();

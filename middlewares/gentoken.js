@@ -13,28 +13,33 @@ module.exports = function (tokenCallback) {
    *   - ELSE
    *    SEND!
    */
-  var isIDunique = false
-    , uniqueID = null;
+  var isIDunique = false,
+      uniqueID = null,
+      possibleString = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      stringLen = possibleString.length;
 
   async.until(
-    function(){ return isIDunique; },
+    function () { return isIDunique; },
     function (callback) {
       crypto.pseudoRandomBytes(8, function (err, buf) {
-        if (err) return callback(err); // manage crypto errors
-        uniqueID = buf.toString('hex');
-        redis.get('pad:'+uniqueID, function (err, reply) {
-          if (err) return callback(err); // manage redis errors
+        if (err) { return callback(err); } // manage crypto errors
+        uniqueID = '';
+        for (var i = 0; i < buf.length; i++) {
+          uniqueID += possibleString[buf[i] % stringLen];
+        }
+        redis.get('pad:' + uniqueID, function (err, reply) {
+          if (err) { return callback(err); } // manage redis errors
           // If the redis.get returns NULL, means there's not that key in redis, so it's unique!
           if (!reply) {
             isIDunique = true;
-            redis.set('pad:'+uniqueID, true);
+            redis.set('pad:' + uniqueID, true);
           }
           return callback();
         });
       });
     },
     function (err) {
-      if (err) return tokenCallback(err);
+      if (err) { return tokenCallback(err); }
       tokenCallback(err, uniqueID);
     }
   );
