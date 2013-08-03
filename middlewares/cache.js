@@ -40,3 +40,22 @@ exports.songs = function (type, id, statusCallback, doneCallback) {
     }
   });
 };
+
+exports.pushPad = function (roomID, doneStatus) {
+  redis.lpush('pad:' + roomID, JSON.stringify(doneStatus));
+};
+/**
+ * itemCallback gets called *per* every object in the Pad LIST.
+ *              as an argument gets (doneStatus) 
+ */
+exports.dumpPad = function (roomID, itemCallback) {
+  redis.llen('pad:' + roomID, function (err, reply) {
+    if (reply) { // if the pad exists and it's a LIST with 1+ object
+      redis.lrange('pad:' + roomID, 0, reply - 1, function (err, reply) {
+        reply.forEach(function (song, index) {
+          setTimeout(itemCallback.bind(this, JSON.parse(song)), 50 * (index + 1));
+        });
+      });
+    }
+  });
+};

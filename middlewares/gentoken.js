@@ -27,12 +27,12 @@ module.exports = function (tokenCallback) {
         for (var i = 0; i < buf.length; i++) {
           uniqueID += possibleString[buf[i] % stringLen];
         }
-        redis.get('pad:' + uniqueID, function (err, reply) {
+        redis.get('pad:' + uniqueID + ':exists', function (err, reply) {
           if (err) { return callback(err); } // manage redis errors
           // If the redis.get returns NULL, means there's not that key in redis, so it's unique!
           if (!reply) {
             isIDunique = true;
-            redis.set('pad:' + uniqueID, true);
+            redis.set('pad:' + uniqueID + ':exists', true);
           }
           return callback();
         });

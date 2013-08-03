@@ -1,8 +1,5 @@
 // Internal Libs
-var gentoken = require('./gentoken')
-  , cache = require('./cache')
-  , soundcloud = require('./soundcloud')
-  , youtube = require('./youtube');
+var cache = require('./cache');
 
 module.exports = function (io) {
   io.sockets.on('connection', function (socket) {
@@ -12,6 +9,9 @@ module.exports = function (io) {
       socket.join(uniqueID);
       roomID = uniqueID;
       socket.emit('ready');
+      cache.dumpPad(roomID, function (doneStatus) {
+        socket.emit('response', doneStatus);
+      });
     });
 
     socket.on('request', function (requestObj) {
@@ -26,6 +26,8 @@ module.exports = function (io) {
         function (error, doneStatus) {
           if (error) { return io.sockets.in(roomID).emit('error', { id: requestObj.id, error: error }); }
           io.sockets.in(roomID).emit('response', doneStatus);
+          // Add song to the roomID, here.
+          cache.pushPad(roomID, doneStatus);
         }
       );
     });
