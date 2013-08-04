@@ -7,23 +7,34 @@
     .icon-exclamation {
       color: red;
     }
-    .well-player {
-      display: inline;
-      i {
-        margin: 0 3px;
-        cursor: pointer;
-      }
-      span {
-        .transition(.5s all linear);
-        display: inline-block;
-        width: 0;
+    .player {
+      padding: 5px;
 
-        &.expand-title {
-          width: 330px;
+      .well-player {
+        padding: 5px 5px 8px 5px;
+        margin: 0;
+        height: 40px;
+        display: inline-block;
+
+        i {
+          height: 100%;
+          margin: 8px 3px;
+          cursor: pointer;
+          display: inline-block;
+        }
+        span {
+          .transition(.5s all linear);
+          display: inline-block;
+          width: 0;
+          height: 20px;
           overflow: hidden;
-          text-overflow: ellipsis;
-          // max-width: 330px;
-          white-space: nowrap;
+
+          &.expand-title {
+            width: 330px;
+            text-overflow: ellipsis;
+            // max-width: 330px;
+            white-space: nowrap;
+          }
         }
       }
     }
