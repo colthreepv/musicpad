@@ -6,25 +6,29 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
 /**
  * Setup route for this module
  */
-.config(['$routeProvider', 'socketProvider', function config($routeProvider, socketProvider) {
+.config(['$routeProvider', 'socketProvider', function ($routeProvider, socketProvider) {
+  socketProvider.ioSocket = io.connect(null, { port: 443 });
+
   $routeProvider.when('/:uniqueID', {
     controller: 'PadController',
     templateUrl: 'pad/pad.tpl.html',
-    resolve: { 'checkID': ['$q', '$route', function ($q, $route) {
-      var paramCheck = $q.defer();
-      /**
-       * Regex or complex validation on uniqueID parameter, it could even be async!
-       */
-      // $timeout(function(){ Not needed for now!
-      if ($route.current.params.uniqueID.length < 8) {
-        paramCheck.reject('uniqueID');
-      } else {
-        paramCheck.resolve();
-      }
-      // },0);
+    resolve: {
+      'checkID': ['$q', '$route', function ($q, $route) {
+        var paramCheck = $q.defer();
+        /**
+         * Regex or complex validation on uniqueID parameter, it could even be async!
+         */
+        // $timeout(function(){ Not needed for now!
+        if ($route.current.params.uniqueID.length < 8) {
+          paramCheck.reject('uniqueID');
+        } else {
+          paramCheck.resolve();
+        }
+        // },0);
 
-      return paramCheck.promise;
-    }] },
+        return paramCheck.promise;
+      }]
+    },
     // Not useful now, but this is good stuff!
     // redirectTo: function (params, current, search) {
     //   if ( params.uniqueID.length < 10 ) {
@@ -34,7 +38,6 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     redirectMap: { 'uniqueID': '/' }
   });
 
-  socketProvider.ioSocket = io.connect(null, { port: 443 });
 }])
 
 .directive('searchValidation', function () {
@@ -85,12 +88,12 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
   '$log',
   'titleService',
   'socket',
-  function PadController($scope, $routeParams, $log, titleService, socket) {
+  function ($scope, $routeParams, $log, titleService, socket) {
     titleService.setTitle($routeParams.uniqueID);
 
     // NOTE: in case socket goes down, it makes it join the correct musicPad again.
     // pretty robust implementation :o
-    socket.on('connect', function () { socket.emit('joinPad', $routeParams.uniqueID); });
+    socket.emit('joinPad', $routeParams.uniqueID);
 
     socket.on('ready', function () {
       $scope.padConnected = true;
@@ -102,7 +105,7 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     });
 
     $scope.addSong = function () {
-      console.log($scope.searchBox);
+      $log.info($scope.searchBox);
       socket.emit('request', { id: $scope.searchBox, type: $scope.searchBoxType });
 
       // request sent! GOOOO MUSICPAD!! we can clear the values for our next request :-)

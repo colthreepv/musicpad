@@ -19,17 +19,17 @@ angular.module('musicpad.home', ['titleService'])
  * will handle ensuring they are all available at run-time, but splitting it
  * this way makes each module more "self-contained".
  */
-.config(function config($routeProvider) {
+.config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/', {
     controller: 'HomeCtrl',
     templateUrl: 'home/home.tpl.html'
   });
-})
+}])
 
 /**
  * And of course we define a controller for our route.
  */
-.controller('HomeCtrl', ['titleService', '$http', '$scope', '$location', function HomeController(titleService, $http, $scope, $location) {
+.controller('HomeCtrl', ['titleService', '$http', '$scope', '$location', function (titleService, $http, $scope, $location) {
   titleService.setTitle('Home');
   // Dirty way to get new token.
   $scope.getID = function () {

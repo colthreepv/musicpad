@@ -12,7 +12,7 @@ angular.module('musicpad', [
   // btford/angular-socket-io
 ])
 
-.config([ '$routeProvider', function myAppConfig($routeProvider) {
+.config(['$routeProvider', function ($routeProvider) {
   $routeProvider.otherwise({ redirectTo: '/' });
 }])
 
@@ -30,7 +30,7 @@ angular.module('musicpad', [
   });
 }])
 
-.controller('AppCtrl', ['$scope', function AppCtrl($scope) {
-  // TODO: Main Controller here.
+.controller('AppCtrl', ['$scope', function ($scope) {
+  // Main Controller here
   $scope.baseUrl = 'musicpad.localhost';
 }]);
