@@ -51,7 +51,7 @@ module.exports = function (scID, statusCallback, doneCallback) {
       title = body.title;
       trueID = body.id;
       hq = body.downloadable;
-      statusCallback({ id: trueID, status: 'starting', title: title, hq: hq, type: 'sc' });
+      statusCallback({ id: trueID, status: 'starting', title: title, hq: hq, service: 'sc' });
 
       if (body.downloadable) {
         callback(null, request({
@@ -90,7 +90,7 @@ module.exports = function (scID, statusCallback, doneCallback) {
     }
   ], function (err, results) {
     if (err) { return doneCallback(err); }
-    doneCallback(null, { id: trueID, status: 'complete', title: title, hq: hq, type: 'sc' });
+    doneCallback(null, { id: trueID, status: 'complete', title: title, hq: hq, service: 'sc' });
   });
 };
 

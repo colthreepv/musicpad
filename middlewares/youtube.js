@@ -24,7 +24,7 @@ module.exports = function (ytID, statusCallback, doneCallback) {
     title = info.title;
     declaredFileLength = parseInt(format.size, 10);
     hq = (format.audioBitrate > 128) ? true : false;
-    statusCallback({ id: ytID, status: 'starting', title: title, hq: hq, type: 'yt' });
+    statusCallback({ id: ytID, status: 'starting', title: title, hq: hq, service: 'yt' });
   });
   ytStream.on('error', doneCallback);
 
@@ -47,6 +47,6 @@ module.exports = function (ytID, statusCallback, doneCallback) {
     });
   });
   ytStream.on('end', function () {
-    doneCallback(null, { id: ytID, status: 'complete', title: title, hq: hq, type: 'yt' });
+    doneCallback(null, { id: ytID, status: 'complete', title: title, hq: hq, service: 'yt' });
   });
 };

@@ -15,7 +15,7 @@ module.exports = function (io) {
     });
 
     socket.on('request', function (requestObj) {
-      // EXAMPLE>> requestObj = { type: 'sc', id: 'some-artist/some-song' }
+      // EXAMPLE>> requestObj = { service: 'sc', id: 'some-artist/some-song' }
       // Arguments: (type, id, progressCallback, doneCallback);
       cache.songs(
         requestObj.type,

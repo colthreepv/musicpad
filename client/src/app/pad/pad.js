@@ -6,7 +6,6 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
 /**
  * Setup route for this module
  */
-.config(['$routeProvider', function config($routeProvider) {
   $routeProvider.when('/:uniqueID', {
     controller: 'PadController',
     templateUrl: 'pad/pad.tpl.html',
@@ -33,6 +32,7 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     // },
     redirectMap: { 'uniqueID': '/' }
   });
+
 }])
 
 .directive('searchValidation', function () {
@@ -120,7 +120,6 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     };*/
 
     $scope.orderedPlaylist = [];
-    $scope.audioPlaylist = [];
     $scope.playingNow = null;
 
     $scope.$on('socket:response', function (event, responseObj) {
@@ -128,18 +127,17 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
 
       if (responseObj.status === 'starting') {
         responseObj.progress = 0;
+        responseObj.src = '/assets/' + responseObj.service + '/' + responseObj.id + '.mp3';
         $scope.mainPlaylist[responseObj.id] = responseObj;
         $scope.orderedPlaylist.push($scope.mainPlaylist[responseObj.id]); // enqueue in order!
         console.log($scope.mainPlaylist[responseObj.id]);
       } else if (responseObj.status === 'progress' || responseObj.status === 'complete') {
-        if (responseObj.status === 'complete') {
-          responseObj.progress = 100;
-          $scope.audioPlaylist.push({ src: '/assets/' + responseObj.type + '/' + responseObj.id + '.mp3' });
-        }
+        responseObj.progress = (responseObj.status === 'complete') ? 100 : responseObj.progress;
 
         // In case the song is cached, you ONLY receive 'complete' event.
         // So let's handle it!
         if (!$scope.mainPlaylist[responseObj.id]) {
+          responseObj.src = '/assets/' + responseObj.service + '/' + responseObj.id + '.mp3';
           $scope.mainPlaylist[responseObj.id] = responseObj;
           $scope.orderedPlaylist.push($scope.mainPlaylist[responseObj.id]);
           return;
@@ -154,7 +152,7 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
       $scope.playingNow = null;
     });
     $scope.$on('audioplayer:play', function (event, playlistIndex) {
-      $scope.playingNow = $scope.orderedPlaylist[playlistIndex + 1];
+      $scope.playingNow = $scope.orderedPlaylist[playlistIndex];
     });
 
   }
