@@ -6,6 +6,7 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
 /**
  * Setup route for this module
  */
+.config(['$routeProvider', 'socketProvider', function config($routeProvider, socketProvider) {
   $routeProvider.when('/:uniqueID', {
     controller: 'PadController',
     templateUrl: 'pad/pad.tpl.html',
@@ -33,6 +34,7 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     redirectMap: { 'uniqueID': '/' }
   });
 
+  socketProvider.ioSocket = io.connect(null, { port: 443 });
 }])
 
 .directive('searchValidation', function () {
