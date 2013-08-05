@@ -1,6 +1,5 @@
 {
   "name": "musicpad",
-  "version": "0.1.0",
   "devDependencies": {
     "angular-unstable": "latest",
     "angular-mocks": "latest",
@@ -9,6 +8,6 @@
     "socket.io-client": "0.9.16",
     "angular-socket-io": "https://github.com/mrgamer/angular-socket-io.git#master",
     "angular-qrcode": "latest",
-    "angular-audio-player": "https://github.com/mrgamer/angular-audio-player.git#master"
+    "angular-audio-player": "https://github.com/mrgamer/angular-audio-player.git#0.1.1"
   }
 }
