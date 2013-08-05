@@ -30,7 +30,8 @@ module.exports = function (ytID, statusCallback, doneCallback) {
 
   ffmpegProc = ffmpeg({ source: ytStream, timeout: 600 })
     .withNoVideo(true)
-    // .withAudioCodec('copy')
+    .withAudioCodec('libvorbis')
+    .withAudioBitrate('192k')
     .toFormat('ogg')
     .saveToFile('assets/yt/ytsux' + ytID + '.ogg');
   // var videoDump = require('fs').createWriteStream('assets/yt/' + ytID + '.mp4');

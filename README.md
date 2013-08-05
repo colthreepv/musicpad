@@ -26,6 +26,9 @@ $ cd client/
 $ grunt build
 ```
 
+# linux dependencies
+ * PPA https://launchpad.net/~jon-severinsson/+archive/ffmpeg
+
 
 ##Utilities
 

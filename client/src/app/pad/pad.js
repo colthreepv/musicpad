@@ -175,7 +175,7 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     });
 
     $scope.playPause = function (index) {
-      if ($scope.orderedPlaylist.length > index) {
+      if ($scope.orderedPlaylist[index].status === 'complete') {
         $scope.audio.playPause(index);
       }
     };
