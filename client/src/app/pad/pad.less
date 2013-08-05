@@ -62,7 +62,7 @@
         }
         input {
           // width: 269px;
-          .transition(background-color 1s linear);
+          .transition(1s background-color linear);
 
           &.success {
             background-color: rgba(110, 221, 10, 0.6);
@@ -72,7 +72,7 @@
         }
         // Add transition to da button.
         button {
-          .transition(color 1s linear);
+          .transition(1s color linear);
 
           i {
             font-size: 18px;
@@ -105,7 +105,7 @@
         &.error { background-color: red; }
         height: 100%;
         display: block;
-        .transition(all 1s ease);
+        .transition(1s all ease);
       }
 
       // The element with details
@@ -162,5 +162,6 @@
   .welcome-column {
     display: inline-block;
     width: 636px;
+    min-height: 300px;
   }
 }

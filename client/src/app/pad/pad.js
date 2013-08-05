@@ -131,6 +131,7 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     $scope.orderedPlaylist = [];
     $scope.audioPlaylist = [];
     $scope.playingNow = null;
+    $scope.loadingSong = false;
 
     $scope.$on('socket:response', function (event, responseObj) {
       var status = responseObj.status,
@@ -171,7 +172,11 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
       $scope.playingNow = null;
     });
     $scope.$on('audioplayer:play', function (event, playlistIndex) {
+      $scope.loadingSong = false;
       $scope.playingNow = $scope.orderedPlaylist[playlistIndex];
+    });
+    $scope.$on('audioplayer:load', function (event, autoplayNext) {
+      $scope.loadingSong = autoplayNext;
     });
 
     $scope.playPause = function (index) {

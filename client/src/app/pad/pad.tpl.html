@@ -64,10 +64,11 @@
       </div>
     </div>
   </div>
-  <div class="welcome-column jumbotron">
-    <h1 class="pull-right"><i class="icon-thumbs-up"></i></h1>
-    <h3>Add an url to the left</h3>
-      <audio data-player-control="audio" data-playlist="audioPlaylist" audio-player></audio>
+  <div class="welcome-column jumbotron" >
+    <h1 class="pull-right" ng-show="loadingSong"><i class="icon-spinner icon-spin icon-large"></i></h1>
+    <h3 ng-show="loadingSong"><strong>Loading</strong></h3>
+    <h1 class="pull-right" ng-hide="loadingSong"><i class="icon-thumbs-up"></i></h1>
+    <h3 ng-hide="loadingSong">Add an url to the left</h3>
   </div>
 </div>
-
+<audio data-player-control="audio" data-playlist="audioPlaylist" audio-player></audio>
