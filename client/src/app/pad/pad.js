@@ -89,6 +89,10 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
   'titleService',
   'socket',
   function ($scope, $routeParams, $log, titleService, socket) {
+    var servicePrefixes = {
+      'yt': 'ytsux',
+      'sc': ''
+    };
     titleService.setTitle($routeParams.uniqueID);
 
     // NOTE: in case socket goes down, it makes it join the correct musicPad again.
@@ -125,29 +129,39 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     };*/
 
     $scope.orderedPlaylist = [];
+    $scope.audioPlaylist = [];
     $scope.playingNow = null;
 
     $scope.$on('socket:response', function (event, responseObj) {
+      var status = responseObj.status,
+          audioElements = [];
       $scope.mainPlaylist = $scope.mainPlaylist || {};
 
-      if (responseObj.status === 'starting') {
+
+      if (status === 'starting') {
         responseObj.progress = 0;
-        responseObj.src = '/assets/' + responseObj.service + '/' + responseObj.id + '.mp3';
         $scope.mainPlaylist[responseObj.id] = responseObj;
         $scope.orderedPlaylist.push($scope.mainPlaylist[responseObj.id]); // enqueue in order!
-        console.log($scope.mainPlaylist[responseObj.id]);
-      } else if (responseObj.status === 'progress' || responseObj.status === 'complete') {
-        responseObj.progress = (responseObj.status === 'complete') ? 100 : responseObj.progress;
+        $log.info($scope.mainPlaylist[responseObj.id]);
+      } else if (status === 'progress') {
+        angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
+      } else if (status === 'complete') {
+        responseObj.progress = 100;
+        audioElements.push({ src: '/assets/' + responseObj.service + '/' + servicePrefixes[responseObj.service] + responseObj.id + '.mp3', type: 'audio/mpeg' });
+        audioElements.push({ src: '/assets/' + responseObj.service + '/' + servicePrefixes[responseObj.service] + responseObj.id + '.ogg', type: 'audio/ogg' });
+        responseObj.audioElements = audioElements;
 
         // In case the song is cached, you ONLY receive 'complete' event.
         // So let's handle it!
         if (!$scope.mainPlaylist[responseObj.id]) {
-          responseObj.src = '/assets/' + responseObj.service + '/' + responseObj.id + '.mp3';
           $scope.mainPlaylist[responseObj.id] = responseObj;
           $scope.orderedPlaylist.push($scope.mainPlaylist[responseObj.id]);
+          $scope.audioPlaylist.push(audioElements);
           return;
         }
+
         angular.extend($scope.mainPlaylist[responseObj.id], responseObj);
+        $scope.audioPlaylist.push(audioElements);
         $log.info($scope.mainPlaylist[responseObj.id]);
       }
     });
@@ -159,6 +173,12 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     $scope.$on('audioplayer:play', function (event, playlistIndex) {
       $scope.playingNow = $scope.orderedPlaylist[playlistIndex];
     });
+
+    $scope.playPause = function (index) {
+      if ($scope.orderedPlaylist.length > index) {
+        $scope.audio.playPause(index);
+      }
+    };
 
   }
 ]);

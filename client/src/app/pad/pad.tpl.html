@@ -54,7 +54,7 @@
       </form>
     </div>
     <div ng-repeat="song in orderedPlaylist" ng-animate="{ enter: 'show' }">
-      <div class="song-container" ng-click="audio.playPause($index)" ng-class="{ 'complete': song.status === 'complete' }">
+      <div class="song-container" ng-click="playPause($index)" ng-class="{ 'complete': song.status === 'complete' }">
         <span ng-class="song.status" ng-style="{ width: song.progress + '%' }"></span>
         <div class="song-element">
           <p>{{ song.title }}</p>
@@ -67,7 +67,7 @@
   <div class="welcome-column jumbotron">
     <h1 class="pull-right"><i class="icon-thumbs-up"></i></h1>
     <h3>Add an url to the left</h3>
-      <audio data-player-control="audio" data-playlist="orderedPlaylist" audio-player></audio>
+      <audio data-player-control="audio" data-playlist="audioPlaylist" audio-player></audio>
   </div>
 </div>
 
