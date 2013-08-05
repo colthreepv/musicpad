@@ -42,7 +42,7 @@ exports.songs = function (type, id, statusCallback, doneCallback) {
 };
 
 exports.pushPad = function (roomID, doneStatus) {
-  redis.lpush('pad:' + roomID, JSON.stringify(doneStatus));
+  redis.rpush('pad:' + roomID, JSON.stringify(doneStatus));
 };
 /**
  * itemCallback gets called *per* every object in the Pad LIST.
