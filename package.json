@@ -3,7 +3,7 @@
   "version": "0.2.0-rc2",
   "private": true,
   "scripts": {
-    "start": "node index"
+    "start": "node node_modules/nodemon/nodemon.js --watch middlewares/ --watch . --watch routes/ index.js"
   },
   "dependencies": {
     "express": "latest",
@@ -12,7 +12,8 @@
     "fluent-ffmpeg": "*",
     "socket.io": "latest",
     "async": "latest",
-    "request": "latest"
+    "request": "latest",
+    "nodemon": "latest"
   },
   "devDependencies": {
     "vows": "*"
