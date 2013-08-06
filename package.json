@@ -3,7 +3,7 @@
   "version": "0.2.0-rc2",
   "private": true,
   "scripts": {
-    "start": "node node_modules/nodemon/nodemon.js --watch middlewares/ --watch . --watch routes/ index.js"
+    "start": "node node_modules/nodemon/nodemon.js index.js"
   },
   "dependencies": {
     "express": "latest",
