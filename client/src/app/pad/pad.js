@@ -44,25 +44,29 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
   return {
     require: 'ngModel',
     link: function (scope, elm, attrs, ctrl) {
-      var scRegex = /(?:https?\:\/\/)?.*?soundcloud.com\/(.{3,}?)\/(.{3,})/,
-          ytRegex = /(?:https?\:\/\/).*?(?:(?:youtube.com\/watch.*?v\=(?:.*?)(?:\s|$))|(?:youtu.be\/(?:.*)))/,
+      // Thanks to ridgerunner: http://stackoverflow.com/a/13034050/1071793
+      var scRegex = /https?:\/\/(?:www.)?soundcloud.com\/([A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*(?!\/sets(?:\/|$))(?:\/[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*){1,2}\/?)/,
+      // Thanks to Chris Nolet: http://stackoverflow.com/questions/3452546/javascript-regex-how-to-get-youtube-video-id-from-url#comment11747164_8260383
+          ytRegex = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/,
           elmButton = angular.element(elm[0].parentNode.querySelector('button'));
 
       ctrl.$parsers.unshift(function (value) {
-        var shortURL;
+        var shortURL = null;
         // Checks if the url provided is a sane youtube/soundcloud url
-        if (scRegex.test(value)) {
+        if ((shortURL = value.match(scRegex)) !== null ) {
           ctrl.$setValidity(attrs.name, true); // useless ? :(
           scope.searchBoxType = 'sc';
           elmButton.addClass('btn-success'); elm.addClass('success');
-          shortURL = value.match(/soundcloud.com\/(.*)/).pop();
+          shortURL = shortURL.pop();
           elm.val(shortURL);
           return shortURL;
-        } else if (ytRegex.test(value)) {
+        } else if ((shortURL = value.match(ytRegex)) !== null) {
           ctrl.$setValidity(attrs.name, true); // useless ? :(
           scope.searchBoxType = 'yt';
           elmButton.addClass('btn-success'); elm.addClass('success');
-          return value.match(/watch(?:.*?)v\=(.*?)(?:&|$)/).pop();
+          shortURL = shortURL.pop();
+          elm.val(shortURL);
+          return shortURL;
         } else {
           ctrl.$setValidity(attrs.name, false); // useless ? :(
           scope.searchBoxType = null;
