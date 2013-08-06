@@ -1,3 +1,17 @@
+// Ninja mixins
+.progressbar-mixin () {
+  from  { background-position: 40px 0; }
+  to    { background-position: 0 0; }
+}
+@-webkit-keyframes progressbar-animation {.progressbar-mixin();}
+@-moz-keyframes progressbar-animation {.progressbar-mixin();}
+@-ms-keyframes progressbar-animation {.progressbar-mixin();}
+@-o-keyframes progressbar-animation {.progressbar-mixin();}
+@keyframes progressbar-animation {.progressbar-mixin();}
+
+@completeColor: rgb(190, 255, 0);
+@completeShadow: rgba(50,100,50,0.70);
+
 // Navbar overrides
 .navbar {
   .navbar-nav {
@@ -84,22 +98,39 @@
 
     .song-container {
       width: 320px;
-      height: 48px;
+      height: 58px;
       margin-top: 4px;
       border: 1px solid #CCCCCC;
 
 
       position: relative; // Need to use this to position .song-element on top of this.
 
+      .transition(.5s height linear);
       .box-shadow(1px 1px 2px #ccc);
       &.complete {
-        .box-shadow(1px 1px 6px 1px rgba(50,100,50,0.70));
+        .box-shadow(1px 1px 6px 1px darken(@completeColor, 15%));
         cursor: pointer;
+      }
+      &.active {
+        height: 118px;
+        .song-element {
+          height: 100px;
+        }
       }
 
       // Status colors
       &>span {
-        &.complete { background-color: rgb(190, 255, 0); }
+        &.converting {
+          background-color: @brand-primary;
+          #gradient > .striped(@progress-bar-bg);
+          .background-size(40px 40px);
+          -webkit-animation: progressbar-animation 2s linear infinite;
+             -moz-animation: progressbar-animation 2s linear infinite;
+              -ms-animation: progressbar-animation 2s linear infinite;
+               -o-animation: progressbar-animation 2s linear infinite;
+                  animation: progressbar-animation 2s linear infinite;
+        }
+        &.complete { background-color: @completeColor; }
         &.starting { background-color: yellow; }
         &.progress { background-color: orange; }
         &.error { background-color: red; }
@@ -111,15 +142,17 @@
       // The element with details
       .song-element {
         position: absolute; // this element is overlapped to .song-container > span
-        bottom: 0;
+        bottom: 8px;
         right: 0;
-        width: 314px;
-        height: 42px;
+        width: 312px;
+        height: 40px;
 
         background-color: white;
-        border-width: 1px 0 0 1px;
+        border-width: 1px 0 1px 1px;
         border-style: solid;
         border-color: #CCCCCC;
+
+        .transition(.5s height linear);
 
         p {
           margin: 4px 0 4px 4px;
@@ -135,7 +168,7 @@
         // Youtube icon
         &>i {
           position: absolute;
-          top: 20px;
+          top: 0;
           right: 1px;
 
           &.icon-youtube-play {
@@ -147,7 +180,7 @@
         // Soundcloud icon
         .icon-stack {
           position: absolute;
-          top: 16px;
+          top: 0;
           right: -1px;
 
           // Soundcloud vector :-)

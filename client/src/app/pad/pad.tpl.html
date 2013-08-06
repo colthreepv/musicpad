@@ -54,12 +54,12 @@
       </form>
     </div>
     <div ng-repeat="song in orderedPlaylist" ng-animate="{ enter: 'show' }">
-      <div class="song-container" ng-click="playPause($index)" ng-class="{ 'complete': song.status === 'complete' }">
+      <div class="song-container" ng-click="playPause($index)" ng-class="{ 'complete': song.status === 'complete', 'active': $parent.hover === $index }" ng-mouseover="$parent.hover = $index" ng-mouseleave="$parent.hover = null">
         <span ng-class="song.status" ng-style="{ width: song.progress + '%' }"></span>
         <div class="song-element">
           <p>{{ song.title }}</p>
-          <span class="icon-stack" ng-show="song.type == 'sc'"><i class="icon-sign-blank icon-stack-base"></i><i class="icon-cloud"></i></span>
-          <i class="icon-youtube-play" ng-show="song.type == 'yt'"></i>
+          <span class="icon-stack" ng-show="song.service == 'sc'"><i class="icon-sign-blank icon-stack-base"></i><i class="icon-cloud"></i></span>
+          <i class="icon-youtube-play" ng-show="song.service == 'yt'"></i>
         </div>
       </div>
     </div>

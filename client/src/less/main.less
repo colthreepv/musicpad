@@ -4,26 +4,8 @@
  * the Grunt configuration that is automatically processed.
  */
 
-
-/**
- * First, we include the Twitter Bootstrap LESS files. Only the ones used in the
- * project should be imported as the rest are just wasting space.
- */
-
-/**
- * Bootstrap modules
- * not in use _FOR NOW_
- *
- */
-
-// Core variables and mixins
-@import "../../vendor/bootstrap/less/variables.less";
+// Bootstrap mixins
 @import "../../vendor/bootstrap/less/mixins.less";
-
-/**
- * Import common LESS for MusicPad
- */
-@import '_common.less';
 
 /**
  * This is our main variables file. It in turn imports the `variables` file from
@@ -31,7 +13,13 @@
  * definitions in our imported stylesheets.
  */
 
+@import "../../vendor/bootstrap/less/variables.less";
 @import 'variables.less';
+
+/**
+ * Import common LESS for MusicPad
+ */
+@import '_common.less';
 
 /**
  * Now that all app-wide styles have been applied, we can load the styles for
