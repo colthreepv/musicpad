@@ -7,7 +7,11 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
  * Setup route for this module
  */
 .config(['$routeProvider', 'socketProvider', function ($routeProvider, socketProvider) {
-  socketProvider.ioSocket = io.connect(null, { port: 443 });
+  socketProvider.ioSocket = io.connect(null, {
+    transports: ['websocket', 'xhr-polling'],
+    'connect timeout': 3000,
+    'max reconnection attempts': 5
+  });
 
   $routeProvider.when('/:uniqueID', {
     controller: 'PadController',
@@ -101,7 +105,9 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
 
     // NOTE: in case socket goes down, it makes it join the correct musicPad again.
     // pretty robust implementation :o
-    socket.emit('joinPad', $routeParams.uniqueID);
+    socket.on('connect', function () {
+      socket.emit('joinPad', $routeParams.uniqueID);
+    });
 
     socket.on('ready', function () {
       $scope.padConnected = true;

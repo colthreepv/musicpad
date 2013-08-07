@@ -46,6 +46,13 @@ server {
     gzip_types text/plain application/xml application/x-javascript text/css;
     gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
+    location ~/socket.io/.* {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
     location ~/api/.* {
         proxy_pass http://localhost:3000;
     }
@@ -54,7 +61,7 @@ server {
         root /PROJECTROOT/client;
         expires 60d;
     }
-    location ~* ^\/assets\/(yt|sc)/.* {
+    location ~* ^\/assets\/(yt|sc|debug)/.* {
         root /PROJECTROOT;
         expires 60d;
     }
@@ -64,18 +71,6 @@ server {
 
     access_log /var/log/nginx/musicpad_access.log combined;
     error_log  /var/log/nginx/musicpad_error.log error;
-}
-
-server {
-    listen 443;
-    server_name musicpad;
-    location ~/socket.io/.* {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-    }
 }
 ```
 
