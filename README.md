@@ -39,38 +39,43 @@ Deploy
 I'm using an NGINX script like:
 ```nginx
 server {
-    listen 80;
-    server_name musicpad;
-    root /PROJECTROOT/client/build;
-    gzip on;
-    gzip_types text/plain application/xml application/x-javascript text/css;
-    gzip_disable "MSIE [1-6]\.(?!.*SV1)";
+  listen 80;
+  server_name *.musicpad;
+  root /PROJECTROOT/client/build;
+  gzip on;
+  gzip_types text/plain application/xml application/x-javascript text/css;
+  gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
-    location ~/socket.io/.* {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-    }
-    location ~/api/.* {
-        proxy_pass http://localhost:3000;
-    }
+  location ~/socket.io/.* {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+  }
+  location ~/api/.* {
+    proxy_pass http://localhost:3000;
+  }
 
-    location ~* ^\/vendor\/.* {
-        root /PROJECTROOT/client;
-        expires 60d;
-    }
-    location ~* ^\/assets\/(yt|sc|debug)/.* {
-        root /PROJECTROOT;
-        expires 60d;
-    }
-    location ~* \.(js|css|html)$ {
-        expires epoch;
-    }
+  location ~* ^\/vendor\/.* {
+    root /PROJECTROOT/client;
+    expires 60d;
+  }
+  location ~* ^\/assets\/(yt|sc|debug)/ {
+    root /PROJECTROOT;
+    expires 60d;
+  }
+  location ~* ^\/download\/(yt|sc)/(.*) {
+    alias /PROJECTROOT/assets/$1/$2;
+    add_header Content-Disposition "attachment";
+  }
 
-    access_log /var/log/nginx/musicpad_access.log combined;
-    error_log  /var/log/nginx/musicpad_error.log error;
+  location ~* \.(js|css|html)$ {
+    expires epoch;
+  }
+
+  access_log /var/log/nginx/musicpad_access.log combined;
+  error_log  /var/log/nginx/musicpad_error.log error;
 }
 ```
 
