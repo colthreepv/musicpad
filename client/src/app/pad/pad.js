@@ -122,9 +122,6 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
       $scope.padConnected = false;
       socket.removeListener('response');
     });
-    $scope.$on('$destroy', function (event) {
-      socket.disconnect();
-    });
 
     $scope.addSong = function () {
       $log.info($scope.searchBox);
