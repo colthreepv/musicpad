@@ -7,11 +7,11 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
  * Setup route for this module
  */
 .config(['$routeProvider', 'socketProvider', function ($routeProvider, socketProvider) {
-  socketProvider.ioSocket = io.connect(null, {
+  socketProvider.socketOptions = {
     transports: ['websocket', 'xhr-polling'],
     'connect timeout': 3000,
     'max reconnection attempts': 5
-  });
+  };
 
   $routeProvider.when('/:uniqueID', {
     controller: 'PadController',
