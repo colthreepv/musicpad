@@ -103,8 +103,13 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     };
     titleService.setTitle($routeParams.uniqueID);
 
-    // NOTE: in case socket goes down, it makes it join the correct musicPad again.
-    // pretty robust implementation :o
+
+    /**
+     * NOTE: in case socket goes down, it makes it join the correct musicPad again.
+     * pretty robust implementation :o
+     ***********************************************
+     * angular-socket-io bindings and declarations *
+     */
     socket.on('connect', function () {
       socket.emit('joinPad', $routeParams.uniqueID);
     });
@@ -116,6 +121,9 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     socket.on('disconnect', function () {
       $scope.padConnected = false;
       socket.removeListener('response');
+    });
+    $scope.$on('$destroy', function (event) {
+      socket.disconnect();
     });
 
     $scope.addSong = function () {
@@ -129,14 +137,10 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
 
     $scope.uniqueID = $routeParams.uniqueID;
 
-    /* Dummy infos.
-    $scope.mainPlaylist = {};
-    $scope.mainPlaylist['some-artist/some-track'] = {
-      status: 'starting',
-      title: 'Some Artist - Some Track!',
-      hq: true,
-      progress: 80
-    };*/
+    /**
+     **************************************************
+     * angular-audio-player bindings and declarations *
+     */
 
     $scope.orderedPlaylist = [];
     $scope.audioPlaylist = [];

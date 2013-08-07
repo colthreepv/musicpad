@@ -32,8 +32,4 @@ module.exports = function (io) {
       );
     });
   });
-  // io.of('/chat').on('connection', function (socket) {
-    // log('somebody connected to /chat');
-  // });
-
 };
