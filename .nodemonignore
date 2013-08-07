@@ -1,3 +1,4 @@
+.git/*
 client/*
 assets/*
 node_modules/*
@@ -5,3 +6,4 @@ node_modules/*
 *.css
 *.less
 *.md
+.*
