@@ -112,9 +112,9 @@
         cursor: pointer;
       }
       &.active {
-        height: 118px;
+        height: 102px;
         .song-element {
-          height: 100px;
+          height: 84px;
         }
       }
 
@@ -146,6 +146,7 @@
         right: 0;
         width: 312px;
         height: 40px;
+        overflow: hidden;
 
         background-color: white;
         border-width: 1px 0 1px 1px;
@@ -153,6 +154,15 @@
         border-color: #CCCCCC;
 
         .transition(.5s height linear);
+
+        .download-zone {
+          & > button:first-child {
+            margin-left: 6px;
+          }
+          & > button:last-child {
+            margin-right: 6px;
+          }
+        }
 
         p {
           margin: 4px 0 4px 4px;

@@ -54,12 +54,24 @@
       </form>
     </div>
     <div ng-repeat="song in orderedPlaylist" ng-animate="{ enter: 'show' }">
-      <div class="song-container" ng-click="playPause($index)" ng-class="{ 'complete': song.status === 'complete', 'active': $parent.hover === $index }" ng-mouseover="$parent.hover = $index" ng-mouseleave="$parent.hover = null">
+      <div class="song-container"
+            ng-click="playPause($index)"
+            ng-class="{ 'complete': song.status === 'complete', 'active': $parent.hover === $index }"
+            ng-mouseover="(song.status === 'complete') && ($parent.hover = $index)"
+            ng-mouseleave="$parent.hover = null">
         <span ng-class="song.status" ng-style="{ width: song.progress + '%' }"></span>
         <div class="song-element">
           <p>{{ song.title }}</p>
           <span class="icon-stack" ng-show="song.service == 'sc'"><i class="icon-sign-blank icon-stack-base"></i><i class="icon-cloud"></i></span>
           <i class="icon-youtube-play" ng-show="song.service == 'yt'"></i>
+          <div class="download-zone">
+            <button class="btn" ng-click="$event.stopPropagation()">
+              <span class="label label-warning">mp3</span> <a href="{{ orderedPlaylist[$index].mp3.src }}" target="_blank">{{ orderedPlaylist[$index].mp3.bitrate }}kbit <i class="icon-download-alt icon-large"></i></a>
+            </button>
+            <button class="btn pull-right" ng-click="$event.stopPropagation()">
+              <span class="label label-info">ogg</span> <a href="{{ orderedPlaylist[$index].ogg.src }}" target="_blank">{{ orderedPlaylist[$index].ogg.bitrate }}kbit <i class="icon-download-alt icon-large"></i></a>
+            </button>
+          </div>
         </div>
       </div>
     </div>

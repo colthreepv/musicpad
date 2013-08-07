@@ -161,6 +161,8 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
         responseObj.progress = 100;
         audioElements.push({ src: '/assets/' + responseObj.service + '/' + servicePrefixes[responseObj.service] + responseObj.id + '.mp3', type: 'audio/mpeg' });
         audioElements.push({ src: '/assets/' + responseObj.service + '/' + servicePrefixes[responseObj.service] + responseObj.id + '.ogg', type: 'audio/ogg' });
+        responseObj.mp3 = { src: '/download/' + responseObj.service + '/' + servicePrefixes[responseObj.service] + responseObj.id + '.mp3', bitrate: '128' };
+        responseObj.ogg = { src: '/download/' + responseObj.service + '/' + servicePrefixes[responseObj.service] + responseObj.id + '.ogg', bitrate: '192' };
         responseObj.audioElements = audioElements;
 
         // In case the song is cached, you ONLY receive 'complete' event.
@@ -195,6 +197,5 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
         $scope.audio.playPause(index);
       }
     };
-
   }
 ]);
