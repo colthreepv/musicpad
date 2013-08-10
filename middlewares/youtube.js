@@ -25,7 +25,7 @@ module.exports = function (ytID, statusCallback, doneCallback) {
         bestFormat = format;
         formatsArray.forEach(function (format, index, formatsArray) {
           if (format.audioBitrate >= bestFormat.audioBitrate &&
-              parseFloat(format.bitrate) < parseFloat(bestFormat.bitrate) &&
+              parseFloat(format.bitrate) < parseFloat(bestFormat.bitrate || Infinity) &&
               (format.audioEncoding === 'vorbis' || format.audioEncoding === 'aac')) {
             bestFormat = format;
           }
