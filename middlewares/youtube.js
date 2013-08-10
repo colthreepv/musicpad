@@ -15,7 +15,9 @@ module.exports = function (ytID, statusCallback, doneCallback) {
       bestFormat = null,
       title,
       hq,
-      ffmpegProc;
+      filesBitrate,
+      oggProcess,
+      mp3Process;
 
   ytStream = ytdl('http://www.youtube.com/watch?v=' + ytID, {
     filter: function (format, index, formatsArray) {
@@ -37,18 +39,25 @@ module.exports = function (ytID, statusCallback, doneCallback) {
     title = info.title;
     declaredFileLength = parseInt(format.size, 10);
     hq = (format.audioBitrate > 128) ? true : false;
+    filesBitrate = format.audioBitrate.toString() + 'k';
     statusCallback({ id: ytID, status: 'starting', title: title, hq: hq, service: 'yt' });
   });
   ytStream.on('error', doneCallback);
 
-  ffmpegProc = ffmpeg({ source: ytStream, timeout: 600 })
+  oggProcess = ffmpeg({ source: ytStream, timeout: 600 })
     .withNoVideo(true)
     .withAudioCodec('libvorbis')
-    .withAudioBitrate('192k')
+    .withAudioBitrate(filesBitrate)
     .toFormat('ogg')
     .saveToFile('assets/yt/ytsux' + ytID + '.ogg');
   // var videoDump = require('fs').createWriteStream('assets/yt/' + ytID + '.mp4');
   // ytStream.pipe(videoDump);
+  mp3Process = ffmpeg({ source: ytStream, timeout: 600 })
+    .withNoVideo(true)
+    .withAudioCodec('libmp3lame')
+    .withAudioBitrate(filesBitrate)
+    .toFormat('mp3')
+    .saveToFile('assets/yt/ytsux' + ytID + '.mp3');
 
   ytStream.on('data', function (chunk) {
     partialBytes += chunk.length;
