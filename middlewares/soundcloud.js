@@ -1,12 +1,12 @@
-var fs = require('fs')
-  // Internal Libs
-  , common = require('./common')
-  // External libs
-  , async = require('async')
-  , request = require('request')
-  // Variables
-  , maxRequests = app.get('maxRequests')
-  , client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28';
+var fs = require('fs'),
+    // Internal Libs
+    common = require('./common'),
+    // External libs
+    async = require('async'),
+    request = require('request'),
+    // Variables
+    maxRequests = app.get('maxRequests'),
+    client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28';
 
 
 /**
@@ -28,11 +28,11 @@ module.exports = function (scID, statusCallback, doneCallback) {
   // Beautiful work, we redefine statusCallback as a throttled function
   statusCallback = common.throttle(1000, true, statusCallback);
 
-  var trueID
-    , declaredFileLength // i'm gonna read the headers, this might be different from the real length! (YEAH, SERVERS DO LIE!)
-    , partialBytes = 0
-    , title
-    , hq;
+  var trueID,
+      declaredFileLength, // i'm gonna read the headers, this might be different from the real length! (YEAH, SERVERS DO LIE!)
+      partialBytes = 0,
+      title,
+      hq;
 
   async.waterfall([
     function (callback) {

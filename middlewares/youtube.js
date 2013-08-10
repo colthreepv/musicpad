@@ -1,23 +1,36 @@
 // Internal Libs
-var common = require('./common')
-  // External Libraries
-  , ytdl = require('ytdl')
-  , ffmpeg = require('fluent-ffmpeg')
-  // Variables
-  , maxRequests = app.get('maxRequests');
+var common = require('./common'),
+    // External Libraries
+    ytdl = require('ytdl'),
+    ffmpeg = require('fluent-ffmpeg'),
+    // Variables
+    maxRequests = app.get('maxRequests');
 
 module.exports = function (ytID, statusCallback, doneCallback) {
   statusCallback = common.throttle(1000, true, statusCallback);
 
-  var ytStream
-    , declaredFileLength
-    , partialBytes = 0
-    , title
-    , hq
-    , ffmpegProc;
+  var ytStream,
+      declaredFileLength,
+      partialBytes = 0,
+      bestFormat = null,
+      title,
+      hq,
+      ffmpegProc;
 
   ytStream = ytdl('http://www.youtube.com/watch?v=' + ytID, {
-    // filter: function (format) { log(format); return format.container === 'mp4'; },
+    filter: function (format, index, formatsArray) {
+      if (bestFormat === null) {
+        bestFormat = format;
+        formatsArray.forEach(function (format, index, formatsArray) {
+          if (format.audioBitrate >= bestFormat.audioBitrate &&
+              parseFloat(format.bitrate) < parseFloat(bestFormat.bitrate) &&
+              (format.audioEncoding === 'vorbis' || format.audioEncoding === 'aac')) {
+            bestFormat = format;
+          }
+        });
+      }
+      return format === bestFormat;
+    },
     pool: maxRequests
   });
   ytStream.on('info', function (info, format) {
