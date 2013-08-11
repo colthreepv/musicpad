@@ -1,6 +1,6 @@
 {
   "name": "musicpad",
-  "version": "0.2.0-rc2",
+  "version": "0.2.0-rc3",
   "private": true,
   "scripts": {
     "start": "node node_modules/nodemon/nodemon.js index.js"
