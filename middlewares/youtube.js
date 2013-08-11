@@ -1,5 +1,6 @@
 // Internal Libs
 var common = require('./common'),
+    fs = require('fs'),
     // External Libraries
     ytdl = require('ytdl'),
     ffmpeg = require('fluent-ffmpeg'),
@@ -70,6 +71,8 @@ module.exports = function (ytID, statusCallback, doneCallback) {
     });
   });
   ytStream.on('end', function () {
+    fs.symlink('../yt/ytsux' + ytID + '.mp3', 'assets/links/' + title + '.mp3');
+    fs.symlink('../yt/ytsux' + ytID + '.ogg', 'assets/links/' + title + '.ogg');
     doneCallback(null, { id: ytID, status: 'complete', title: title, hq: hq, service: 'yt' });
   });
 };

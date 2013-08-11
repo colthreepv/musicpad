@@ -102,6 +102,8 @@ module.exports = function (scID, statusCallback, doneCallback) {
     }
   ], function (err, results) {
     if (err) { return doneCallback(err); }
+    fs.symlink('../sc/' + trueID + '.mp3', 'assets/links/' + title + '.mp3');
+    fs.symlink('../sc/' + trueID + '.ogg', 'assets/links/' + title + '.ogg');
     doneCallback(null, { id: trueID, status: 'complete', title: title, hq: hq, service: 'sc' });
   });
 };
