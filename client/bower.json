@@ -6,7 +6,7 @@
     "bootstrap": "latest",
     "angular-bootstrap": "https://github.com/angular-ui/bootstrap.git#0.4.0",
     "socket.io-client": "0.9.16",
-    "angular-socket-io": "https://github.com/mrgamer/angular-socket-io.git#master",
+    "angular-socket-io": "git+https://github.com/mrgamer/angular-socket-io.git#0.2.0+3",
     "angular-qrcode": "latest",
     "angular-audio-player": "https://github.com/mrgamer/angular-audio-player.git#0.1.1"
   }

@@ -454,6 +454,9 @@ module.exports = function ( grunt ) {
   };
 
   grunt.initConfig( grunt.util._.extend( taskConfig, userConfig ) );
+  // Comparing _.extend and _.merge for my own tests.
+  // grunt.file.write('extended.json', JSON.stringify(grunt.util._.extend(taskConfig, userConfig), null, 2));
+  // grunt.file.write('merged.json', JSON.stringify(grunt.util._.merge(taskConfig, userConfig), null, 2));
 
   /**
    * In order to make it safe to just compile or copy *only* what was changed,
