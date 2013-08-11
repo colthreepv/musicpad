@@ -4,6 +4,7 @@ var fs = require('fs'),
     // External libs
     async = require('async'),
     request = require('request'),
+    ffmpeg = require('fluent-ffmpeg'),
     // Variables
     maxRequests = app.get('maxRequests'),
     client_id = 'b45b1aa10f1ac2941910a7f0d10f8e28';
@@ -32,13 +33,15 @@ module.exports = function (scID, statusCallback, doneCallback) {
       declaredFileLength, // i'm gonna read the headers, this might be different from the real length! (YEAH, SERVERS DO LIE!)
       partialBytes = 0,
       title,
-      hq;
+      hq,
+      filesBitrate,
+      oggProcess;
 
   async.waterfall([
     function (callback) {
       // From such a request we get a giant object from soundcloud API, they are damn good.
       // I'll dump an example in the proj root
-      request({ url: 'https://api.soundcloud.com/resolve',
+      request({ url: 'https://api.soundcloud.com/resolve.json',
         pool: maxRequests,
         json: true,
         qs: { client_id: client_id, url: 'https://soundcloud.com/' + scID } }, callback);
@@ -51,6 +54,7 @@ module.exports = function (scID, statusCallback, doneCallback) {
       title = body.title;
       trueID = body.id;
       hq = body.downloadable;
+      filesBitrate = (hq) ? '320k' : '128k';
       statusCallback({ id: trueID, status: 'starting', title: title, hq: hq, service: 'sc' });
 
       if (body.downloadable) {
@@ -72,6 +76,14 @@ module.exports = function (scID, statusCallback, doneCallback) {
       httpClientRequest.on('response', function (httpIncomingMessage) {
         declaredFileLength = parseInt(httpIncomingMessage.headers['content-length'], 10);
         songStream = fs.createWriteStream('assets/sc/' + trueID + '.mp3');
+
+        // piping into .ogg
+        oggProcess = ffmpeg({ source: httpIncomingMessage, timeout: 600 })
+          .withNoVideo(true)
+          .withAudioCodec('libvorbis')
+          .withAudioBitrate(filesBitrate)
+          .toFormat('ogg')
+          .saveToFile('assets/sc/' + trueID + '.ogg');
 
         // piping into the file
         httpIncomingMessage.pipe(songStream);
