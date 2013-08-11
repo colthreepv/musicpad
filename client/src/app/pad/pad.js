@@ -2,11 +2,10 @@
  * Module that actually manages the musicpad
  */
 angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.bootstrap.dropdownToggle', 'monospaced.qrcode'])
-
 /**
  * Setup route for this module
  */
-.config(['$routeProvider', 'socketProvider', function ($routeProvider, socketProvider) {
+.config(function ($routeProvider, socketProvider) {
   socketProvider.socketOptions = {
     transports: ['websocket', 'xhr-polling'],
     'connect timeout': 3000,
@@ -42,7 +41,7 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
     redirectMap: { 'uniqueID': '/' }
   });
 
-}])
+})
 
 .directive('searchValidation', function () {
   return {
@@ -57,7 +56,7 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
       ctrl.$parsers.unshift(function (value) {
         var shortURL = null;
         // Checks if the url provided is a sane youtube/soundcloud url
-        if ((shortURL = value.match(scRegex)) !== null ) {
+        if ((shortURL = value.match(scRegex)) !== null) {
           ctrl.$setValidity(attrs.name, true); // useless ? :(
           scope.searchBoxType = 'sc';
           elmButton.addClass('btn-success'); elm.addClass('success');
@@ -90,17 +89,13 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
 /**
  * And of course we define a controller for our route.
  */
-.controller('PadController', [
-  '$scope',
-  '$routeParams',
-  '$log',
-  'titleService',
-  'socket',
+.controller('PadController',
   function ($scope, $routeParams, $log, titleService, socket) {
     var servicePrefixes = {
       'yt': 'ytsux',
       'sc': ''
     };
+    var io = socket.getSocket();
     titleService.setTitle($routeParams.uniqueID);
 
 
@@ -110,9 +105,13 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
      ***********************************************
      * angular-socket-io bindings and declarations *
      */
-    socket.on('connect', function () {
+    if (io.socket.connected) {
       socket.emit('joinPad', $routeParams.uniqueID);
-    });
+    } else {
+      socket.on('connect', function () {
+        socket.emit('joinPad', $routeParams.uniqueID);
+      });
+    }
 
     socket.on('ready', function () {
       $scope.padConnected = true;
@@ -198,4 +197,4 @@ angular.module('musicpad.pad', ['btford.socket-io', 'angular-audio-player', 'ui.
       }
     };
   }
-]);
+);
