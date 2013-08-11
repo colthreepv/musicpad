@@ -11,16 +11,18 @@ angular.module('helperFunctions', [])
     }
     
     var wrapper = function () {
-      var that = this
-        , elapsed = +new Date() - last_exec
-        , args = arguments
-        , exec = function () {
-          last_exec = +new Date();
-          callback.apply(that, args);
-        }
-        , clear = function () {
-          timeout_id = undefined;
-        };
+      var that = this,
+          elapsed = +new Date() - last_exec,
+          args = arguments;
+
+      var exec = function () {
+        last_exec = +new Date();
+        callback.apply(that, args);
+      };
+      var clear = function () {
+        timeout_id = undefined;
+      };
+
       
       if (debounce_mode && !timeout_id) { exec(); }
       if (timeout_id) { $timeout.cancel(timeout_id); }
