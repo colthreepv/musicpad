@@ -13,6 +13,7 @@ var app = express();
 // Pollute global to let me survive! :)
 global.app = app;
 global.log = function (args) { console.log(util.inspect(args, { colors: true })); };
+global.baseUrl = 'localhost.musicpad';
 
 app.configure(function() {
   app.set('port', process.env.PORT || 3000);
