@@ -8,6 +8,7 @@
     "socket.io-client": "0.9.16",
     "angular-socket-io": "git+https://github.com/mrgamer/angular-socket-io.git#0.2.0+3",
     "angular-qrcode": "latest",
-    "angular-audio-player": "https://github.com/mrgamer/angular-audio-player.git#0.1.1"
+    "angular-audio-player": "https://github.com/mrgamer/angular-audio-player.git#0.1.1",
+    "angular-ui-router": "https://github.com/angular-ui/ui-router.git#master"
   }
 }
