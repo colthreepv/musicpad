@@ -7,29 +7,55 @@ var cache = require('./cache'),
     // variables
     baseUrl = global.baseUrl;
 
+var scRegex = /https?:\/\/(?:www.)?soundcloud.com\/([A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*(?!\/sets(?:\/|$))(?:\/[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*){1,2}\/?)/,
+    ytRegex = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+
+
 
 // EXAMPLE>> /api/soundcloud?url=some-artist/some-song
 exports.soundcloud = function (req, res, next) {
-  cache.songs('sc', req.param('url'), log, function (err, jsonReturn) {
-    if (err) { return next(err); }
-    if (jsonReturn) {
+  var shortURL = null,
+      value = req.param('url');
+
+  if ((shortURL = value.match(scRegex)) !== null) {
+    shortURL = shortURL.pop();
+  }
+
+  res.setHeader('Content-Type', 'application/json');
+  cache.songs('sc', shortURL,
+    function (statusReturn) {
+      statusReturn.progress = statusReturn.progress || 0;
+      res.write('progress: ' + statusReturn.progress.toString() + '\n');
+    },
+    function (err, jsonReturn) {
+      if (err) { return next(err); }
       jsonReturn.urlOgg = 'http://' + baseUrl + '/download/links/' + jsonReturn.title + '.ogg';
       jsonReturn.urlMp3 = 'http://' + baseUrl + '/download/links/' + jsonReturn.title + '.mp3';
-      res.send(200, jsonReturn);
-    } else {
-      res.send(404);
-    }
-  });
+      res.end(JSON.stringify(jsonReturn));
+    });
 };
 
 // EXAMPLE>> /api/youtube?url=jNQXAC9IVRw
 exports.youtube = function (req, res, next) {
-  cache.songs('yt', req.param('url'), log, function (err, jsonReturn) {
-    if (err) { return next(err); }
-    jsonReturn.urlOgg = 'http://' + baseUrl + '/download/links/' + jsonReturn.title + '.ogg';
-    jsonReturn.urlMp3 = 'http://' + baseUrl + '/download/links/' + jsonReturn.title + '.mp3';
-    res.send(200, jsonReturn);
-  });
+  var shortURL = null,
+      value = req.param('url');
+
+  if ((shortURL = value.match(ytRegex)) !== null) {
+    shortURL = shortURL.pop();
+  }
+
+  res.setHeader('Content-Type', 'application/json');
+  cache.songs('yt', shortURL,
+    function (statusReturn) {
+      statusReturn.progress = statusReturn.progress || 0;
+      res.write('progress: ' + statusReturn.progress.toString() + '\n');
+    },
+    function (err, jsonReturn) {
+      if (err) { return next(err); }
+      jsonReturn.urlOgg = 'http://' + baseUrl + '/download/links/' + jsonReturn.title + '.ogg';
+      jsonReturn.urlMp3 = 'http://' + baseUrl + '/download/links/' + jsonReturn.title + '.mp3';
+      res.end(JSON.stringify(jsonReturn));
+    });
 };
 
 // EXAMPLE>> /api/gentoken
