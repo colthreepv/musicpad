@@ -4,7 +4,7 @@ angular.module('musicpad', [
   'templates-common',
   'ui.router',
   // Musicpad 2.x it's a true single-page-app with 1 module only composed by 5 views.
-  'statedemo'
+  'mainpage'
 ])
 
 .config(function () {
@@ -25,24 +25,4 @@ angular.module('musicpad', [
 })
 
 .controller('AppCtrl', function ($scope) {
-  // Main Controller here
-  $scope.baseUrl = 'musicpad.localhost';
-});
-
-angular.module('statedemo', [])
-.config(function ($stateProvider) {
-  $stateProvider.state('demo', {
-    url: '',
-    templateUrl: 'demo.tpl.html',
-    data: {
-      demo: true,
-      name: 'Gervasio'
-    },
-    views: {
-      'test': {
-        templateUrl: 'demo1.tpl.html',
-        controller: 'FailController'
-      }
-    }
-  });
 });
