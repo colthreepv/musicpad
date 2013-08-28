@@ -1,10 +1,14 @@
 angular.module('mainpage', ['soundcloudPartial', 'youtubePartial', 'musicpadPartial', 'playerPartial', 'helperPartial'])
 
 .config(function ($stateProvider) {
-  $stateProvider.state('main', {
-    url: '',
+  $stateProvider
+  .state('main', {
+    abstract: true,
     templateUrl: 'main.tpl.html',
-    controller: 'MainController',
+    controller: 'MainController'
+  })
+  .state('main.views', {
+    url: '',
     views: {
       'soundcloud': {
         templateUrl: 'main/soundcloud.tpl.html',
@@ -13,16 +17,16 @@ angular.module('mainpage', ['soundcloudPartial', 'youtubePartial', 'musicpadPart
       'youtube': {
         templateUrl: 'main/youtube.tpl.html',
         controller: 'YoutubeController',
-        // resolve: {
-        //   'youtubeAPI': function ($q, $timeout) {
-        //     var defer = $q.defer();
+        resolve: {
+          'youtubeAPI': function ($q, $timeout) {
+            var defer = $q.defer();
 
-        //     fallback.load({ youtubeAPI: '//apis.google.com/js/client.js' });
-        //     fallback.ready(function () { $timeout($q.resolve); });
+            fallback.load({ youtubeAPI: '//apis.google.com/js/client.js' });
+            fallback.ready(function () { $timeout(defer.resolve); });
 
-        //     return defer.promise;
-        //   }
-        // }
+            return defer.promise;
+          }
+        }
       },
       'musicpad': {
         templateUrl: 'main/musicpad.tpl.html',
