@@ -25,4 +25,6 @@ angular.module('musicpad', [
 })
 
 .controller('AppCtrl', function ($scope) {
+  // App Controller here
+  $scope.baseUrl = 'localhost.musicpad';
 });
