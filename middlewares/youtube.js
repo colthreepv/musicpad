@@ -38,7 +38,7 @@ module.exports = function (ytID, statusCallback, doneCallback) {
   });
   ytStream.on('info', function (info, format) {
     // Cleaning the name from *VERY* bad utf-8 characters
-    title = info.title.match(/[\w\d\+_:().#\[\]]+[\w\d\s\+_:().#\[\]]+/g).join('');
+    title = info.title.match(/[\w\d\+\#_().]+[\s\w\d\+\#_().]+/g).join('');
     declaredFileLength = parseInt(format.size, 10);
     hq = (format.audioBitrate > 128) ? true : false;
     filesBitrate = format.audioBitrate.toString() + 'k';
