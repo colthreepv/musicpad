@@ -1,6 +1,0 @@
-*.sw*
-*~
-dist/
-node_modules/
-build/
-bin/

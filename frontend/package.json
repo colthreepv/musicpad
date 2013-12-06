@@ -1,0 +1,27 @@
+{
+  "name": "musicpad-frontend",
+  "version": "0.0.0",
+  "description": "Frontend application for musicpad",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"WTF\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mrgamer/musicpad.git"
+  },
+  "keywords": [
+    "angularjs",
+    "frontend",
+    "youtube",
+    "soundcloud",
+    "mrgamer",
+    "musicpad"
+  ],
+  "author": "mrgamer <mister.gamer@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrgamer/musicpad/issues"
+  },
+  "homepage": "https://github.com/mrgamer/musicpad"
+}

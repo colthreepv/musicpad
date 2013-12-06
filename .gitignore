@@ -1,4 +1,6 @@
+# node
 node_modules/
-testvids/
-*.mp3
 npm-debug.log
+
+# musicpad specific
+*.mp3

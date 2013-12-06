@@ -1,9 +1,0 @@
-.git/*
-client/*
-assets/*
-node_modules/*
-*.html
-*.css
-*.less
-*.md
-*tmp*
