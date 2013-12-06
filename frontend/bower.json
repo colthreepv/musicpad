@@ -1,0 +1,31 @@
+{
+  "name": "musicpad-frontend",
+  "version": "0.0.0",
+  "homepage": "https://github.com/mrgamer/musicpad",
+  "authors": [
+    "mrgamer <mister.gamer@gmail.com>"
+  ],
+  "description": "Frontend application for musicpad",
+  "main": "index.html",
+  "keywords": [
+    "angularjs",
+    "frontend",
+    "musicpad",
+    "soundcloud",
+    "youtube",
+    "mrgamer"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angularjs": "*"
+  }
+}
