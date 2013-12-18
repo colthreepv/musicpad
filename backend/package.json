@@ -1,21 +1,20 @@
 {
   "name": "musicpad",
-  "version": "0.2.0-rc3",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
-    "start": "node node_modules/nodemon/nodemon.js index.js"
+    "start": "node index.js | node_modules/bunyan/bin/bunyan"
   },
   "dependencies": {
-    "express": "latest",
+    "restify": "latest",
     "redis": "latest",
-    "ytdl": "*",
-    "fluent-ffmpeg": "*",
-    "socket.io": "latest",
+    "ytdl": "latest",
+    "fluent-ffmpeg": "latest",
     "async": "latest",
     "request": "latest",
-    "nodemon": "latest"
+    "bunyan": "~0.22.1"
   },
   "devDependencies": {
-    "vows": "*"
+    "vows": "latest"
   }
 }
