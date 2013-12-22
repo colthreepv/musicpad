@@ -1,11 +1,8 @@
-var crypto = require('crypto')
-  // External Libs
-  , async = require('async')
-  // Useful things
-  , redis = app.get('redis');
+var crypto = require('crypto'),
+    async = require('async');
 
 // Callback: function (err, token)
-module.exports = function (tokenCallback) {
+exports.generate = function (req, res, next) {
   /**
    * 1) Create unique id
    * 2) Check if that unique id is actually unique on redis
@@ -39,8 +36,8 @@ module.exports = function (tokenCallback) {
       });
     },
     function (err) {
-      if (err) { return tokenCallback(err); }
-      tokenCallback(err, uniqueID);
+      if (err) { return next(err); }
+      res.send(uniqueID);
     }
   );
 };

@@ -1,21 +1,22 @@
 var restify = require('restify'),
-    Logger = require('bunyan');
+    bunyan = require('bunyan'),
+    redis = require('redis');
 
-var log = new Logger({
+var log = new bunyan({
   name: 'musicpad',
   streams: [
     {
       stream: process.stdout,
       level: 'trace'
-    },
-    {
-      path: 'restify.log',
-      level: 'trace'
     }
+    // {
+    //   path: 'restify.log',
+    //   level: 'trace'
+    // }
   ],
   serializers: {
-    req: Logger.stdSerializers.req,
-    res: Logger.stdSerializers.res,
+    req: bunyan.stdSerializers.req,
+    res: bunyan.stdSerializers.res,
   },
 });
 
@@ -24,6 +25,8 @@ var server = restify.createServer({
   version: '0.0.1',
   log: log
 });
+
+global.redis = redis.createClient();
 
 server.use(restify.acceptParser(server.acceptable));
 // rejectUnknown: this you can set to true to end the request with a UnsupportedMediaTypeError when nonone of the supported content types was given. Defaults to false
@@ -40,5 +43,8 @@ server.use(restify.throttle({
     }
   }
 }));
+
+// Include routes
+require('./routes/')(server);
 
 module.exports = server;
