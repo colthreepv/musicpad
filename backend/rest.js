@@ -7,17 +7,14 @@ var log = new bunyan({
   streams: [
     {
       stream: process.stdout,
-      level: 'trace'
+      level: 'debug'
     }
     // {
     //   path: 'restify.log',
     //   level: 'trace'
     // }
   ],
-  serializers: {
-    req: bunyan.stdSerializers.req,
-    res: bunyan.stdSerializers.res,
-  },
+  serializers: bunyan.stdSerializers
 });
 
 var server = restify.createServer({
@@ -32,6 +29,7 @@ server.use(restify.acceptParser(server.acceptable));
 // rejectUnknown: this you can set to true to end the request with a UnsupportedMediaTypeError when nonone of the supported content types was given. Defaults to false
 server.use(restify.bodyParser({ rejectUnknown: true }));
 server.use(restify.requestLogger());
+// throttle middleware
 server.use(restify.throttle({
   burst: 120,
   rate: 60,
@@ -43,6 +41,15 @@ server.use(restify.throttle({
     }
   }
 }));
+
+// middleware to track time elapsed
+server.pre(function (req, res, next) {
+  req.startedAt = Date.now();
+  next();
+});
+server.on('after', function (req, res, route, error) {
+  req.log.debug(Date.now() - req.startedAt + 'ms');
+});
 
 // Include routes
 require('./routes/')(server);

@@ -38,6 +38,7 @@ exports.generate = function (req, res, next) {
     function (err) {
       if (err) { return next(err); }
       res.send(uniqueID);
+      next();
     }
   );
 };
