@@ -58,6 +58,8 @@ exports.check = function (req, res, next) {
       return next(new restify.InvalidHeaderError('Musicpad token is not active'));
     }
 
+    // defines req.token to be used for subsequent middlewares
+    req.token = token;
     return next();
   });
 };
