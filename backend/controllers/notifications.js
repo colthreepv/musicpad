@@ -28,7 +28,6 @@ exports.updates = function (req, res, next) {
     eventMgr.on(req.token, sendNotification);
     // if connection gets closed remotely, clear the eventListener
     req.connection.on('close', function () {
-      log('connection closed, event removed!');
       eventMgr.removeListener(req.token, sendNotification);
     });
 

@@ -6,4 +6,10 @@ module.exports = function (server) {
     res.send(200);
     return next();
   });
+
+  server.post('/testjson', function (req, res, next) {
+    log(req.params);
+    res.send(200);
+    return next();
+  });
 };

@@ -12,11 +12,14 @@ function Subscriber(redisClient) {
   redisClient.subscribe('notifications');
   redisClient.on('message', function (channel, message) {
     message = JSON.parse(message);
+    var destination = message.to;
+    delete message.to;
+
     // Returns true if event had listeners, false otherwise.
-    if (!self.emit(message.to, message)) {
+    if (!self.emit(destination, message)) {
       // add the non-received notification to a list
-      redis.rpush('notifications:' + message.to + ':list', JSON.stringify(message));
-      log(['message for', message.to, 'queued']);
+      redis.rpush('notifications:' + destination + ':list', JSON.stringify(message));
+      log(['message for', destination, 'queued']);
     }
   });
 }
