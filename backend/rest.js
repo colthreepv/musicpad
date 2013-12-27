@@ -1,18 +1,21 @@
 var restify = require('restify'),
     bunyan = require('bunyan'),
-    redis = require('redis');
+    redis = require('redis'),
+    util = require('util'),
+    eventMgr = require('./controllers/event');
 
-var log = new bunyan({
+global.redis = redis.createClient();
+global.log = function (args, depth) { console.log(util.inspect(args, { colors: true, depth: depth })); };
+// subscribe to 'notification' redis channel
+global.events = eventMgr.createSubscriber(redis.createClient());
+
+var logger = new bunyan({
   name: 'musicpad',
   streams: [
     {
       stream: process.stdout,
       level: 'debug'
     }
-    // {
-    //   path: 'restify.log',
-    //   level: 'trace'
-    // }
   ],
   serializers: bunyan.stdSerializers
 });
@@ -20,10 +23,8 @@ var log = new bunyan({
 var server = restify.createServer({
   name: 'musicpad',
   version: '0.0.1',
-  log: log
+  log: logger
 });
-
-global.redis = redis.createClient();
 
 server.use(restify.acceptParser(server.acceptable));
 // rejectUnknown: this you can set to true to end the request with a UnsupportedMediaTypeError when nonone of the supported content types was given. Defaults to false
@@ -48,10 +49,17 @@ server.pre(function (req, res, next) {
   next();
 });
 server.on('after', function (req, res, route, error) {
-  req.log.debug(Date.now() - req.startedAt + 'ms');
+  // Note that when you are using the default 404/405/BadVersion handlers, this event will still be fired, but route will be null.
+  var path = (route) ? route.spec.path : undefined,
+      method = (route) ? route.spec.method : undefined;
+
+  req.log.debug(method, path, Date.now() - req.startedAt + 'ms');
 });
 
 // Include routes
 require('./routes/')(server);
+if (!process.env.PRODUCTION) {
+  require('./routes/test-routes')(server);
+}
 
 module.exports = server;
