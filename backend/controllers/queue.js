@@ -1,8 +1,6 @@
 var restify = require('restify'),
     async = require('async');
-/**
- * Should add an array of songs to redis queue
- */
+
 
 /**
  * Many comments to define spec!
@@ -45,6 +43,13 @@ var restify = require('restify'),
  * internal:queue:list - sorted set containing songs to dowload
  * internal:maxpriority:value - value containing the N max priority currently available (value of the most requested song)
  * internal:maxpriority:key - name to the max priority key available
+ *
+ * song:SONGID:exists => "{ type: 'youtube', id: '9n282nsa_sais' }"
+ */
+
+
+/**
+ * Should add an array of songs to redis queue
  */
 exports.add = function (req, res, next) {
   // Array containing status per each song requested
@@ -63,7 +68,7 @@ exports.add = function (req, res, next) {
           redis.zincrby('internal:queue:list', 1, song.id, function (err, reply) { callback(err, 'incr'); });
         } else {
           redis.zadd('internal:queue:list', 1, song.id, function (err, reply) { callback(err, 'add'); });
-          redis.set(existsKey, 1);
+          redis.set(existsKey, JSON.stringify(song));
         }
       }
     ], function waterfallEnds(err, redisAction) {
@@ -85,6 +90,15 @@ exports.add = function (req, res, next) {
     return next();
   });
 };
+
+
+/**
+ * consumes a ready song, or listens for an event
+ */
+exports.consume = function () {
+
+};
+
 
 /**
  * middleware to validate the JSON queue
