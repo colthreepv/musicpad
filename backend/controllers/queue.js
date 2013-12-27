@@ -1,4 +1,5 @@
-var restify = require('restify');
+var restify = require('restify'),
+    async = require('async');
 /**
  * Should add an array of songs to redis queue
  */
@@ -39,9 +40,50 @@ var restify = require('restify');
  * ConsumedPriority: 3100 <- This is the last consumed item
  * Add Song, priority (Date.now() - ConsumedPriority) -> 10000 - 3100 = 4600
  *
+ * Sorted Set:
+ *
+ * internal:queue:list - sorted set containing songs to dowload
+ * internal:maxpriority:value - value containing the N max priority currently available (value of the most requested song)
+ * internal:maxpriority:key - name to the max priority key available
  */
 exports.add = function (req, res, next) {
-  var statusResponse = [];
+  // Array containing status per each song requested
+  var statusResponse = [],
+      queue = req.params.queue;
+
+  async.map(queue, function processItem(song, mapCallback) {
+    var existsKey = 'song:' + song.id + ':exists';
+
+    async.waterfall([
+      function callRedis(callback) {
+        redis.get(existsKey, callback);
+      },
+      function checkExists(reply, callback) {
+        if (reply) { // exists
+          redis.zincrby('internal:queue:list', 1, song.id, function (err, reply) { callback(err, 'incr'); });
+        } else {
+          redis.zadd('internal:queue:list', 1, song.id, function (err, reply) { callback(err, 'add'); });
+          redis.set(existsKey, 1);
+        }
+      }
+    ], function waterfallEnds(err, redisAction) {
+      var songWithStatus = song;
+
+      // in case the song already existed, it will return status queue, otherwise saying new
+      if (redisAction === 'incr') {
+        songWithStatus.status = 'queue';
+      } else {
+        songWithStatus.status = 'new';
+      }
+
+      mapCallback(err, songWithStatus);
+    });
+  }, function mapEnds(err, results) {
+    if (err) { return next(err); }
+
+    res.send(200, results);
+    return next();
+  });
 };
 
 /**
