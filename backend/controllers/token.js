@@ -45,14 +45,18 @@ exports.generate = function (req, res, next) {
 };
 
 exports.check = function (req, res, next) {
-  var token = req.header('X-MusicPad');
+  var token = req.header('X-MusicPad'),
+      tokenKey;
   // unauthorized
   if (!token) {
     return next(new restify.NotAuthorizedError('Musicpad header is missing'));
+  } else {
+    tokenKey = 'token:' + token + ':exists';
   }
 
-  redis.get('token:' + token + ':exists', function (err, reply) {
+  redis.exists(tokenKey, function (err, reply) {
     if (err) { return next(err); }
+    log(reply);
     // If the redis.get returns NULL, means there's not that key in redis, so it's non-existant!
     if (!reply) {
       return next(new restify.InvalidHeaderError('Musicpad token is not active'));

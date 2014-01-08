@@ -25,12 +25,17 @@ function Subscriber(redisClient) {
     if (err) { throw new Error(err); }
 
     // Then subscribe to such id **AND MAKE IT GLOBAL**
-    global.subscriberID = parseInt(subscriberID, 10);
+    self.id = global.subscriberID = parseInt(subscriberID, 10);
     redisClient.subscribe('notifications:' + subscriberID);
 
     // Event on notification message
     redisClient.on('message', function (channel, message) {
-      message = JSON.parse(message);
+      try {
+        message = JSON.parse(message);
+      } catch (e) {
+        log(['JSON.parse failed', e]);
+        return;
+      }
       var destination = message.to;
 
       redis.sismember('client:' + message.to + ':cluster', subscriberID, function (err, reply) {
@@ -84,9 +89,10 @@ exports.updates = function (req, res, next) {
   // NOTE: req.token is defined here
   // read notifications hash.
   var notificationsKey = 'notifications:' + req.token + ':list',
+      clientSet = 'client:' + req.token + ':cluster',
       notifier = exports.subscriber;
 
-  // function to be registered on the eventManager
+  // function to be registered on the notifier
   function sendNotification(message) {
     res.send(message);
     return next();
@@ -103,11 +109,20 @@ exports.updates = function (req, res, next) {
       return next();
     }
 
-    // otherwise, we setup an eventListener on notifications
-    notifier.on(req.token, sendNotification);
-    // if connection gets closed remotely, clear the eventListener
-    req.connection.on('close', function () {
-      notifier.removeListener(req.token, sendNotification);
+    // clientSet is the Redis Set mantaining the clusters currently listening
+    // for the long-poll.
+    // In this case i'm adding the *current* clusterID (notifier.id), to the clientSet
+    redis.sadd(clientSet, notifier.id, function (err, reply) {
+      if (err) { return next(err); }
+
+      // otherwise, we setup an eventListener on global notifier
+      notifier.on(req.token, sendNotification);
+
+      // if connection gets closed remotely, clear the eventListener
+      req.connection.on('close', function () {
+        notifier.removeListener(req.token, sendNotification);
+        redis.srem(clientSet, notifier.id);
+      });
     });
 
   });
