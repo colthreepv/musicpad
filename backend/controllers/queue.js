@@ -95,7 +95,7 @@ exports.add = function (req, res, next) {
 /**
  * consumes a ready song, or listens for an event
  */
-exports.consume = function () {
+exports.consumer = function () {
 
 };
 

@@ -98,17 +98,8 @@ exports.updates = function (req, res, next) {
     return next();
   }
 
-  redis.lrange(notificationsKey, 0, -1, function (err, reply) {
-    if (err) { return next(err); }
-    // reply IS an Array
-    // if contains something, means we have old notifications to send, send them away!
-    if (reply.length > 0) {
-      // delete notifications list
-      redis.del(notificationsKey);
-      res.send(reply);
-      return next();
-    }
-
+  // function that keeps listening for a notification event
+  function listenForNotifications() {
     // clientSet is the Redis Set mantaining the clusters currently listening
     // for the long-poll.
     // In this case i'm adding the *current* clusterID (notifier.id), to the clientSet
@@ -124,7 +115,20 @@ exports.updates = function (req, res, next) {
         redis.srem(clientSet, notifier.id);
       });
     });
+  }
 
+  redis.lrange(notificationsKey, 0, -1, function (err, reply) {
+    if (err) { return next(err); }
+
+    // reply IS an Array
+    // if contains something, means we have old notifications to send, send them away!
+    if (reply.length > 0) {
+      // delete notifications list
+      redis.del(notificationsKey);
+      res.send(reply);
+      return next();
+    } else {
+      listenForNotifications();
+    }
   });
-  //
 };
