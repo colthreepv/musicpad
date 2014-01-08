@@ -7,7 +7,7 @@ var restify = require('restify'),
 global.redis = redis.createClient();
 global.log = function (args, depth) { console.log(util.inspect(args, { colors: true, depth: depth })); };
 // subscribe to 'notification' redis channel
-global.notifications = notifications.createSubscriber(redis.createClient());
+notifications.createSubscriber(redis.createClient());
 
 var logger = new bunyan({
   name: 'musicpad',
@@ -61,5 +61,13 @@ require('./routes/')(server);
 if (!process.env.PRODUCTION) {
   require('./routes/test-routes')(server);
 }
+
+// On kill signal it de-registers from redis, then exits.
+process.on('SIGINT', function () {
+  notifications.removeSubscriber(function () {
+    log('Musicpad - Correctly shutting down.');
+    process.exit();
+  });
+});
 
 module.exports = server;

@@ -1,5 +1,6 @@
 var events = require('events'),
-    util = require('util');
+    util = require('util'),
+    async = require('async');
 
 /**
  * This controller should start at application startup and handle
@@ -17,6 +18,8 @@ function Subscriber(redisClient) {
   if (!redisClient) { throw new Error('redisClient parameter is not optional'); }
   var self = this;
 
+  this.redisClient = redisClient;
+
   // Get an *free* subscriber id
   redisClient.incr('internal:cluster:count', function (err, subscriberID) {
     if (err) { throw new Error(err); }
@@ -30,7 +33,7 @@ function Subscriber(redisClient) {
       message = JSON.parse(message);
       var destination = message.to;
 
-      redis.sismember('token:' + message.to + ':cluster', subscriberID, function (err, reply) {
+      redis.sismember('client:' + message.to + ':cluster', subscriberID, function (err, reply) {
         if (err) { throw new Error(err); }
 
         // if reply is boolean true, means this *current* cluster is hosting a long-poll connection to
@@ -45,11 +48,31 @@ function Subscriber(redisClient) {
 }
 util.inherits(Subscriber, events.EventEmitter);
 
+// Removes the current subscriber, and decrements clusters.
+// This should be run on node.js exit
+Subscriber.prototype.removeSubscriber = function (subscriberCallback) {
+  var self = this;
+  async.series([
+    function (callback) {
+      self.redisClient.unsubscribe(callback);
+    },
+    function (callback) {
+      self.redisClient.decr('internal:cluster:count', callback);
+    },
+    function (callback) {
+      self.redisClient.quit(callback);
+    }
+  ], subscriberCallback);
+};
 
 exports.Subscriber = Subscriber;
 exports.createSubscriber = function (redisClient) {
   exports.subscriber = new Subscriber(redisClient);
   return exports.subscriber;
+};
+
+exports.removeSubscriber = function (callback) {
+  exports.subscriber.removeSubscriber(callback);
 };
 
 

@@ -64,3 +64,6 @@ Clients
 =======
 
 
+Queue
+=====
+The so-called queue is actually the download priority list.
