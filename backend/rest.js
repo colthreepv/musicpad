@@ -2,12 +2,12 @@ var restify = require('restify'),
     bunyan = require('bunyan'),
     redis = require('redis'),
     util = require('util'),
-    eventMgr = require('./controllers/eventMgr');
+    notifications = require('./controllers/notifications');
 
 global.redis = redis.createClient();
 global.log = function (args, depth) { console.log(util.inspect(args, { colors: true, depth: depth })); };
 // subscribe to 'notification' redis channel
-global.eventMgr = eventMgr.createSubscriber(redis.createClient());
+global.notifications = notifications.createSubscriber(redis.createClient());
 
 var logger = new bunyan({
   name: 'musicpad',
