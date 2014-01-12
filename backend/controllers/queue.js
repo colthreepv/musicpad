@@ -65,9 +65,9 @@ exports.add = function (req, res, next) {
       },
       function checkExists(reply, callback) {
         if (reply) { // exists
-          redis.zincrby('internal:queue:list', 1, song.id, function (err, reply) { callback(err, 'incr'); });
+          redis.zincrby('internal:queue:list', 1, song.id, function (err, reply) { callback(err, 'queue'); });
         } else {
-          redis.zadd('internal:queue:list', 1, song.id, function (err, reply) { callback(err, 'add'); });
+          redis.zadd('internal:queue:list', 1, song.id, function (err, reply) { callback(err, 'new'); });
           redis.set(existsKey, JSON.stringify(song));
         }
       }
@@ -75,11 +75,7 @@ exports.add = function (req, res, next) {
       var songWithStatus = song;
 
       // in case the song already existed, it will return status queue, otherwise saying new
-      if (redisAction === 'incr') {
-        songWithStatus.status = 'queue';
-      } else {
-        songWithStatus.status = 'new';
-      }
+      songWithStatus.status = redisAction;
 
       mapCallback(err, songWithStatus);
     });
@@ -92,13 +88,93 @@ exports.add = function (req, res, next) {
 };
 
 
-/**
- * consumes a ready song, or listens for an event
- */
-exports.consumer = function () {
-
+var ytdl = require('ytdl');
+var waitForDownload = require('redis').createClient();
+var filterFormats = function () {
+  var bestFormat = null;
+  return function (format, index, formatsArray) {
+    if (bestFormat === null) {
+      bestFormat = format;
+      formatsArray.forEach(function (format, index, formatsArray) {
+        if (format.audioBitrate >= bestFormat.audioBitrate &&
+            parseFloat(format.bitrate) < parseFloat(bestFormat.bitrate || Infinity) &&
+            (format.audioEncoding === 'vorbis' || format.audioEncoding === 'aac')) {
+          bestFormat = format;
+        }
+      });
+    }
+    return format === bestFormat;
+  };
+};
+var pool = { maxSockets: 2 };
+var ytDownloader = require('./youtube')(pool);
+var songDownloader = function (songID, callback) {
+  log(['consumer', 'consuming', songID]);
+  callback(null);
 };
 
+/**
+ * This function should get the first song available in download queue
+ * it queries a sorted set, if the response is something, then tries to avoid
+ * racing conditions removing the key.
+ * If the current process successes in removing the key, then it has to handle the download
+ */
+var firstSong = function (callback) {
+  // zrange always returns an Array, remember!
+  redis.zrange('internal:download:queue', 0, 0, function (err, song) {
+    if (err) { return callback(err); }
+    if (song.length) {
+      redis.zrem('internal:download:queue', song, function (err, deletedBoolean) {
+        if (err) { return callback(err); }
+        if (deletedBoolean) {
+          // Handle download.
+          callback(null, song[0]);
+        } else {
+          // Too late, another process handled it
+          callback(null, null);
+        }
+      });
+    } else {
+      // There's nothing to download
+      callback(null, null);
+    }
+  });
+};
+
+
+/**
+ * consumes a ready song, or listens for an event
+ * FIXME: this is **incredibly** broken
+ */
+var consumer = function (errorHandler) {
+  firstSong(function (err, song) {
+    if (err) { return errorHandler(err); }
+
+    function recallYourself() {
+      waitForDownload.removeListener('message', recallYourself);
+      waitForDownload.unsubscribe(function (err) {
+        // Restart anew
+        consumer(errorHandler);
+      });
+    }
+
+    // In case the function captures a song, it will download it
+    // and THEN will restart itself
+    //
+    // Otherwise
+    // will wait for a signal, and then restart itself
+    if (song) {
+      songDownloader(song, function (err, result) {
+        consumer(errorHandler);
+      });
+    } else {
+      log(['consumer', 'waiting for event']);
+      waitForDownload.subscribe('internal:download:event');
+      waitForDownload.on('message', recallYourself);
+    }
+  });
+};
+exports.consumer = consumer;
 
 /**
  * middleware to validate the JSON queue
