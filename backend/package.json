@@ -8,11 +8,12 @@
   "dependencies": {
     "restify": "latest",
     "redis": "latest",
-    "ytdl": "latest",
+    "ytdl": "~0.1.25",
     "fluent-ffmpeg": "latest",
     "async": "latest",
     "request": "latest",
-    "bunyan": "~0.22.1"
+    "bunyan": "~0.22.1",
+    "q": "~1.0.0"
   },
   "devDependencies": {
     "vows": "latest"
