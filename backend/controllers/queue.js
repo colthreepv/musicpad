@@ -95,18 +95,23 @@ var ytDownloader = require('./youtube')(pool);
 var scDownloader = require('./youtube')(pool); // FIXME: this is to be done
 var songDownloader = function (songID, downloadCallback) {
   var songKey = 'song:' + songID + ':details';
+  var requestersKey = 'song:' + songID + ':requesters';
   log(['consumer', 'consuming', songID]);
-  downloadCallback(null);
 
   async.auto({
     songDetails: function (callback) { redis.get(songKey, callback); },
     jsonDetails: ['songDetails', function (callback, results) {
       callback(null, JSON.parse(results.songDetails));
     }],
-    songRequesters: function (callback) { redis.smembers('song:number:requester', callback); },
-    requesterDetails: ['songRequesters', function (callback, results) {}]
+    songRequesters: function (callback) { redis.smembers(requestersKey, callback); },
+    requesterDetails: ['songRequesters', function (callback, results) {
+      log(results);
+      callback(null);
+    }]
   }, function startDownload(err, results) {
     if (err) { return downloadCallback(err); }
+
+    log(['startDownload', results]);
 
     var stream = null;
     if (results.jsonDetails.type === 'youtube') {
@@ -115,10 +120,15 @@ var songDownloader = function (songID, downloadCallback) {
       stream = scDownloader(songID);
     }
 
-    stream.on('info'); // update songDetails
-    stream.on('data'); // send notifications
-    stream.on('end'); // do downloadCallback()
-
+    stream.on('info', function (info, format) {
+      var newDetails = results.songDetails;
+      newDetails.info = info;
+      redis.set(songKey, newDetails);
+    });
+    stream.on('data', function (chunk) {
+      log('chunk!!!');
+    });
+    stream.on('end', downloadCallback);
   });
 };
 
