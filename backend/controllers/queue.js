@@ -90,27 +90,36 @@ exports.add = function (req, res, next) {
 
 var ytdl = require('ytdl');
 var waitForDownload = require('redis').createClient();
-var filterFormats = function () {
-  var bestFormat = null;
-  return function (format, index, formatsArray) {
-    if (bestFormat === null) {
-      bestFormat = format;
-      formatsArray.forEach(function (format, index, formatsArray) {
-        if (format.audioBitrate >= bestFormat.audioBitrate &&
-            parseFloat(format.bitrate) < parseFloat(bestFormat.bitrate || Infinity) &&
-            (format.audioEncoding === 'vorbis' || format.audioEncoding === 'aac')) {
-          bestFormat = format;
-        }
-      });
-    }
-    return format === bestFormat;
-  };
-};
 var pool = { maxSockets: 2 };
 var ytDownloader = require('./youtube')(pool);
-var songDownloader = function (songID, callback) {
+var scDownloader = require('./youtube')(pool); // FIXME: this is to be done
+var songDownloader = function (songID, downloadCallback) {
+  var songKey = 'song:' + songID + ':details';
   log(['consumer', 'consuming', songID]);
-  callback(null);
+  downloadCallback(null);
+
+  async.auto({
+    songDetails: function (callback) { redis.get(songKey, callback); },
+    jsonDetails: ['songDetails', function (callback, results) {
+      callback(null, JSON.parse(results.songDetails));
+    }],
+    songRequesters: function (callback) { redis.smembers('song:number:requester', callback); },
+    requesterDetails: ['songRequesters', function (callback, results) {}]
+  }, function startDownload(err, results) {
+    if (err) { return downloadCallback(err); }
+
+    var stream = null;
+    if (results.jsonDetails.type === 'youtube') {
+      stream = ytDownloader(songID);
+    } else {
+      stream = scDownloader(songID);
+    }
+
+    stream.on('info'); // update songDetails
+    stream.on('data'); // send notifications
+    stream.on('end'); // do downloadCallback()
+
+  });
 };
 
 /**
